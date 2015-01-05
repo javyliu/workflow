@@ -1,4 +1,5 @@
-source 'https://rubygems.org'
+#source 'https://rubygems.org'
+source 'http://ruby.taobao.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -31,6 +32,19 @@ gem 'bcrypt', '~> 3.1.7'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+#
+# for the queue job and recurring job
+gem 'sidekiq'
+#gem 'sidetiq'
+gem 'whenever',require: false
+
+#for mail receive
+#
+#handle html or xml
+gem 'nokogiri'
+
+#server
+gem 'passenger'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

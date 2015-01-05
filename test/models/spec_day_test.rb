@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ExplameJobTest < ActiveJob::TestCase
+class SpecDayTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

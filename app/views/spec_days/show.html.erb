@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Sdate:</strong>
+  <%= @spec_day.sdate %>
+</p>
+
+<p>
+  <strong>Is workday:</strong>
+  <%= @spec_day.is_workday %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @spec_day.comment %>
+</p>
+
+<%= link_to 'Edit', edit_spec_day_path(@spec_day) %> |
+<%= link_to 'Back', spec_days_path %>

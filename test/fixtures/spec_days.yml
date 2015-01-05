@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sdate: 2015-01-04
+  is_workday: false
+  comment: MyString
+
+two:
+  sdate: 2015-01-04
+  is_workday: false
+  comment: MyString

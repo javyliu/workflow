@@ -11,7 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20150104154346) do
+
+  create_table "spec_days", force: :cascade do |t|
+    t.date    "sdate"
+    t.boolean "is_workday", limit: 1
+    t.string  "comment",    limit: 40
+  end
 
   create_table "tblabsence", id: false, force: :cascade do |t|
     t.string   "userCode",     limit: 20,  null: false
@@ -20,6 +26,14 @@ ActiveRecord::Schema.define(version: 0) do
     t.integer  "absenceType",  limit: 4,   null: false
     t.datetime "approvedDate"
     t.string   "approvedBy",   limit: 20
+  end
+
+  create_table "tblcheckinout", id: false, force: :cascade do |t|
+    t.string   "userId",   limit: 20, null: false
+    t.date     "recDate",             null: false
+    t.datetime "checkin"
+    t.datetime "checkout"
+    t.datetime "refTime"
   end
 
   create_table "tblconfigs", primary_key: "key", force: :cascade do |t|
@@ -35,6 +49,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "deptName",   limit: 100, null: false
     t.string "attenRules", limit: 255
     t.string "mgrCode",    limit: 20
+    t.string "admin",      limit: 20
   end
 
   create_table "tblemployee", primary_key: "userId", force: :cascade do |t|

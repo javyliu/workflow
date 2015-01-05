@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+  <title>表单</title>
+
+
+</head>
+<body>
+
+duty.leaving.applicationform
+<table border=1 cellpadding=2 style='border-collapse: collapse'  bordercolorlight='#000000'>
+<tr bgcolor='#99CCFF' id='title'><td align=center colspan='9'>请假申请单</td></tr>
+<tr><td bgcolor='#BBBBBB'>姓名</td><td bgcolor='#BBBBBB' id='Name' colspan='2'>Name</td><td bgcolor='#BBBBBB'>部门</td><td bgcolor='#BBBBBB' id='Dept' colspan='2'>Department</td><td bgcolor='#BBBBBB'>职级</td><td bgcolor='#BBBBBB' id='Title' colspan='2'>Title</td></tr>
+<tr><td bgcolor='#BBBBBB'>事由</td><td id='Reason' colspan='8'>(请在这里填写请假原因)</td></tr>
+<tr><td bgcolor='#BBBBBB'>申请假期类别</td><td id='TYPE'></td><td bgcolor='#BBBBBB' colspan=7>如:年假,事假,病假,倒休,产假,婚假等</td></tr>
+<tr><td bgcolor='#BBBBBB'>起始时间</td><td id='TS' colspan=8>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>结束时间</td><td id='TE' colspan=8>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>合计</td><td id='Day'></td><td bgcolor='#BBBBBB' colspan=7>天</td></tr>
+</table>
+
+duty.leaving.approveform
+<table border=1 cellpadding=2 style='border-collapse: collapse'  bordercolorlight='#000000'>
+<tr bgcolor='#99CCFF' id='title'><td align=center colspan='9'>请假申请单</td></tr>
+<tr><td bgcolor='#BBBBBB'>姓名</td><td bgcolor='#BBBBBB' id='Name' colspan='2'>Name</td><td bgcolor='#BBBBBB'>部门</td><td bgcolor='#BBBBBB' id='Dept' colspan='2'>Department</td><td bgcolor='#BBBBBB'>职级</td><td bgcolor='#BBBBBB' id='Title' colspan='2'>Title</td></tr>
+<tr><td bgcolor='#BBBBBB'>事由</td><td id='Reason' colspan='8' bgcolor='#BBBBBB'></td></tr>
+<tr><td bgcolor='#BBBBBB'>申请假期类别</td><td id='TYPE' bgcolor='#BBBBBB'></td><td bgcolor='#BBBBBB'>合计</td><td id='Day' bgcolor='#BBBBBB'></td><td bgcolor='#BBBBBB'>天</td><td bgcolor='#BBBBBB'>流水号</td><td id='Ssn' bgcolor='#BBBBBB' colspan=3></td></tr>
+<tr><td bgcolor='#BBBBBB'>起始时间</td><td id='TS' colspan=8 bgcolor='#BBBBBB'>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>结束时间</td><td id='TE' colspan=8 bgcolor='#BBBBBB'>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>批复意见(同意/不同意)</td><td id='Result'></td><td bgcolor='#BBBBBB' colspan=3>原因(同意时可省略)</td><td id='CMT' colspan=4> </td></tr>
+</table>
+
+duty.leaving.prompt.message
+<font color='#FF0000'>您未能在希望的时间内审核请假单，这是第 ${alertTime} 次提醒！请尽快回复。（系统将最多提醒${maxAlertTimes}次）</font><br>
+duty.overtime.applicationform
+<table border=1 cellpadding=2 style='border-collapse: collapse'  bordercolorlight='#000000'>
+<tr bgcolor='#99CCFF' id='title'><td align=center colspan='9'>加班申请单</td></tr>
+<tr><td bgcolor='#BBBBBB'>姓名</td><td bgcolor='#BBBBBB' id='Name' colspan='2'>Name</td><td bgcolor='#BBBBBB'>部门</td><td bgcolor='#BBBBBB' id='Dept' colspan='2'>Department</td><td bgcolor='#BBBBBB'>职级</td><td bgcolor='#BBBBBB' id='Title' colspan='2'>Title</td></tr>
+<tr><td bgcolor='#BBBBBB'>事由</td><td id='Reason' colspan='8'>(请在这里填写加班原因)</td></tr>
+<tr><td bgcolor='#BBBBBB'>起始时间</td><td id='TS' colspan=8>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>结束时间</td><td id='TE' colspan=8>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>合计</td><td id='Day'></td><td bgcolor='#BBBBBB' colspan=7>天</td></tr>
+</table>
+
+duty.overtime.approveform
+<table border=1 cellpadding=2 style='border-collapse: collapse'  bordercolorlight='#000000'>
+<tr bgcolor='#99CCFF' id='title'><td align=center colspan='9'>加班申请单</td></tr>
+<tr><td bgcolor='#BBBBBB'>姓名</td><td bgcolor='#BBBBBB' id='Name' colspan='2'>Name</td><td bgcolor='#BBBBBB'>部门</td><td bgcolor='#BBBBBB' id='Dept' colspan='2'>Department</td><td bgcolor='#BBBBBB'>职级</td><td bgcolor='#BBBBBB' id='Title' colspan='2'>Title</td></tr>
+<tr><td bgcolor='#BBBBBB'>事由</td><td id='Reason' colspan='3' bgcolor='#BBBBBB'></td><td bgcolor='#BBBBBB'>合计</td><td id='Day' bgcolor='#BBBBBB'></td><td bgcolor='#BBBBBB'>天</td><td bgcolor='#BBBBBB'>流水号</td><td id='Ssn' bgcolor='#BBBBBB'></td></tr>
+<tr><td bgcolor='#BBBBBB'>起始时间</td><td id='TS' colspan=8 bgcolor='#BBBBBB'>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>结束时间</td><td id='TE' colspan=8 bgcolor='#BBBBBB'>2014-11-24</td></tr>
+<tr><td bgcolor='#BBBBBB'>批复意见(同意/不同意)</td><td id='Result'></td><td bgcolor='#BBBBBB' colspan=3>原因(同意时可省略)</td><td id='CMT' colspan=4> </td></tr>
+</table>
+
+duty.overtime.prompt.message
+<font color='#FF0000'>您未能在希望的时间内审核加班单，这是第 ${alertTime} 次提醒！请尽快回复。（系统将最多提醒${maxAlertTimes}次）</font><br>
+mail.signature
+<HR style="HEIGHT: 2px; WIDTH: 210px" align=left color=#b5c4df SIZE=3>来自邮件机器人（@${ipaddress}）。<br/>
+  目前尚在测试阶段。欢迎<A href="mailto:x@pipgame.com">发邮件至 x@pipgame.com</A> 提出建议或意见（标题请注明“BUG”)。<br/>
+
+oa.prompt.time
+9:30-19:00
+timekeeper.file.year
+2014
+timekeeper.mail.sheet.desc
+Dear ${manager}:<br/><br/>
+
+<font color='#FF00FF'>
+本邮件由系统自动产生，并需要您回复处理.希望今后可以取代行政助理手工填写的A/B分确认的邮件.<br/>
+目前尚在测试中，请暂时不要放弃原来的人工流程<br/>
+建议您积极参与以发现问题和错误以便改正.</font><br/>
+
+  ${催缴信息}<br/>
+
+  上表是员工考勤确认表单，请在背景白色的单元格中填写确认信息。<br/>
+  其中:<br/>
+  <B>确认贡献分</B>：填写确认的小时数(负数为扣减:如迟到自动扣减不用算迟到)。<br/>
+  <B>额外说明</B>:自由填写备注。<br/>
+  <B>迟到、早退、旷工、漏打卡</B>等项:填写1或不填。<br/>
+  <B>年假、病假、事假</B>：不填或者填写天数(0.5表示半天)。<br/><br/>
+  <font color='#FF0000'>直接回复本邮件并在表格中直接填写内容即可，无需复制表格！<br/>
+  提示:请勿删除单元格或改变表格结构。</font><br/>
+
+timekeeper.mail.sheet.prompt
+<font color='#FF0000'>您未能在希望的时间内确认考勤数据，这是第 ${alertTime} 次催缴！请尽快回复。（系统将最多催缴${maxAlertTimes}次）</font><br>
+timekeeper.task.init.time
+7:00
+timekeeper.task.prompt.maxtimes
+10
+</body>
+</html>
