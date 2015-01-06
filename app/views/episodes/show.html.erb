@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @episode.user_id %>
+</p>
+
+<p>
+  <strong>Holiday:</strong>
+  <%= @episode.holiday_id %>
+</p>
+
+<p>
+  <strong>Start date:</strong>
+  <%= @episode.start_date %>
+</p>
+
+<p>
+  <strong>End date:</strong>
+  <%= @episode.end_date %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @episode.comment %>
+</p>
+
+<p>
+  <strong>Approved by:</strong>
+  <%= @episode.approved_by %>
+</p>
+
+<p>
+  <strong>Approved time:</strong>
+  <%= @episode.approved_time %>
+</p>
+
+<%= link_to 'Edit', edit_episode_path(@episode) %> |
+<%= link_to 'Back', episodes_path %>

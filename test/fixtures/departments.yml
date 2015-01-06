@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  name: MyString
+  atten_rule: MyString
+  mgr_code: MyString
+  admin: MyString
+
+two:
+  code: MyString
+  name: MyString
+  atten_rule: MyString
+  mgr_code: MyString
+  admin: MyString

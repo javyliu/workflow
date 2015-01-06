@@ -38,6 +38,9 @@ gem 'sidekiq'
 #gem 'sidetiq'
 gem 'whenever',require: false
 
+
+#webui
+gem 'foundation-rails'
 #for mail receive
 #
 #handle html or xml

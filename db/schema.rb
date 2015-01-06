@@ -11,7 +11,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150104154346) do
+ActiveRecord::Schema.define(version: 20150106080644) do
+
+  create_table "departments", primary_key: "code", force: :cascade do |t|
+    t.string   "name",       limit: 100
+    t.string   "atten_rule", limit: 255
+    t.string   "mgr_code",   limit: 20
+    t.string   "admin",      limit: 20
+    t.datetime "created_at",             default: '2015-01-06 14:52:33', null: false
+    t.datetime "updated_at",             default: '2015-01-06 14:52:33', null: false
+  end
+
+  create_table "episodes", force: :cascade do |t|
+    t.string   "user_id",       limit: 20
+    t.integer  "holiday_id",    limit: 4
+    t.date     "start_date"
+    t.date     "end_date"
+    t.string   "comment",       limit: 500
+    t.string   "approved_by",   limit: 20
+    t.datetime "approved_time"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.string "name", limit: 255
+  end
 
   create_table "spec_days", force: :cascade do |t|
     t.date    "sdate"
@@ -111,5 +136,24 @@ ActiveRecord::Schema.define(version: 20150104154346) do
     t.integer "switchLeave", limit: 4,  null: false
     t.integer "aPoint",      limit: 4,  null: false
   end
+
+  create_table "users", primary_key: "uid", force: :cascade do |t|
+    t.string   "user_name",                 limit: 20,                                  null: false
+    t.string   "email",                     limit: 40
+    t.string   "department",                limit: 255
+    t.string   "title",                     limit: 255
+    t.date     "expire_date"
+    t.string   "dept_code",                 limit: 20
+    t.string   "mgr_code",                  limit: 20
+    t.string   "password_digest",           limit: 255
+    t.integer  "role_group",                limit: 4
+    t.string   "remember_token",            limit: 255
+    t.datetime "remember_token_expires_at"
+    t.datetime "created_at",                            default: '2015-01-06 14:52:34', null: false
+    t.datetime "updated_at",                            default: '2015-01-06 14:52:34', null: false
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", using: :btree
+  add_index "users", ["mgr_code"], name: "index_users_on_mgr_code", using: :btree
 
 end

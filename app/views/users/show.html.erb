@@ -1,0 +1,64 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Uid:</strong>
+  <%= @user.uid %>
+</p>
+
+<p>
+  <strong>User name:</strong>
+  <%= @user.user_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @user.email %>
+</p>
+
+<p>
+  <strong>Department:</strong>
+  <%= @user.department %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @user.title %>
+</p>
+
+<p>
+  <strong>Expire date:</strong>
+  <%= @user.expire_date %>
+</p>
+
+<p>
+  <strong>Dept code:</strong>
+  <%= @user.dept_code %>
+</p>
+
+<p>
+  <strong>Mgr code:</strong>
+  <%= @user.mgr_code %>
+</p>
+
+<p>
+  <strong>Password digest:</strong>
+  <%= @user.password_digest %>
+</p>
+
+<p>
+  <strong>Role group:</strong>
+  <%= @user.role_group %>
+</p>
+
+<p>
+  <strong>Remember token:</strong>
+  <%= @user.remember_token %>
+</p>
+
+<p>
+  <strong>Remember token expires at:</strong>
+  <%= @user.remember_token_expires_at %>
+</p>
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

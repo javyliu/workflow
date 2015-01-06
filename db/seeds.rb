@@ -5,3 +5,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+types = %w{病假 哺乳期晚到1小时 哺乳期早走1小时 产假 倒休 事假}
+Holiday.create(types.map{|item|{name: item}})
+
+

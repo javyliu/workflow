@@ -1,0 +1,65 @@
+<%= form_for(@user) do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :uid %><br>
+    <%= f.text_field :uid %>
+  </div>
+  <div class="field">
+    <%= f.label :user_name %><br>
+    <%= f.text_field :user_name %>
+  </div>
+  <div class="field">
+    <%= f.label :email %><br>
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :department %><br>
+    <%= f.text_field :department %>
+  </div>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :expire_date %><br>
+    <%= f.date_select :expire_date %>
+  </div>
+  <div class="field">
+    <%= f.label :dept_code %><br>
+    <%= f.text_field :dept_code %>
+  </div>
+  <div class="field">
+    <%= f.label :mgr_code %><br>
+    <%= f.text_field :mgr_code %>
+  </div>
+  <div class="field">
+    <%= f.label :password_digest %><br>
+    <%= f.text_field :password_digest %>
+  </div>
+  <div class="field">
+    <%= f.label :role_group %><br>
+    <%= f.number_field :role_group %>
+  </div>
+  <div class="field">
+    <%= f.label :remember_token %><br>
+    <%= f.text_field :remember_token %>
+  </div>
+  <div class="field">
+    <%= f.label :remember_token_expires_at %><br>
+    <%= f.datetime_select :remember_token_expires_at %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

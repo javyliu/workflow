@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  uid: MyString
+  user_name: MyString
+  email: MyString
+  department: MyString
+  title: MyString
+  expire_date: 2015-01-06
+  dept_code: MyString
+  mgr_code: MyString
+  password_digest: MyString
+  role_group: 1
+  remember_token: MyString
+  remember_token_expires_at: 2015-01-06 13:17:03
+
+two:
+  uid: MyString
+  user_name: MyString
+  email: MyString
+  department: MyString
+  title: MyString
+  expire_date: 2015-01-06
+  dept_code: MyString
+  mgr_code: MyString
+  password_digest: MyString
+  role_group: 1
+  remember_token: MyString
+  remember_token_expires_at: 2015-01-06 13:17:03
