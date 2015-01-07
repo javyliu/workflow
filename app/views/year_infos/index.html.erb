@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Year Infos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Year</th>
+      <th>User</th>
+      <th>Year holiday</th>
+      <th>Sick leave</th>
+      <th>Affair leave</th>
+      <th>Switch leave</th>
+      <th>Ab point</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @year_infos.each do |year_info| %>
+      <tr>
+        <td><%= year_info.year %></td>
+        <td><%= year_info.user_id %></td>
+        <td><%= year_info.year_holiday %></td>
+        <td><%= year_info.sick_leave %></td>
+        <td><%= year_info.affair_leave %></td>
+        <td><%= year_info.switch_leave %></td>
+        <td><%= year_info.ab_point %></td>
+        <td><%= link_to 'Show', year_info %></td>
+        <td><%= link_to 'Edit', edit_year_info_path(year_info) %></td>
+        <td><%= link_to 'Destroy', year_info, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Year info', new_year_info_path %>

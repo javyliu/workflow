@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resources :checkinouts
+
+  resources :year_infos
+
+  resources :journals
+
   resources :episodes
 
   resources :holidays

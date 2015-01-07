@@ -29,11 +29,45 @@ namespace :migrate_data do
     end
   end
 
+
+  #把batch_size 设置为2000，即大于该表的数量，因为该表没有主键，小于表行数量时可能会丢失一些数据
+  desc 'sys journals'
+  task journals: :environment do
+    Journal.connection.execute("truncate journals;")
+    CharesDatabase::Tbljournal.find_each(batch_size: 2000) do |item|
+      Journal.create!(user_id: item.uid,update_date: item.updateDate, check_type: item.tp, description: item.cmmt, dval: item.dval)
+    end
+  end
+
+  #select b.email,min(checktime) checkin,max(checktime) checkout from checkinout a inner join userinfo b on a.userid=b.userid  where a.userid=91 and a.checktime > '2015-01-04' and a.checktime < '2015-01-05' group by a.userid
+  desc 'sys checkinout'
+  task checkinouts,:enviroment do
+
+    class EmailCheck < ActiveRecord::Base
+      self.table_name = 'checkinout'
+      establish_connection(:kaoqing_database)
+    end
+    email_checks = EmailCheck.find_by_sql(["select b.email,min(checktime) checkin,max(checktime) checkout from checkinout a inner join userinfo b on a.userid=b.userid  where a.checktime > '?' and a.checktime < '?' group by a.userid",Date.yesterday,Date.today])
+
+    user_id_emails = User.where(email: email_checks.map{|item|item.email}).pluck(:id,:email)
+    email_checks.each do |item|
+      checkinout.create(user_id: user_id_emails.rassoc(item.email).try(:first),checkin: item.checkin,checkout: item.checkout,ref_time: item.ref_time)
+    end
+
+  end
+
+  desc 'sys year_infos'
+  task year_infos: :environment do
+    Journal.connection.execute("truncate year_infos;")
+    CharesDatabase::Tblyearinfo.find_each do |item|
+      YearInfo.create!(user_id: item.uid,year: item.year, year_holiday: item.yearHolody, sick_leave: item.sickLeave, affair_leave: item.affairLeave,switch_leave: item.switchLeave,ab_point:item.aPoint)
+    end
+  end
+
   desc "sys all tables"
   task all: :environment do
     Rake::Task["migrate_data:spec_days"].invoke
     Rake::Task["migrate_data:departments"].invoke
     Rake::Task["migrate_data:users"].invoke
-
   end
 end

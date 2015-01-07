@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150106080644) do
+ActiveRecord::Schema.define(version: 20150106151233) do
+
+  create_table "checkinouts", force: :cascade do |t|
+    t.string   "user_id",    limit: 20
+    t.date     "rec_date"
+    t.datetime "checkin"
+    t.datetime "checkout"
+    t.datetime "ref_time"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "checkinouts", ["user_id"], name: "index_checkinouts_on_user_id", using: :btree
 
   create_table "departments", primary_key: "code", force: :cascade do |t|
     t.string   "name",       limit: 100
@@ -37,6 +49,18 @@ ActiveRecord::Schema.define(version: 20150106080644) do
   create_table "holidays", force: :cascade do |t|
     t.string "name", limit: 255
   end
+
+  create_table "journals", force: :cascade do |t|
+    t.string   "user_id",     limit: 20
+    t.date     "update_date"
+    t.integer  "check_type",  limit: 4
+    t.string   "description", limit: 255
+    t.integer  "dval",        limit: 4
+    t.datetime "created_at",              default: '2015-01-06 22:56:18', null: false
+    t.datetime "updated_at",              default: '2015-01-06 22:56:18', null: false
+  end
+
+  add_index "journals", ["user_id"], name: "index_journals_on_user_id", using: :btree
 
   create_table "spec_days", force: :cascade do |t|
     t.date    "sdate"
@@ -155,5 +179,19 @@ ActiveRecord::Schema.define(version: 20150106080644) do
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["mgr_code"], name: "index_users_on_mgr_code", using: :btree
+
+  create_table "year_infos", force: :cascade do |t|
+    t.integer  "year",         limit: 4
+    t.string   "user_id",      limit: 20
+    t.integer  "year_holiday", limit: 4
+    t.integer  "sick_leave",   limit: 4
+    t.integer  "affair_leave", limit: 4
+    t.integer  "switch_leave", limit: 4
+    t.integer  "ab_point",     limit: 8
+    t.datetime "created_at",              default: '2015-01-06 23:01:53', null: false
+    t.datetime "updated_at",              default: '2015-01-06 23:01:53', null: false
+  end
+
+  add_index "year_infos", ["user_id"], name: "index_year_infos_on_user_id", using: :btree
 
 end

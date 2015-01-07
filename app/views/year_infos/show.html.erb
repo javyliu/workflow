@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Year:</strong>
+  <%= @year_info.year %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @year_info.user_id %>
+</p>
+
+<p>
+  <strong>Year holiday:</strong>
+  <%= @year_info.year_holiday %>
+</p>
+
+<p>
+  <strong>Sick leave:</strong>
+  <%= @year_info.sick_leave %>
+</p>
+
+<p>
+  <strong>Affair leave:</strong>
+  <%= @year_info.affair_leave %>
+</p>
+
+<p>
+  <strong>Switch leave:</strong>
+  <%= @year_info.switch_leave %>
+</p>
+
+<p>
+  <strong>Ab point:</strong>
+  <%= @year_info.ab_point %>
+</p>
+
+<%= link_to 'Edit', edit_year_info_path(@year_info) %> |
+<%= link_to 'Back', year_infos_path %>

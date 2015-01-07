@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Checkinouts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Rec date</th>
+      <th>Checkin</th>
+      <th>Checkout</th>
+      <th>Ref time</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @checkinouts.each do |checkinout| %>
+      <tr>
+        <td><%= checkinout.user_id %></td>
+        <td><%= checkinout.rec_date %></td>
+        <td><%= checkinout.checkin %></td>
+        <td><%= checkinout.checkout %></td>
+        <td><%= checkinout.ref_time %></td>
+        <td><%= link_to 'Show', checkinout %></td>
+        <td><%= link_to 'Edit', edit_checkinout_path(checkinout) %></td>
+        <td><%= link_to 'Destroy', checkinout, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Checkinout', new_checkinout_path %>

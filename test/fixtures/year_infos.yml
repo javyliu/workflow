@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  year: 1
+  user_id: MyString
+  year_holiday: 1
+  sick_leave: 1
+  affair_leave: 1
+  switch_leave: 1
+  ab_point: 1
+
+two:
+  year: 1
+  user_id: MyString
+  year_holiday: 1
+  sick_leave: 1
+  affair_leave: 1
+  switch_leave: 1
+  ab_point: 1
