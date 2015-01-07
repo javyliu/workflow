@@ -1,0 +1,12 @@
+#! /usr/bin/env ruby
+# bin/sidekiq_pusher
+# bundle exec scripts/sidekiq_pusher.rb Warehouse::FtpPull
+klass = "ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper"
+job_class = ARGV[0]
+
+require 'sidekiq'
+Sidekiq.configure_client do |config|
+  config.redis = {url: 'redis://127.0.0.1:6379/0',size: 1}
+end
+Sidekiq::Client.push('class' => klass ,'retry' => false, 'args' => [{"job_class" => job_class}])
+#{"retry"=>true, "queue"=>"default", "class"=>"ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper", "args"=>[{"job_class"=>"SysKaoqingDataJob"

@@ -41,19 +41,15 @@ namespace :migrate_data do
 
   #select b.email,min(checktime) checkin,max(checktime) checkout from checkinout a inner join userinfo b on a.userid=b.userid  where a.userid=91 and a.checktime > '2015-01-04' and a.checktime < '2015-01-05' group by a.userid
   desc 'sys checkinout'
-  task checkinouts,:enviroment do
+  task checkinouts: :environment do
 
-    class EmailCheck < ActiveRecord::Base
-      self.table_name = 'checkinout'
-      establish_connection(:kaoqing_database)
-    end
-    email_checks = EmailCheck.find_by_sql(["select b.email,min(checktime) checkin,max(checktime) checkout from checkinout a inner join userinfo b on a.userid=b.userid  where a.checktime > '?' and a.checktime < '?' group by a.userid",Date.yesterday,Date.today])
-
-    user_id_emails = User.where(email: email_checks.map{|item|item.email}).pluck(:id,:email)
-    email_checks.each do |item|
-      checkinout.create(user_id: user_id_emails.rassoc(item.email).try(:first),checkin: item.checkin,checkout: item.checkout,ref_time: item.ref_time)
-    end
-
+    CharesDatabase::Tblcheckinout.sys_data(Date.yesterday,Date.today)
+    #unless defined?(EmailCheck)
+    #  class EmailCheck < ActiveRecord::Base
+    #    self.table_name = 'checkinout'
+    #    establish_connection(:kaoqing_database)
+    #  end
+    #end
   end
 
   desc 'sys year_infos'

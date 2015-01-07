@@ -17,10 +17,13 @@ set :output, "~/cron_log.log"
 #  runner "AnotherModel.prune_old_records"
 #end
 
-#every 'weekday',at: '6am' do
+#每天早上5点同步checkinout数据库
+job_type :job, "cd :path && :environment_variable=:environment bin/sidekiq_pusher :task :output"
+every 1.day,at: '5am' do
+  job "SysKaoqingDataJob"
+end
+
+#every 1.day,at: '6am' do
 #  runner "AnotherModel.prune_old_records"
 #end
-every 1.day,at: '6am' do
-  runner "AnotherModel.prune_old_records"
-end
 # Learn more: http://github.com/javan/whenever
