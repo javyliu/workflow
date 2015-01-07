@@ -31,5 +31,17 @@ module Workflow
     config.active_record.raise_in_transactional_callbacks = true
     #set backend adapter
     config.active_job.queue_adapter = :sidekiq
+
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.default_url_options = { host: 'pipgame.com' }
+    config.action_mailer.smtp_settings = {
+      address:              '114.251.179.140',
+      port:                 25,
+      domain:               'pipgame.com',
+      user_name:            'x',
+      password:             'PiPR0b0t',
+      authentication:       'plain'
+     }
   end
 end
