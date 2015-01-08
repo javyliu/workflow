@@ -48,6 +48,8 @@ gem 'foundation-rails'
 #handle html or xml
 gem 'nokogiri'
 
+#for draper
+gem 'draper'
 #server
 gem 'passenger'
 

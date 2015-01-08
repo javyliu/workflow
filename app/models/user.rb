@@ -1,6 +1,10 @@
 class User < ActiveRecord::Base
   self.primary_key = 'uid'
   belongs_to :department,foreign_key: :dept_code,touch: true
+  has_many :checkinouts
+  #昨天签到用户，用于发送日常邮件中的 includes
+  has_many :yesterday_checkins,-> {where(rec_date: Date.yesterday.to_s)},class_name: "Checkinout"
+
 
   before_save :delete_caches
 
