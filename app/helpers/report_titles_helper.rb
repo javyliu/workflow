@@ -1,0 +1,2 @@
+module ReportTitlesHelper
+end

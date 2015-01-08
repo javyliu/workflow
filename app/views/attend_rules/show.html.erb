@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @attend_rule.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @attend_rule.description %>
+</p>
+
+<p>
+  <strong>Title ids:</strong>
+  <%= @attend_rule.title_ids %>
+</p>
+
+<%= link_to 'Edit', edit_attend_rule_path(@attend_rule) %> |
+<%= link_to 'Back', attend_rules_path %>

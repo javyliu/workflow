@@ -23,6 +23,11 @@ every 1.day,at: '5am' do
   job "SysKaoqingDataJob"
 end
 
+#每天早上8.00发出每日考勤邮件
+every 1.day,at: '15:36' do
+  job "DailyMailJob"
+end
+
 #every 1.day,at: '6am' do
 #  runner "AnotherModel.prune_old_records"
 #end

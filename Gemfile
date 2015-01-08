@@ -35,6 +35,8 @@ gem 'bcrypt', '~> 3.1.7'
 #
 # for the queue job and recurring job
 gem 'sidekiq'
+#for sidekiq monitoring
+gem 'sinatra',require: false
 #gem 'sidetiq'
 gem 'whenever',require: false
 

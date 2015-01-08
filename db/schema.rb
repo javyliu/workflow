@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150106151233) do
+ActiveRecord::Schema.define(version: 20150108095914) do
+
+  create_table "attend_rules", force: :cascade do |t|
+    t.string   "name",        limit: 30
+    t.string   "description", limit: 40
+    t.string   "title_ids",   limit: 255
+    t.datetime "created_at",              default: '2015-01-08 18:37:22', null: false
+    t.datetime "updated_at",              default: '2015-01-08 18:37:22', null: false
+  end
 
   create_table "checkinouts", force: :cascade do |t|
     t.string   "user_id",    limit: 20
@@ -61,6 +69,12 @@ ActiveRecord::Schema.define(version: 20150106151233) do
   end
 
   add_index "journals", ["user_id"], name: "index_journals_on_user_id", using: :btree
+
+  create_table "report_titles", force: :cascade do |t|
+    t.string  "name", limit: 20
+    t.string  "des",  limit: 20
+    t.integer "ord",  limit: 2
+  end
 
   create_table "spec_days", force: :cascade do |t|
     t.date    "sdate"

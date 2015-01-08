@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @report_title.name %>
+</p>
+
+<p>
+  <strong>Des:</strong>
+  <%= @report_title.des %>
+</p>
+
+<p>
+  <strong>Ord:</strong>
+  <%= @report_title.ord %>
+</p>
+
+<%= link_to 'Edit', edit_report_title_path(@report_title) %> |
+<%= link_to 'Back', report_titles_path %>

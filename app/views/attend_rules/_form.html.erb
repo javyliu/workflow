@@ -1,0 +1,29 @@
+<%= form_for(@attend_rule) do |f| %>
+  <% if @attend_rule.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@attend_rule.errors.count, "error") %> prohibited this attend_rule from being saved:</h2>
+
+      <ul>
+      <% @attend_rule.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br>
+    <%= f.text_field :description %>
+  </div>
+  <div class="field">
+    <%= f.label :title_ids %><br>
+    <%= f.text_field :title_ids %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
