@@ -2,20 +2,43 @@ namespace :migrate_data do
   desc "sys the tbldaytype to spec_days"
   task spec_days: :environment do
     ActiveRecord::Base.connection.execute(%{truncate spec_days; })
-    ActiveRecord::Base.connection.execute(%{insert into spec_days(sdate,is_workday,comment) select flddate,if(type>0,1,0),comment from tbldaytype; })
+    #ActiveRecord::Base.connection.execute(%{insert into spec_days(sdate,is_workday,comment) select flddate,if(type>0,1,0),comment from tbldaytype; })
+
+    CharesDatabase::Tbldaytype.find_each do |item|
+      SpecDay.create(sdate:item.flddate, is_workday: item.type>0 ? true : false,comment: item.comment)
+    end
   end
 
   desc "sys the tbldepartment to departments"
   task departments: :environment do
     ActiveRecord::Base.connection.execute(%{truncate departments; })
-    ActiveRecord::Base.connection.execute(%{insert into departments(code,name,atten_rule,mgr_code,admin) select deptCode,deptName,attenRules,mgrCode,admin from tbldepartment; })
+    #ActiveRecord::Base.connection.execute(%{insert into departments(code,name,atten_rule,mgr_code,admin) select deptCode,deptName,attenRules,mgrCode,admin from tbldepartment; })
+    def which_rule(old_rule_name)
+      case old_rule_name
+      when "RuleFlexibalWorkingTime"
+        3
+      when "RuleABPoint"
+        2
+      when "RuleBPoint4QiLe"
+        1
+      end
+    end
+    CharesDatabase::Tbldepartment.find_each do |item|
+      Department.create(code:item.deptCode,name:item.deptName,attend_rule_id:which_rule(item.attenRules),mgr_code:item.mgrCode,admin:item.admin)
+    end
   end
 
   desc "sys the tblemployee to departments"
   task users: :environment do
     ActiveRecord::Base.connection.execute(%{truncate users; })
-    ActiveRecord::Base.connection.execute(%{insert into users(uid,user_name,email,department,title,expire_date,dept_code,mgr_code)
-                                          select userId,name,email,department,title,expireDate,deptCode,mgrCode from tblemployee; })
+    #ActiveRecord::Base.connection.execute(%{insert into users(uid,user_name,email,department,title,expire_date,dept_code,mgr_code)
+                                          #select userId,name,email,department,title,expireDate,deptCode,mgrCode from tblemployee; })
+
+
+    CharesDatabase::Tblemployee.find_each do |item|
+      User.create(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode)
+    end
+
   end
 
 
@@ -24,7 +47,7 @@ namespace :migrate_data do
     #Rails.application.paths["app/models"].eager_load!
     holidays = Holiday.pluck(:id,:name)
     Episode.connection.execute("truncate episodes;")
-    CharesDatabase::Tblepisode.find_each do |item|
+    CharesDatabase::TblEpisode.find_each do |item|
       Episode.create(user_id: item.userId,holiday_id: holidays.rassoc(item.type).try(:first),start_date: item.startDate, end_date: item.endDate, comment: item.comments,approved_by: item.approvedBy, approved_time: item.approvedDate  )
     end
   end

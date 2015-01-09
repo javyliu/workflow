@@ -1,5 +1,7 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
+  resources :oa_configs
+
   resources :attend_rules
 
   resources :report_titles

@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Key:</strong>
+  <%= @oa_config.key %>
+</p>
+
+<p>
+  <strong>Des:</strong>
+  <%= @oa_config.des %>
+</p>
+
+<p>
+  <strong>Value:</strong>
+  <%= @oa_config.value %>
+</p>
+
+<%= link_to 'Edit', edit_oa_config_path(@oa_config) %> |
+<%= link_to 'Back', oa_configs_path %>

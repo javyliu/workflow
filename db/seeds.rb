@@ -8,6 +8,7 @@
 Holiday.connection.execute("truncate holidays")
 Holiday.connection.execute("truncate report_titles")
 Holiday.connection.execute("truncate attend_rules")
+Holiday.connection.execute("truncate oa_configs")
 types = %w{病假 哺乳期晚到1小时 哺乳期早走1小时 产假 倒休 事假}
 Holiday.create(types.map{|item|{name: item}})
 titles =[
@@ -15,7 +16,7 @@ titles =[
   ['c_dept_name','部门'],
   ['c_user_name','姓名'],
   ['c_holiday_year','剩余年假'],
-  ['c_sick_leaver','剩余病假'],
+  ['c_sick_leaver','剩余带薪病假'],
   ['c_ab_point','累计贡献分'],
   ['c_switch_leave','累计倒休'],
   ['c_checkin','签入'],
@@ -45,3 +46,8 @@ rules = [
 
 AttendRule.create(rules.map{|rule_name,des,title_ids| {name: rule_name, description: des, title_ids: title_ids}})
 
+OaConfig.create(
+  [{key: "prompt_max_times",des: "最多提醒次数",value: "10"},
+  {key: "prompt_range_time",des: "提醒时间",value: "9:30-19:00"},
+  {key: "end_year_time",des: "年度假期截止日",value: "2014-02-18"}]
+)

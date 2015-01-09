@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150108095914) do
+ActiveRecord::Schema.define(version: 20150109085701) do
 
   create_table "attend_rules", force: :cascade do |t|
     t.string   "name",        limit: 30
@@ -34,12 +34,12 @@ ActiveRecord::Schema.define(version: 20150108095914) do
   add_index "checkinouts", ["user_id"], name: "index_checkinouts_on_user_id", using: :btree
 
   create_table "departments", primary_key: "code", force: :cascade do |t|
-    t.string   "name",       limit: 100
-    t.string   "atten_rule", limit: 255
-    t.string   "mgr_code",   limit: 20
-    t.string   "admin",      limit: 20
-    t.datetime "created_at",             default: '2015-01-06 14:52:33', null: false
-    t.datetime "updated_at",             default: '2015-01-06 14:52:33', null: false
+    t.string   "name",           limit: 100
+    t.integer  "attend_rule_id", limit: 2
+    t.string   "mgr_code",       limit: 20
+    t.string   "admin",          limit: 20
+    t.datetime "created_at",                 default: '2015-01-09 10:27:40', null: false
+    t.datetime "updated_at",                 default: '2015-01-09 10:27:40', null: false
   end
 
   create_table "episodes", force: :cascade do |t|
@@ -69,6 +69,12 @@ ActiveRecord::Schema.define(version: 20150108095914) do
   end
 
   add_index "journals", ["user_id"], name: "index_journals_on_user_id", using: :btree
+
+  create_table "oa_configs", force: :cascade do |t|
+    t.string "key",   limit: 40
+    t.string "des",   limit: 40
+    t.string "value", limit: 255
+  end
 
   create_table "report_titles", force: :cascade do |t|
     t.string  "name", limit: 20
