@@ -203,13 +203,13 @@ ActiveRecord::Schema.define(version: 20150109085701) do
   create_table "year_infos", force: :cascade do |t|
     t.integer  "year",         limit: 4
     t.string   "user_id",      limit: 20
-    t.integer  "year_holiday", limit: 4
-    t.integer  "sick_leave",   limit: 4
-    t.integer  "affair_leave", limit: 4
-    t.integer  "switch_leave", limit: 4
-    t.integer  "ab_point",     limit: 8
-    t.datetime "created_at",              default: '2015-01-06 23:01:53', null: false
-    t.datetime "updated_at",              default: '2015-01-06 23:01:53', null: false
+    t.integer  "year_holiday", limit: 4,  default: 0
+    t.integer  "sick_leave",   limit: 4,  default: 0
+    t.integer  "affair_leave", limit: 4,  default: 0
+    t.integer  "switch_leave", limit: 4,  default: 0
+    t.integer  "ab_point",     limit: 8,  default: 0
+    t.datetime "created_at",              default: '2015-01-09 22:02:50', null: false
+    t.datetime "updated_at",              default: '2015-01-09 22:02:50', null: false
   end
 
   add_index "year_infos", ["user_id"], name: "index_year_infos_on_user_id", using: :btree

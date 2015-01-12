@@ -3,11 +3,17 @@ class User < ActiveRecord::Base
   belongs_to :dept, class_name: 'Department', foreign_key: :dept_code,touch: true
   has_many :checkinouts
   #昨天签到用户，用于发送日常邮件中的 includes
-  has_many :yesterday_checkins,-> {where(rec_date: Date.yesterday.to_s)},class_name: "Checkinout"
+  has_one :yesterday_checkin,-> {where(rec_date: Date.yesterday.to_s)},class_name: "Checkinout"
   has_many :year_infos
-  has_one :last_year_info,-> {where(year: (Date.today.year - 1) )},class_name: "YearInfo"
-  has_many :journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("user_id,check_type,sum(dval) dval").group(:user_id,:check_type) }
+  #假期及ab分基础数据，用于计算用户剩余年假
+  has_one :last_year_info,-> {where(year: OaConfig.setting(:end_year_time)[0..3]) },class_name: "YearInfo"
+  has_many :journals
+  #从本年度计考勤之日起的异常考勤，用于计算每天的剩余年假
+  has_many :year_journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("user_id,check_type,sum(dval) dval").group(:user_id,:check_type) },class_name: "Journal"
 
+  has_many :episodes
+  #has_many :approved_episodes, -> {select("episodes.id,episodes.holiday_id,user_id,holidays.name").joins(:holiday).where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},class_name: "Episode"
+  has_many :yes_holidays, -> {where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},through: :episodes,class_name: "Holiday"
 
   before_save :delete_caches
 
@@ -44,6 +50,10 @@ class User < ActiveRecord::Base
     @leader_data ||= User.leader_data(self.id)
   end
 
+  #用户所用的考勤规则
+  def leader_rule
+    @rule ||= AttendRule.find(self.leader_data[1])
+  end
 
   #添加一个任务,每日催缴任务发起的地方
   #hmset {leader_user_id,rule_id:rule_id,checkin_uids: checkin_uids,state:pending,count:0}
