@@ -10,9 +10,8 @@ class Usermailer < ApplicationMailer
   #每日需发送的考勤邮件
   def daily_kaoqing(leader_user_id)
     @leader_user = User.find(leader_user_id)
-    #@rule = AttendRule.find(@leader_user.leader_data[1])
-    @users = User.where(uid: @leader_user.leader_data.try(:last)).includes(:dept,:yesterday_checkin,:last_year_info,:approved_episodes)
-    @users = @users.decorate
+    @rule = AttendRule.find(@leader_user.leader_data[1])
+    @users = User.where(uid: @leader_user.leader_data.try(:last)).includes(:dept,:yesterday_checkin,:last_year_info,:yes_holidays).decorate
     @leader_user = @leader_user.decorate
 
     #Sidekiq.redis do |_redis|

@@ -6,14 +6,8 @@
     <% end %>
   </tr>
   <% @users.each_with_index do |item,index|  %>
-  <tr>
-    <% @leader_user.report_titles.each do |col| %>
-      <td><%= item.send(col.name) %></td>
-    <% end %>
-    <td><%= index %></td>
-    <td><%= item.dept.name %></td>
-    <td><%= item.user_name %></td>
-  </tr>
+  <% item.calculate_journal(@rule,index) %>
+  <%= item.wrap %>
   <% end %>
 </table>
 <h4>Dear <%= @leader_user.user_name %>:</h4>

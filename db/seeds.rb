@@ -24,8 +24,9 @@ titles =[
   ['c_later_time','迟到时长'],
   ['c_leave_time','早退时长'],
   ['c_ref_cmd','参考意见'],
-  ['c_aff_a_point','A'],
-  ['c_aff_b_point','B'],
+  ['c_a_point','A'],
+  ['c_b_point','B'],
+  ['c_switch_hours','倒休时长'],
   ['c_aff_points','确认贡献分'],
   ['c_aff_switch_leave','确认倒休'],
   ['c_aff_comment','额外说明'],
@@ -39,12 +40,13 @@ titles =[
 ]
 ReportTitle.create(titles.map{|name,des| {name: name,des: des}})
 rules = [
-  ['ab_point4_qiLe','AB分无倒休-奇乐',[1,2,3,4,5,7,8,9,10,11,12,13,14,16,17,18,19,20,21,22,23,24]],
-  ['ab_point','AB分工作时间',[1,2,3,4,5,7,8,11,12,13,14,16,17,18,19,20,21,22,23,24]],
-  ['flexibal_working_time','弹性工作时间',[1,2,3,4,6,7,8,11,15,16,17,18,19,20,21,22,23,24]]
+  ['ab_point4_qiLe','AB分无倒休-奇乐',[1,2,3,4,5,7,8,9,10,11,12,13,15,17,18,19,20,21,22,23,24,25],0,30],
+  ['ab_point','AB分工作时间',[1,2,3,4,5,7,8,11,12,13,14,17,18,19,20,21,22,23,24,25],0,30],
+  ['flexible_working_time','弹性工作时间',[1,2,3,4,6,7,8,11,12,15,17,18,19,20,21,22,23,24,25],0,60],
+  ['platform','固定工作时间',[1,2,3,4,6,7,8,11,12,15,17,18,19,20,21,22,23,24,25],"9:00-18:00",60],
 ]
 
-AttendRule.create(rules.map{|rule_name,des,title_ids| {name: rule_name, description: des, title_ids: title_ids}})
+AttendRule.create(rules.map{|rule_name,des,title_ids,time_range,min_unit| {name: rule_name, description: des, title_ids: title_ids,time_range: time_range,min_unit: min_unit}})
 
 OaConfig.create(
   [{key: "prompt_max_times",des: "最多提醒次数",value: "10"},

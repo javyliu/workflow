@@ -36,7 +36,7 @@ namespace :migrate_data do
 
 
     CharesDatabase::Tblemployee.find_each do |item|
-      User.create(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode)
+      User.create(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title)
     end
 
   end

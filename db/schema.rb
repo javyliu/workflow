@@ -17,8 +17,10 @@ ActiveRecord::Schema.define(version: 20150109085701) do
     t.string   "name",        limit: 30
     t.string   "description", limit: 40
     t.string   "title_ids",   limit: 255
-    t.datetime "created_at",              default: '2015-01-08 18:37:22', null: false
-    t.datetime "updated_at",              default: '2015-01-08 18:37:22', null: false
+    t.string   "time_range",  limit: 40,  default: "0"
+    t.integer  "min_unit",    limit: 2,   default: 30
+    t.datetime "created_at",              default: '2015-01-14 15:38:29', null: false
+    t.datetime "updated_at",              default: '2015-01-14 15:38:29', null: false
   end
 
   create_table "checkinouts", force: :cascade do |t|

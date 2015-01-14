@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
 
   has_many :episodes
   #has_many :approved_episodes, -> {select("episodes.id,episodes.holiday_id,user_id,holidays.name").joins(:holiday).where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},class_name: "Episode"
-  has_many :yes_holidays, -> {where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},through: :episodes,class_name: "Holiday"
+  has_many :yes_holidays, -> {where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},through: :episodes,source: :holiday
 
   before_save :delete_caches
 
@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  #get one leader data
+  #get leader's rule data
   def self.leader_data(uid)
     User.cached_leaders.assoc(uid.to_s)
   end
