@@ -9,14 +9,21 @@ class User < ActiveRecord::Base
   has_one :last_year_info,-> {where(year: OaConfig.setting(:end_year_time)[0..3]) },class_name: "YearInfo"
   has_many :journals
   #从本年度计考勤之日起的异常考勤，用于计算每天的剩余年假
-  has_many :year_journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("user_id,check_type,sum(dval) dval").group(:user_id,:check_type) },class_name: "Journal"
+  has_many :year_journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type) },class_name: "Journal"
 
   has_many :episodes
-  #has_many :approved_episodes, -> {select("episodes.id,episodes.holiday_id,user_id,holidays.name").joins(:holiday).where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},class_name: "Episode"
   has_many :yes_holidays, -> {where(["start_date <= :yesd and end_date >= :yesd ",yesd: (User.query_date || Date.yesterday).to_s])},through: :episodes,source: :holiday
 
   before_save :delete_caches
 
+
+  #for login
+  has_secure_password # validations: false
+
+
+
+
+  ROLES = %w[admin managers department_manager badman]
 
   class << self
     attr_accessor :query_date
@@ -38,6 +45,17 @@ class User < ActiveRecord::Base
     end
   end
 
+  def roles=(*_roles)
+    self.role_group = (_roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
+  end
+
+  def roles
+    ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
+  end
+
+  def role?(role)
+    roles.include? role.to_s
+  end
 
   def self.cached_leaders
     #return leaders with rule and user_ids like following
@@ -70,6 +88,41 @@ class User < ActiveRecord::Base
 
   def leader_data
     @leader_data ||= User.leader_data(self.id)
+  end
+
+  def email_name
+    %("#{self.user_name}" <#{self.email}>)
+  end
+
+  #for the cookie user
+  def remember_token?
+    remember_token_expires_at && Time.now < remember_token_expires_at
+  end
+
+  # These create and unset the fields required for remembering users between browser closes
+  def remember_me
+    remember_me_until 2.weeks.from_now
+  end
+
+  def remember_me_until(time)
+    self.remember_token_expires_at = time
+    self.remember_token  = encrypt("#{self.user_name}--#{remember_token_expires_at}")
+    save :validate => false
+  end
+
+  def forget_me
+    self.remember_token_expires_at = nil
+    self.remember_token            = nil
+    save :validate => false
+  end
+
+  # Encrypts some data with the salt.
+  def self.encrypt(password, salt)
+    Digest::SHA1.hexdigest("--#{salt}--#{password}--")
+  end
+  # Encrypts the password with the user salt
+  def encrypt(password)
+    self.class.encrypt(password, Time.now.to_s)
   end
 
   private

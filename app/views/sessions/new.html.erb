@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="medium-5 columns medium-centered text-center">
+    <p>&nbsp;</p>
+    <p><img src="/images/logo-300.png" alt="" width=200 /></p>
+  </div>
+</div>
+<div class="row">
+  <div class="medium-5 medium-centered columns">
+    <fieldset>
+      <legend><span>用户登录</span></legend>
+      <%= form_tag "/sessions" %>
+        <div class="row">
+          <div class="columns large-12">
+            <label for="">邮箱</label>
+            <input type="text" name="email" id="email" value="" placeholder="请输入邮箱名" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="columns large-12">
+            <label for="">密码</label>
+            <input type="password" name="password" id="password" value="" placeholder="请输入密码" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="columns large-6">
+            <input type="submit" name="" id="" value="提交" class="small button" />
+          </div>
+          <div class="columns large-6">
+            <div class="switch small radius">
+              <input id="remember_me" type="checkbox" name="remember_me" value="1" checked>
+              <label for="remember_me"></label><span>保持两周登录</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </div>
+</div>

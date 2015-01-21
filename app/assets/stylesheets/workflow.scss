@@ -7,3 +7,11 @@ html.turbolinks-progress-bar::before {
 }
 
 .row table{width:100%;}
+
+.bg_grey{background:#eee;}
+.border_grey{border:solid 1px #ccc;}
+.switch{
+  label{vertical-align:middle!important;}
+  span{color:#888;}
+}
+.alert-box{margin-top:1em;}

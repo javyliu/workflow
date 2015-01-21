@@ -1,5 +1,10 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
+
+  root 'welcome#index'
+
+  resources :sessions,only: [:new,:create,:destroy]
+
   resources :oa_configs
 
   resources :attend_rules
@@ -28,7 +33,6 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

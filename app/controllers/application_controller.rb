@@ -5,32 +5,24 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
+  include JavyTool::Breadcrumb
 
-  def authenticate
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to root_url, :alert => exception.message
+  end
+
+  def login_required
     !!current_user || access_denied
   end
 
-
   def current_user
-    @current_user ||= login_from_session  if @current_user != false
+    @current_user ||= (login_from_session || login_from_cookie) unless @current_user == false
   end
-
   # Store the given user id in the session.
   def current_user=(new_user)
     session[:user_id] = new_user ? new_user.id : nil
     @current_user = new_user || false
   end
-
-  def login_from_session
-    #Rails.logger.info("--------------login session")
-    self.current_user = User.find_by_id(session[:user_id]) if session[:user_id]
-  end
-
- # def admin?(user)
- #   user.admin?
- # end
-
-
 
   def access_denied
     reset_session
@@ -49,7 +41,21 @@ class ApplicationController < ActionController::Base
   private
 
   def store_location
-    session[:return_to] = request.referer
+    session[:return_to] = request.fullpath
+  end
+
+  def login_from_session
+    self.current_user = User.find_by(uid: session[:user_id]) if session[:user_id]
+  end
+
+
+  def login_from_cookie
+    user = cookies[:auth_token] && User.find_by(remember_token: cookies[:auth_token])
+    if user && user.remember_token?
+      cookies[:auth_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
+    end
+    self.current_user=user
+    @current_user
   end
 
   def redirect_back_or_default(default)

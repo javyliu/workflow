@@ -31,11 +31,14 @@ class Usermailer < ApplicationMailer
     uids = uids ||  @leader_user.leader_data.try(:last)
     date ||= Date.yesterday
     #@users = User.where(uid: @leader_user.leader_data.try(:last)).includes(:dept,:yesterday_checkin,:last_year_info,:yes_holidays,:year_journals).decorate
-    @users = User.where(uid: uids).includes(:dept,:last_year_info,:year_journals).decorate
+    @users = User.where(uid: uids).includes(:last_year_info,:dept).decorate
 
     date_checkins = Checkinout.where(user_id: uids,rec_date: date.to_s).to_a
 
     yes_holidays = Holiday.select("holidays.*,episodes.user_id user_id").joins(:episodes).where(["user_id in (:users) and start_date <= :yesd and end_date >= :yesd ",yesd: date.to_s,users: uids]).to_a
+
+    year_journals = Journal.select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type).where(["user_id in (?) and update_date > ?",uids,OaConfig.setting(:end_year_time)]).to_a
+
 
 
     @leader_user = @leader_user.decorate
@@ -50,6 +53,12 @@ class Usermailer < ApplicationMailer
       ass.loaded!
       ass.target.concat(
         yes_holidays.find_all {|_item| _item.user_id == item.id}
+      )
+
+      ass = item.association(:year_journals)
+      ass.loaded!
+      ass.target.concat(
+        year_journals.find_all {|_item| _item.user_id == item.id}
       )
 
       item.calculate_journal(@rule)
@@ -86,7 +95,7 @@ class Usermailer < ApplicationMailer
     @leader_user = User.find(leader_user_id)
     @date = date
     @error_msg = msg
-    #TODO: need change to leader_user.email
+    #TODO: need change to leader_user.email_name
     full_mailname = %("刘泉" <javy_liu@163.com>)
     mail(to: full_mailname,subject: "考勤确认错误{#{date}}")#,body: "no body",content_type: "text/html")
   end
