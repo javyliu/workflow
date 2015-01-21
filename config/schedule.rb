@@ -24,10 +24,17 @@ every 1.day,at: '5am' do
 end
 
 #每天早上8.00发出每日考勤邮件
-every 1.day,at: '15:36' do
+every 1.day,at: '8:30' do
   job "DailyMailJob"
 end
 
+every '*/2 * * * *' do
+  job "ReceiveEmailJob"
+end
+
+every '0 9-18 * * *' do
+  job "PromptDailyMailJob"
+end
 #every 1.day,at: '6am' do
 #  runner "AnotherModel.prune_old_records"
 #end

@@ -13,8 +13,11 @@ namespace :migrate_data do
   task departments: :environment do
     ActiveRecord::Base.connection.execute(%{truncate departments; })
     #ActiveRecord::Base.connection.execute(%{insert into departments(code,name,atten_rule,mgr_code,admin) select deptCode,deptName,attenRules,mgrCode,admin from tbldepartment; })
-    def which_rule(old_rule_name)
-      case old_rule_name
+    def which_rule(old_rule)
+      if old_rule.deptCode.start_with?("0108") and old_rule.deptCode != "010899"
+        return 4
+      end
+      case old_rule.attenRules
       when "RuleFlexibalWorkingTime"
         3
       when "RuleABPoint"
@@ -24,7 +27,7 @@ namespace :migrate_data do
       end
     end
     CharesDatabase::Tbldepartment.find_each do |item|
-      Department.create(code:item.deptCode,name:item.deptName,attend_rule_id:which_rule(item.attenRules),mgr_code:item.mgrCode,admin:item.admin)
+      Department.create(code:item.deptCode,name:item.deptName,attend_rule_id:which_rule(item),mgr_code:item.mgrCode,admin:item.admin)
     end
   end
 

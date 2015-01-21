@@ -18,7 +18,11 @@ module CharesDatabase
           normal_ctimes = ck_times.partition{|ct| ct < _date}.last
           ref_time = normal_ctimes.sort.first
         end
-        Checkinout.create(rec_date: from,user_id: user_id_emails.rassoc(item.email).try(:first),checkin: checkin,checkout: checkout,ref_time: ref_time)
+        user_id = user_id_emails.rassoc(item.email).try(:first)
+        if Checkinout.where(rec_date: from,user_id: user_id).count() > 0
+          next
+        end
+        Checkinout.create(rec_date: from,user_id: user_id ,checkin: checkin,checkout: checkout,ref_time: ref_time)
       end
 
     end

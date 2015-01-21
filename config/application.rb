@@ -35,12 +35,13 @@ module Workflow
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.perform_deliveries = true
     config.action_mailer.default_url_options = { host: 'pipgame.com' }
+    #config.action_mailer.logger = nil
     config.action_mailer.smtp_settings = {
       address:              '114.251.179.140',
       port:                 25,
       domain:               'pipgame.com',
       user_name:            'x',
-      password:             'PiPR0b0t',
+      password:             ENV['SMTP_PWD'],
       authentication:       'plain'
      }
   end

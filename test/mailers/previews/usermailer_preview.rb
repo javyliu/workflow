@@ -2,7 +2,17 @@
 class UsermailerPreview < ActionMailer::Preview
 
   def daily_kaoqing
-    Usermailer.daily_kaoqing("1416")
+    #Rails.logger.info(request)
+    Usermailer.daily_kaoqing("1461",nil,nil,true)
   end
 
+  def daily_approved
+    #Rails.logger.info(request)
+    Usermailer.daily_approved("1461",%w(a b c d e f g),Date.yesterday.to_s())
+  end
+
+  def error_approved
+    #Rails.logger.info(request)
+    Usermailer.error_approved("1461","你已经确认过了",Date.yesterday.to_s())
+  end
 end

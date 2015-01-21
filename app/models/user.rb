@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   belongs_to :dept, class_name: 'Department', foreign_key: :dept_code,touch: true
   has_many :checkinouts
   #昨天签到用户，用于发送日常邮件中的 includes
-  has_one :yesterday_checkin,-> {where(rec_date: Date.yesterday.to_s)},class_name: "Checkinout"
+  has_one :yesterday_checkin,-> {where(rec_date: (User.query_date || Date.yesterday).to_s)},class_name: "Checkinout"
   has_many :year_infos
   #假期及ab分基础数据，用于计算用户剩余年假
   has_one :last_year_info,-> {where(year: OaConfig.setting(:end_year_time)[0..3]) },class_name: "YearInfo"
@@ -13,9 +13,31 @@ class User < ActiveRecord::Base
 
   has_many :episodes
   #has_many :approved_episodes, -> {select("episodes.id,episodes.holiday_id,user_id,holidays.name").joins(:holiday).where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},class_name: "Episode"
-  has_many :yes_holidays, -> {where(["start_date <= :yesd and end_date >= :yesd and approved_by > '0'",yesd: Date.yesterday.to_s])},through: :episodes,source: :holiday
+  has_many :yes_holidays, -> {where(["start_date <= :yesd and end_date >= :yesd ",yesd: (User.query_date || Date.yesterday).to_s])},through: :episodes,source: :holiday
 
   before_save :delete_caches
+
+
+  class << self
+    attr_accessor :query_date
+  end
+
+  #每日发送前一天部门的考勤邮件，如果昨天是工作日 ，则发送每个部门的考勤邮件，如果是非工作日 ，则只发送有考勤异常部门的邮件
+  def self.leaders_by_date(date)
+    if SpecDay.workday?(date: date)
+       User.cached_leaders
+    else
+      y_checkin_uids = Checkinout.where(rec_date: date.to_s).pluck(:user_id)
+      leaders = User.cached_leaders
+      y_checkin_uids.compact.each do |uid|
+        leaders.each do |item|
+          item.push(uid) if item[2].include?(uid)
+        end
+      end
+      leaders.collect { |leader_user_id,rule_id,_,*checkin_uids| [leader_user_id,rule_id,checkin_uids] }
+    end
+  end
+
 
   def self.cached_leaders
     #return leaders with rule and user_ids like following
@@ -48,27 +70,6 @@ class User < ActiveRecord::Base
 
   def leader_data
     @leader_data ||= User.leader_data(self.id)
-  end
-
-  #用户所用的考勤规则
-  def leader_rule
-    @rule ||= AttendRule.find(self.leader_data[1])
-  end
-
-  #添加一个任务,每日催缴任务发起的地方
-  #hmset {leader_user_id,rule_id:rule_id,checkin_uids: checkin_uids,state:pending,count:0}
-  def self.create_task(leader_user_id,rule_id,checkin_uids,date,start:false)
-    Sidekiq.redis do |conn|
-      task_name = "task:#{date}:#{leader_user_id}"
-      conn.hmset(task_name,"rule_id", rule_id,"checkin_uids",checkin_uids.to_json,"state","pending","count",0)
-      conn.sadd("task:pendings",task_name) if start
-    end
-  end
-
-  def self.addend_task(task_name)
-    Sidekiq.redis do |conn|
-      conn.sadd("task:pendings",task_name) if start
-    end
   end
 
   private

@@ -1,0 +1,11 @@
+<h4>Dear <%= @leader_user.user_name %>:</h4>
+<p>
+感谢提交<%= @date %>考勤信息
+</p>
+
+<p>
+<% if @changed_user_names.present? %>
+<b class="red">考勤信息被更改的员工:</b> <%= @changed_user_names.join(",") %>
+<% end %>
+</p>
+

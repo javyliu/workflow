@@ -4,7 +4,12 @@ class SpecDay < ActiveRecord::Base
 
   #是否工作日
   def self.workday?(date: Date.today)
-    (spec_day = cached_spec_days.assoc(date.to_s)) && spec_day[1] == true
+    spec_day = cached_spec_days.assoc(date.to_s)
+    if spec_day.nil?
+      date = Date.parse(date) unless date.respond_to?(:wday)
+      return date.wday.in?(1..5)
+    end
+    spec_day[1] == true
   end
 
   def self.cached_spec_days
