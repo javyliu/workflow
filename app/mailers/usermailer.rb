@@ -42,6 +42,7 @@ class Usermailer < ApplicationMailer
 
 
     @leader_user = @leader_user.decorate
+    @leader_user.report_titles = ReportTitle.where(id: @rule.title_ids).order("ord,id")
     @leader_user.ref_cmd[0] = 0
     @users.each do |item|
       #manually preload yesterday_checkin and yes_holiday

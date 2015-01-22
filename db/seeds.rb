@@ -44,7 +44,7 @@ rules = [
   ['ab_point4_qiLe','AB分无倒休-奇乐',%w[1 2 3 4 5 6 8 9 10 11 12 13 14  16 18 19 20 21 22 23 24 25 26],0,30],
   ['ab_point','AB分工作时间',%w[1 2 3 4 5 6  8 9   12 13 14  16  18 19 20 21 22 23 24 25 26],0,30],
   ['flexible_working_time','弹性工作时间',%w[1 2 3 4 5  7 8 9   12   15  17 18 19 20 21 22 23 24 25 26],0,60],
-  ['platform','固定工作时间',%w[1 2 3 4 5  7 8 9   12   15  17 18 19 20 21 22 23 24 25 26],"9:00-18:00",60],
+  ['platform','固定工作时间',%w[1 2 3 4 5  7 8 9   12   15  17 18 19 20 21 22 23 24 25 26],"9:01-18:00",60],
 ]
 
 AttendRule.create(rules.map{|rule_name,des,title_ids,time_range,min_unit| {name: rule_name, description: des, title_ids: title_ids,time_range: time_range,min_unit: min_unit}})

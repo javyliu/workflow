@@ -20,7 +20,7 @@ class SessionsController < ApplicationController
         format.html { redirect_back_or_default("/")}
         format.json { render json: {ok: 1,user_name: user.user_name} }
       else
-        flash.now[:notice] = "邮件或密码不匹配"
+        flash.now[:alert] = "邮件或密码不匹配"
         format.html { render :new }
         format.json { render json: user.errors, status: :unprocessable_entity }
       end

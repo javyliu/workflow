@@ -25,9 +25,10 @@ class UserDecorator < ApplicationDecorator
   #for the leaders
   #return an ReportTitle array
 
-  def report_titles
-    @report_title ||= ReportTitle.where(id: object.dept.attend_rule.title_ids).order("ord,id")
-  end
+  attr_accessor :report_titles
+  #def report_titles
+  #  @report_title ||= ReportTitle.where(id: object.dept.attend_rule.title_ids).order("ord,id")
+  #end
 
   def index=(ind)
     @index = ind
@@ -152,12 +153,12 @@ class UserDecorator < ApplicationDecorator
 
       #工作日
       start_working_time = if attend_rule.time_range == "0" #弹性工作时间
-                             if @ckin_time <= @ckin_time.change(hour:9)
+                             if @ckin_time <= @ckin_time.change(hour:9,min:1)
                                end_working_time = @ckin_time.change(hour: 18)
                                @ckin_time.change(hour:9)
                              else
                                end_working_time = @ckin_time.change(hour: 18,min: 30)
-                               @ckin_time.change(hour:9,min:30)
+                               @ckin_time.change(hour:9,min:31)
                              end
                            else
                              start_hour,start_min,end_hour,end_min = attend_rule.time_range.split(/[:-]/)
@@ -165,7 +166,6 @@ class UserDecorator < ApplicationDecorator
                              @ckin_time.change(hour:start_hour,min:start_min)
                            end
 
-      end_diff_time = ((@ckout_time - end_working_time)/60).to_i #结束工作时间点
       diff_time = ((@ckin_time - start_working_time)/60).to_i #早上打卡时间与工作时间差
 
       @a_point = @b_point = @switch_hours = 0
@@ -183,15 +183,16 @@ class UserDecorator < ApplicationDecorator
           elsif diff_time > 30 && diff_time <= 2*60
             ref_cmd.push("事假半天")
           else
-            ref_cmd.push("事假一天")
+            ref_cmd.clear.push("事假一天")
           end
         end
       elsif @ckin_time.tuesday? &&  (_tmp_diff = start_working_time.change(hour: 8) - @ckin_time) > 0 #周二早于8点上班算维护到的情况
-        @a_point += ((_tmp_diff+60)/attend_rule.min_unit.to_f).round.to_f/unit
+        @a_point += ((_tmp_diff.to_i/60+60)/attend_rule.min_unit.to_f).round.to_f/unit
         end_working_time = @ckin_time.change(hour: 16) if attend_rule.name == "platform" #平台因不算ab分，所以设置结束工作时间点
         ref_cmd.push("维护")
       end
 
+      end_diff_time = ((@ckout_time - end_working_time)/60).to_i #结束工作时间点
       #签出打卡
       if end_diff_time < 0 #早退
         end_diff_time = end_diff_time.abs
@@ -203,13 +204,18 @@ class UserDecorator < ApplicationDecorator
         elsif end_diff_time > 30 && end_diff_time <= 2*60
           ref_cmd.push("事假半天")
         else
-          ref_cmd.push("事假一天")
+          @a_point = @switch_hour = 0
+          ref_cmd.clear.push("事假一天")
         end
         ref_cmd.push(episode.name) if episode
       elsif end_diff_time > 0 #加班
         if attend_rule.name.in?(AttendRule::SpecRuleNames) &&  @ckout_time <= @ckout_time.change(hour: 21) && @ckout_time > @ckout_time.change(hour: 19)
-          @a_point += ((end_diff_time)/attend_rule.min_unit.to_f).round.to_f/unit
-          ref_cmd.push("加班")
+          end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i #结束工作时间点
+          tmp_a_point = ((end_diff_time)/attend_rule.min_unit.to_f).round.to_f/unit
+          if tmp_a_point > 0
+            ref_cmd.push("加班")
+            @a_point += tmp_a_point
+          end
         elsif @ckout_time > @ckout_time.change(hour: 21)
           _tmp = ((end_diff_time)/attend_rule.min_unit.to_f).round.to_f/unit
           @b_point += _tmp
