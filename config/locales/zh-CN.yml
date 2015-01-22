@@ -8,7 +8,7 @@
 #
 # In views, this is aliased to just `t`:
 #
-#     <%= t('hello') %>
+#     <%#= t('hello') %>
 #
 # To use a different locale, set it with `I18n.locale`:
 #
@@ -18,6 +18,11 @@
 #
 # To learn more, please read the Rails Internationalization guide
 zh-CN:
+  unauthorized:
+    default: "无权访问"
+  common:
+    index_icon: ''
+    home: 首页
   date:
     abbr_day_names:
     - 周日

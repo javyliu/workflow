@@ -46,3 +46,4 @@ module Workflow
      }
   end
 end
+SITE_NAME="掌上明珠考勤系统"

@@ -20,10 +20,7 @@ class User < ActiveRecord::Base
   #for login
   has_secure_password # validations: false
 
-
-
-
-  ROLES = %w[admin managers department_manager badman]
+  ROLES = %w[admin manager department_manager badman]
 
   class << self
     attr_accessor :query_date
@@ -50,7 +47,7 @@ class User < ActiveRecord::Base
   end
 
   def roles
-    ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
+    @roles ||= ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
   end
 
   def role?(role)
@@ -91,7 +88,7 @@ class User < ActiveRecord::Base
   end
 
   def email_name
-    %("#{self.user_name}" <#{self.email}>)
+    @email_name ||= %("#{self.user_name}" <#{self.email}>)
   end
 
   #for the cookie user

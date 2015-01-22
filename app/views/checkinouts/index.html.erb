@@ -1,35 +1,41 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <%= render 'welcome/body_right_nav' %>
+  <div class="columns large-8 medium-pull-4">
+    <fieldset>
+      <legend><span>签到时间表</span></legend>
+      <div id="search">
+        <form data-remote="true"  action="#" data-replace-with="#content">
+          <table class="w100" id="toggle_table">
+            <tr>
+              <td nowrap><label>内容包含:</label></td>
+              <td><%= text_field :checkinout, :user_id, placeholder: "用户id" %></td>
+              <td>日期:</td>
+              <td><%= text_field :checkinout,:rec_date,type: "date",placeholder: "2013-08-15"  %> </td>
+              <td> <input type="submit" class="button small" text="提交"/></td>
+              <td> <%= link_to "导出", checkinouts_path(format: :xls), class: "export_xls small button"  %></td>
+            </tr>
+          </table>
+        </form>
+        <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+      </div>
+    </fieldset>
+    <table>
+      <thead>
+        <tr>
+          <th>日期</th>
+          <th>用户ID</th>
+          <th>名字</th>
+          <th>部门</th>
+          <th>签入时间</th>
+          <th>签出时间</th>
+          <th>参考时间</th>
+        </tr>
+      </thead>
+      <tbody id="content">
+      <%= render partial: 'items', object: @checkinouts %>
+      </tbody>
+    </table>
 
-<h1>Listing Checkinouts</h1>
+  </div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Rec date</th>
-      <th>Checkin</th>
-      <th>Checkout</th>
-      <th>Ref time</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @checkinouts.each do |checkinout| %>
-      <tr>
-        <td><%= checkinout.user_id %></td>
-        <td><%= checkinout.rec_date %></td>
-        <td><%= checkinout.checkin %></td>
-        <td><%= checkinout.checkout %></td>
-        <td><%= checkinout.ref_time %></td>
-        <td><%= link_to 'Show', checkinout %></td>
-        <td><%= link_to 'Edit', edit_checkinout_path(checkinout) %></td>
-        <td><%= link_to 'Destroy', checkinout, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Checkinout', new_checkinout_path %>

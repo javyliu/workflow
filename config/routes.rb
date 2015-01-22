@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   resources :report_titles
 
-  resources :checkinouts
+  resources :checkinouts,only: [:index]
 
   resources :year_infos
 

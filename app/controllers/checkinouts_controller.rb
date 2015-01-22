@@ -1,10 +1,23 @@
 class CheckinoutsController < ApplicationController
-  before_action :set_checkinout, only: [:show, :edit, :update, :destroy]
+  #before_action :set_checkinout, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /checkinouts
   # GET /checkinouts.json
   def index
-    @checkinouts = Checkinout.all
+    drop_page_title("签到时间列表")
+    drop_breadcrumb
+
+    params.permit!
+    con_hash,_ = construct_condition(:checkinout)
+
+    @checkinouts = @checkinouts.where(con_hash).order("id desc").page(params[:page]).includes(user: [:dept])
+
+    respond_to do |format|
+      format.html { @checkinouts = @checkinouts.decorate }
+      format.js {render partial: "items",object: @checkinouts.decorate, content_type: Mime::HTML}
+      format.xls {send_data @checkinouts.unscope(:limit,:offset).to_csv(col_sep: "\t")}
+    end
   end
 
   # GET /checkinouts/1

@@ -62,6 +62,9 @@ gem 'cancan'
 #my lib
 gem 'javy_tool',path: '../gems/javy_tool'
 
+#paginate
+gem 'kaminari'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
