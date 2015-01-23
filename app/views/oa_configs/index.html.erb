@@ -1,31 +1,23 @@
-<p id="notice"><%= notice %></p>
 
-<h1>Listing Oa Configs</h1>
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns large-8 medium-pull-4">
+    <table>
+      <thead>
+        <tr>
+          <th width="50%">配置项</th>
+          <th width="50%">值</th>
+        </tr>
+      </thead>
 
-<table>
-  <thead>
-    <tr>
-      <th>Key</th>
-      <th>Des</th>
-      <th>Value</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @oa_configs.each do |oa_config| %>
-      <tr>
-        <td><%= oa_config.key %></td>
-        <td><%= oa_config.des %></td>
-        <td><%= oa_config.value %></td>
-        <td><%= link_to 'Show', oa_config %></td>
-        <td><%= link_to 'Edit', edit_oa_config_path(oa_config) %></td>
-        <td><%= link_to 'Destroy', oa_config, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      <tbody>
+      <% @oa_configs.each do |oa_config| %>
+      <tr data-object="oa_config" data-url="/oa_configs/<%= oa_config.id %>">
+        <td class="rest-in-place" data-attribute="des"><%= oa_config.des %></td>
+        <td class="rest-in-place" data-attribute="value"><%= oa_config.value %></td>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Oa config', new_oa_config_path %>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

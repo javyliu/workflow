@@ -1,10 +1,13 @@
 class SpecDaysController < ApplicationController
-  before_action :set_spec_day, only: [:show, :edit, :update, :destroy]
+  #before_action :set_spec_day, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource except: [:create]
 
   # GET /spec_days
   # GET /spec_days.json
   def index
-    @spec_days = SpecDay.all
+    drop_page_title("节假日管理")
+    drop_breadcrumb
+    @spec_days = SpecDay.page(params[:page])
   end
 
   # GET /spec_days/1
@@ -14,11 +17,15 @@ class SpecDaysController < ApplicationController
 
   # GET /spec_days/new
   def new
-    @spec_day = SpecDay.new
+    #@spec_day = SpecDay.new
+    drop_page_title("新增假日")
+    drop_breadcrumb
   end
 
   # GET /spec_days/1/edit
   def edit
+    drop_page_title("编辑假日")
+    drop_breadcrumb
   end
 
   # POST /spec_days
@@ -26,11 +33,14 @@ class SpecDaysController < ApplicationController
   def create
     @spec_day = SpecDay.new(spec_day_params)
 
+    drop_page_title("新增假日")
+    drop_breadcrumb
     respond_to do |format|
       if @spec_day.save
-        format.html { redirect_to @spec_day, notice: 'Spec day was successfully created.' }
+        format.html { redirect_to spec_days_path, notice: '添加成功.' }
         format.json { render :show, status: :created, location: @spec_day }
       else
+        flash.now[:alert] = @spec_day.errors.full_messages
         format.html { render :new }
         format.json { render json: @spec_day.errors, status: :unprocessable_entity }
       end
@@ -42,9 +52,10 @@ class SpecDaysController < ApplicationController
   def update
     respond_to do |format|
       if @spec_day.update(spec_day_params)
-        format.html { redirect_to @spec_day, notice: 'Spec day was successfully updated.' }
+        format.html { redirect_to spec_days_path, notice: '更新成功!' }
         format.json { render :show, status: :ok, location: @spec_day }
       else
+        flash.now[:alert] = @spec_day.errors.full_messages
         format.html { render :edit }
         format.json { render json: @spec_day.errors, status: :unprocessable_entity }
       end

@@ -8,15 +8,24 @@ class CheckinoutsController < ApplicationController
     drop_page_title("签到时间列表")
     drop_breadcrumb
 
-    params.permit!
-    con_hash,_ = construct_condition(:checkinout)
+    if params[:only] == "me"
+      @checkinouts = Checkinout.all
+      con_hash = {user_id: current_user.id}
+    else
+      params.permit!
+      con_hash,_ = construct_condition(:checkinout)
+    end
 
     @checkinouts = @checkinouts.where(con_hash).order("id desc").page(params[:page]).includes(user: [:dept])
 
     respond_to do |format|
       format.html { @checkinouts = @checkinouts.decorate }
       format.js {render partial: "items",object: @checkinouts.decorate, content_type: Mime::HTML}
-      format.xls {send_data @checkinouts.unscope(:limit,:offset).to_csv(col_sep: "\t")}
+      format.xls do
+        select_columns = "checkinouts.id,users.user_name,departments.name dept_name,checkinouts.user_id,checkinouts.checkin,checkinouts.checkout"
+        @checkinouts = Checkinout.accessible_by(current_ability).where(con_hash).joins(user: [:dept]).select(select_columns)
+        send_data @checkinouts.to_csv(select: select_columns)
+      end
     end
   end
 

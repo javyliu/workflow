@@ -1,10 +1,13 @@
 class AttendRulesController < ApplicationController
-  before_action :set_attend_rule, only: [:show, :edit, :update, :destroy]
+  #before_action :set_attend_rule, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /attend_rules
   # GET /attend_rules.json
   def index
-    @attend_rules = AttendRule.all
+    drop_page_title("考勤规则")
+    drop_breadcrumb
+    @attend_rules = AttendRule.all.decorate
   end
 
   # GET /attend_rules/1

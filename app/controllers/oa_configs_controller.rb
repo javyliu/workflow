@@ -1,9 +1,12 @@
 class OaConfigsController < ApplicationController
-  before_action :set_oa_config, only: [:show, :edit, :update, :destroy]
+  #before_action :set_oa_config, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /oa_configs
   # GET /oa_configs.json
   def index
+    drop_page_title("系统配置")
+    drop_breadcrumb
     @oa_configs = OaConfig.all
   end
 
@@ -19,6 +22,8 @@ class OaConfigsController < ApplicationController
 
   # GET /oa_configs/1/edit
   def edit
+    drop_page_title("编辑系统配置")
+    drop_breadcrumb
   end
 
   # POST /oa_configs
@@ -42,9 +47,10 @@ class OaConfigsController < ApplicationController
   def update
     respond_to do |format|
       if @oa_config.update(oa_config_params)
-        format.html { redirect_to @oa_config, notice: 'Oa config was successfully updated.' }
+        format.html { redirect_to oa_configs_path, notice: '操作成功' }
         format.json { render :show, status: :ok, location: @oa_config }
       else
+        flash.now[:alert] = @oa_config.errors.full_messages
         format.html { render :edit }
         format.json { render json: @oa_config.errors, status: :unprocessable_entity }
       end
@@ -69,6 +75,6 @@ class OaConfigsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def oa_config_params
-      params.require(:oa_config).permit(:key, :des, :value)
+      params.require(:oa_config).permit(:des, :value)
     end
 end

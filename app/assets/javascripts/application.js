@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require foundation
 //= require turbolinks
+//= require rest_in_place
 //= require workflow
 // require_tree .
 Turbolinks.enableProgressBar();

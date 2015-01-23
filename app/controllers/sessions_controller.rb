@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
           cookies[:auth_token] = { :value => user.remember_token , :expires => user.remember_token_expires_at }
         end
         flash[:notice] = '登录成功'
-        format.html { redirect_back_or_default("/")}
+        format.html { redirect_back_or_default("/checkinouts/me")}
         format.json { render json: {ok: 1,user_name: user.user_name} }
       else
         flash.now[:alert] = "邮件或密码不匹配"

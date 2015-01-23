@@ -15,8 +15,9 @@ class Ability
       can :search,Checkinout
       can :read,:all
     elsif user.role?("department_manager")
-      can :read,Checkinout,user_id: user.leader_data.try(:last)
       cannot :manage, :all
+      can :read,Checkinout,user_id: user.leader_data.try(:last)
+      can :search,Checkinout
       can :manage,Journal do |journal|
         user.leader_data.try(:include?,journal.user_id)
       end

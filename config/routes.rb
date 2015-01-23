@@ -5,13 +5,18 @@ Rails.application.routes.draw do
 
   resources :sessions,only: [:new,:create,:destroy]
 
-  resources :oa_configs
+  resources :oa_configs,only: [:update,:index]
 
-  resources :attend_rules
+  resources :attend_rules,only: [:index,:update,:edit]
 
-  resources :report_titles
+  resources :report_titles,only:[:index,:update]
 
-  resources :checkinouts,only: [:index]
+  resources :checkinouts,only: [:index] do
+    collection do
+      get ":only" => "checkinouts#index",as: :my
+    end
+
+  end
 
   resources :year_infos
 

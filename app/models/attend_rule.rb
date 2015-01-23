@@ -3,4 +3,6 @@ class AttendRule < ActiveRecord::Base
   has_many :departments
 
   SpecRuleNames = %w{ab_point4_qiLe ab_point}
+
+
 end

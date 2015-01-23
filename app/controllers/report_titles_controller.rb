@@ -1,9 +1,12 @@
 class ReportTitlesController < ApplicationController
-  before_action :set_report_title, only: [:show, :edit, :update, :destroy]
+  #before_action :set_report_title, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /report_titles
   # GET /report_titles.json
   def index
+    drop_page_title("规则表头列表")
+    drop_breadcrumb
     @report_titles = ReportTitle.all
   end
 
@@ -19,6 +22,8 @@ class ReportTitlesController < ApplicationController
 
   # GET /report_titles/1/edit
   def edit
+    drop_page_title("编辑表头")
+    drop_breadcrumb
   end
 
   # POST /report_titles
@@ -28,7 +33,7 @@ class ReportTitlesController < ApplicationController
 
     respond_to do |format|
       if @report_title.save
-        format.html { redirect_to @report_title, notice: 'Report title was successfully created.' }
+        format.html { redirect_to report_titles_path, notice: '操作成功！' }
         format.json { render :show, status: :created, location: @report_title }
       else
         format.html { render :new }

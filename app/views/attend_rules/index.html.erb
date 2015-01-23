@@ -1,31 +1,38 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns large-8 medium-pull-4">
+    <table>
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>时间区间</th>
+          <th>最小单位</th>
+          <th>标头列表</th>
+          <th ></th>
+        </tr>
+      </thead>
 
-<h1>Listing Attend Rules</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Title ids</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @attend_rules.each do |attend_rule| %>
+      <tbody>
+      <% @attend_rules.each do |attend_rule| %>
       <tr>
-        <td><%= attend_rule.name %></td>
         <td><%= attend_rule.description %></td>
-        <td><%= attend_rule.title_ids %></td>
-        <td><%= link_to 'Show', attend_rule %></td>
+        <td><%= attend_rule.time_range %></td>
+        <td><%= attend_rule.min_unit %></td>
+        <td><%= link_to("点击查看",report_titles_path(ids: attend_rule.title_ids)) %></td>
         <td><%= link_to 'Edit', edit_attend_rule_path(attend_rule) %></td>
-        <td><%= link_to 'Destroy', attend_rule, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+      <% end %>
+      </tbody>
+    </table>
+    <fieldset>
+      <legend><span>说明</span></legend>
+      <p>时间区间：默认为弹性工作时间</p>
+      <p>最小单位：即最小时间单位，分钟,为15的倍数</p>
 
-<br>
 
-<%= link_to 'New Attend rule', new_attend_rule_path %>
+    </fieldset>
+
+
+  </div>
+</div>
+

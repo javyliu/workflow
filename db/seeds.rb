@@ -51,6 +51,5 @@ AttendRule.create(rules.map{|rule_name,des,title_ids,time_range,min_unit| {name:
 
 OaConfig.create(
   [{key: "prompt_max_times",des: "最多提醒次数",value: "10"},
-  {key: "prompt_range_time",des: "提醒时间",value: "9:30-19:00"},
   {key: "end_year_time",des: "年度假期截止日",value: "2014-02-18"}]
 )
