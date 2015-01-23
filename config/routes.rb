@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   resources :users
 
-  resources :departments
+  resources :departments,except: [:destroy,:new,:create]
 
   resources :spec_days
 

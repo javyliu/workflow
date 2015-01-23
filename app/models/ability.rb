@@ -6,11 +6,13 @@ class Ability
 
     if user.role_group.nil?
       cannot :manage, :all
+      can :read,Checkinout,user_id: user.id
     elsif user.role?("admin")
       can :manage, :all
       #can :read,Checkinout,user_id: user.leader_data.try(:last)
     elsif user.role?("manager")
       can :read,Checkinout,user_id: user.leader_data.try(:last)
+      can :search,Checkinout
       can :read,:all
     elsif user.role?("department_manager")
       can :read,Checkinout,user_id: user.leader_data.try(:last)

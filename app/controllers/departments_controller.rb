@@ -1,10 +1,20 @@
 class DepartmentsController < ApplicationController
-  before_action :set_department, only: [:show, :edit, :update, :destroy]
+  #before_action :set_department, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /departments
   # GET /departments.json
   def index
-    @departments = Department.all
+    drop_page_title("部门列表")
+    drop_breadcrumb
+    params.permit!
+    con_hash,_ = construct_condition(:department)
+    @departments = @departments.where(con_hash).page(params[:page]).includes(:attend_rule)
+    respond_to do |format|
+      format.html { @departments = @departments.decorate }
+      format.js {render partial: "items",object: @departments.decorate, content_type: Mime::HTML}
+      format.xls {send_data @departments.unscope(:limit,:offset).to_csv(col_sep: "\t")}
+    end
   end
 
   # GET /departments/1

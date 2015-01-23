@@ -1,24 +1,28 @@
 <div class="row">
   <%= render 'welcome/body_right_nav' %>
   <div class="columns large-8 medium-pull-4">
-    <fieldset>
-      <legend><span>签到时间表</span></legend>
-      <div id="search">
-        <form data-remote="true"  action="#" data-replace-with="#content">
-          <table class="w100" id="toggle_table">
-            <tr>
-              <td nowrap><label>内容包含:</label></td>
-              <td><%= text_field :checkinout, :user_id, placeholder: "用户id" %></td>
-              <td>日期:</td>
-              <td><%= text_field :checkinout,:rec_date,type: "date",placeholder: "2013-08-15"  %> </td>
-              <td> <input type="submit" class="button small" text="提交"/></td>
-              <td> <%= link_to "导出", checkinouts_path(format: :xls), class: "export_xls small button"  %></td>
-            </tr>
-          </table>
-        </form>
-        <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
-      </div>
-    </fieldset>
+    <h5><span>签到时间表</span></h5>
+    <% if  can? :search,Checkinout %>
+    <div id="search" class="panel">
+      <form data-remote="true"  action="#" data-replace-with="#content">
+        <div class="row">
+          <div class="columns medium-4">
+            <label>内容包含:</label>
+            <%= text_field :checkinout, :user_id, placeholder: "用户id" %>
+          </div>
+          <div class="columns medium-4">
+            <label>日期:</label>
+            <%= text_field :checkinout,:rec_date,type: "date",placeholder: "2013-08-15"  %>
+          </div>
+          <div class="columns medium-4">
+            <input type="submit" class="button small inline-button" text="搜索"/>
+            <%= link_to "导出", checkinouts_path(format: :xls), class: "export_xls small button"  %>
+          </div>
+        </div>
+      </form>
+      <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+    </div>
+    <% end %>
     <table>
       <thead>
         <tr>
