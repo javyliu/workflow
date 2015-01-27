@@ -122,11 +122,26 @@ class User < ActiveRecord::Base
     self.class.encrypt(password, Time.now.to_s)
   end
 
+  def cache_dept
+    @cache_dept ||= self.class.cache_departments.detect { |e| e.uid == self.id }
+    if self.role?("admin")
+      @cache_dept.depts = self.class.cache_departments.inject([]) { |col,e| col << e.depts  }.flatten(1)
+    end
+    @cache_dept
+  end
+
+  def self.cache_departments
+    Rails.cache.fetch(:departments) do
+      self.find_by_sql("select mgr_code uid,GROUP_CONCAT(code,' ',name) depts from departments  GROUP BY mgr_code ").map { |e| e.depts = e.depts.split(",").map { |item| item.split($\) };e}
+    end
+  end
+
   private
 
   def delete_caches
     Sidekiq.redis do |_redis|
       _redis.del("leaders_data")
     end
+    Rails.cache.delete(:departments)
   end
 end
