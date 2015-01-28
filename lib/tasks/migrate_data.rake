@@ -60,7 +60,7 @@ namespace :migrate_data do
   desc 'sys journals'
   task journals: :environment do
     Journal.connection.execute("truncate journals;")
-    CharesDatabase::Tbljournal.find_each(batch_size: 2000) do |item|
+    CharesDatabase::Tbljournal.find_each(batch_size: 3000) do |item|
       Journal.create!(user_id: item.uid,update_date: item.updateDate, check_type: item.tp, description: item.cmmt, dval: item.dval)
     end
   end

@@ -31,7 +31,7 @@ class ReceiveEmailJob < ActiveJob::Base
             #leader_user_id = _task.content["leader_user_id"]
               changed_user_names = handle_journal(m,_task.leader_user_id,_task.date)
               _task.update(:state,Task::Completed)#设置任务完成
-              _task.remove #删除催缴任务
+              _task.remove(all: true) #删除催缴任务
               Usermailer.daily_approved(_task.leader_user_id,changed_user_names,_task.date).deliver_later
           when "F002" #请假确认
             #TODO
@@ -82,7 +82,7 @@ class ReceiveEmailJob < ActiveJob::Base
           if _text.present?
             _med = td.attr(:class).strip
             Rails.logger.info("----------#{_med}")
-            journal.check_type = Journal::CheckType.assoc(_med).try(:last)
+            journal.check_type = Journal::CheckType.assoc(_med).try(:second) || 10 #如果只填写了说明，那么默认类别为特批
             case _med
             when "c_aff_points","c_aff_switch_leave","c_aff_holiday_year","c_aff_sick","c_aff_persion_leave"
               journal.dval = _text.to_f * 10

@@ -1,11 +1,11 @@
 class CheckinoutsController < ApplicationController
   #before_action :set_checkinout, only: [:show, :edit, :update, :destroy]
-  load_and_authorize_resource
+  load_and_authorize_resource param_method: :checkinout_params
 
   # GET /checkinouts
   # GET /checkinouts.json
   def index
-    drop_page_title("签到时间列表")
+    drop_page_title("签到记录")
     drop_breadcrumb
 
     if params[:only] == "me"
@@ -16,7 +16,11 @@ class CheckinoutsController < ApplicationController
       con_hash,_ = construct_condition(:checkinout)
     end
 
-    @checkinouts = @checkinouts.where(con_hash).order("id desc").page(params[:page]).includes(user: [:dept])
+    if params[:user].present?
+      con_hash.merge!("users.dept_code" => params[:user][:dept_code])
+    end
+
+    @checkinouts = @checkinouts.select("checkinouts.*,users.user_name,departments.name dept_name").joins(user: [:dept]).where(con_hash).order("id desc").page(params[:page])#.includes(user: [:dept])
 
     respond_to do |format|
       format.html { @checkinouts = @checkinouts.decorate }

@@ -27,20 +27,26 @@
       <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
     </div>
     <% end %>
+    <div class="panel">
+      <h4>待确认考勤</h4>
+      <% @to_be_confirm.each do |item| %>
+        <%= link_to item , kaoqing_users_path(task: item),class: "button" %>
+      <% end %>
+    </div>
+
+    <h4><%= @date %></h4>
     <table>
       <thead>
         <tr>
-          <th>日期</th>
-          <th>用户ID</th>
-          <th>名字</th>
-          <th>部门</th>
-          <th>签入时间</th>
-          <th>签出时间</th>
-          <th>参考时间</th>
+          <% current_user.report_titles.each do |item| %>
+          <th><%= item.des %></th>
+          <% end %>
         </tr>
       </thead>
       <tbody id="content">
-      <%= render partial: 'items', object: @checkinouts %>
+      <% @users.each_with_index do |item,index|  %>
+        <%= current_user.wrap(item,index) %>
+      <% end %>
       </tbody>
     </table>
 

@@ -1,21 +1,21 @@
 class UserDecorator < ApplicationDecorator
   delegate_all
 
-  def blank_out
-    nil
+  def blank_out(med)
+     if object.journal
+       object.journal.check_type == Journal::CheckType.assoc(med).second ? object.journal.dval : nil
+     else
+       nil
+     end
   end
 
-  alias c_aff_points blank_out
-  alias c_aff_switch_leave blank_out
-  alias c_aff_comment blank_out
-  alias c_aff_later blank_out
-  alias c_aff_leave blank_out
-  alias c_aff_absent blank_out
-  alias c_aff_forget_checkin blank_out
-  alias c_aff_holiday_year blank_out
-  alias c_aff_sick blank_out
-  alias c_aff_persion_leave blank_out
-  alias c_aff_spec_appr blank_out
+  %w{c_aff_points c_aff_switch_leave c_aff_comment c_aff_later c_aff_leave c_aff_absent c_aff_forget_checkin c_aff_holiday_year c_aff_sick c_aff_persion_leave c_aff_spec_appr}.each do |item|
+    define_method item do
+      send :blank_out,item
+    end
+  end
+
+
 
   #def initialize
   #  Rails.logger.info("l-----------------")

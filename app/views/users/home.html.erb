@@ -1,0 +1,16 @@
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns medium-9 medium-pull-3">
+    <h4><span>待确认</span></h4>
+    <% @to_be_confirms.each do |key,values| %>
+    <div class="panel">
+      <h5><%= Task::CfmType.rassoc(key).try(:first) %></h5>
+      <% values.each do |task| %>
+      <%= link_to task , kaoqing_users_path(task: task),class: "button" %>
+      <% end %>
+    </div>
+    <% end %>
+
+  </div>
+</div>
+

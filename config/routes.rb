@@ -26,7 +26,14 @@ Rails.application.routes.draw do
 
   resources :holidays
 
-  resources :users
+  resources :users do
+    collection do
+      get :checkinout
+      post :confirm
+      get :kaoqing
+      get :home
+    end
+  end
 
   resources :departments,except: [:destroy,:new,:create]
 

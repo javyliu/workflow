@@ -62,12 +62,16 @@ class Usermailer < ApplicationMailer
         year_journals.find_all {|_item| _item.user_id == item.id}
       )
 
+      ass = item.association(:journal)
+      ass.loaded!
+      ass.target = nil
+
       item.calculate_journal(@rule)
       @leader_user.ref_cmd[0] += item.ref_cmd.length
     end
 
     _task = Task.new("F001",leader_user_id,date: date)
-    #预览时不生成任务
+    #预览时不生成任务,如果考勤计算完毕且非异常考勤，则删除任务
     if !preview && @leader_user.ref_cmd[0] == 0
       _task.remove
     end

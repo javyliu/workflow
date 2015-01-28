@@ -47,8 +47,8 @@ ActiveRecord::Schema.define(version: 20150109085701) do
   create_table "episodes", force: :cascade do |t|
     t.string   "user_id",       limit: 20
     t.integer  "holiday_id",    limit: 4
-    t.date     "start_date"
-    t.date     "end_date"
+    t.datetime "start_date"
+    t.datetime "end_date"
     t.string   "comment",       limit: 500
     t.string   "approved_by",   limit: 20
     t.datetime "approved_time"

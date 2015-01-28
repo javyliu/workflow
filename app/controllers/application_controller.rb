@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
+  before_action :login_required
   include JavyTool::Breadcrumb
   include JavyTool::ConstructQuery
 

@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   #假期及ab分基础数据，用于计算用户剩余年假
   has_one :last_year_info,-> {where(year: OaConfig.setting(:end_year_time)[0..3]) },class_name: "YearInfo"
   has_many :journals
+  #用户在某一天的已确认异常考勤,用于手动加载防止n+1
+  has_one :journal
   #从本年度计考勤之日起的异常考勤，用于计算每天的剩余年假
   has_many :year_journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type) },class_name: "Journal"
 
@@ -87,6 +89,10 @@ class User < ActiveRecord::Base
     @leader_data ||= User.leader_data(self.id)
   end
 
+  def pending_tasks
+    @pending_tasks ||= Task.user_pending_tasks(self.id)
+  end
+
   def email_name
     @email_name ||= %("#{self.user_name}" <#{self.email}>)
   end
@@ -125,14 +131,14 @@ class User < ActiveRecord::Base
   def cache_dept
     @cache_dept ||= self.class.cache_departments.detect { |e| e.uid == self.id }
     if self.role?("admin")
-      @cache_dept.depts = self.class.cache_departments.inject([]) { |col,e| col << e.depts  }.flatten(1)
+      @cache_dept.depts = Department.cache_all_depts
     end
     @cache_dept
   end
 
   def self.cache_departments
     Rails.cache.fetch(:departments) do
-      self.find_by_sql("select mgr_code uid,GROUP_CONCAT(code,' ',name) depts from departments  GROUP BY mgr_code ").map { |e| e.depts = e.depts.split(",").map { |item| item.split($\) };e}
+      self.find_by_sql("select mgr_code uid,GROUP_CONCAT(name,' ',code) depts from departments  GROUP BY mgr_code ").map { |e| e.depts = e.depts.split(",").map { |item| item.split($\) };e}
     end
   end
 
