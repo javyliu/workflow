@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     collection do
       get :checkinout
       post :confirm
-      get :kaoqing
+      get "kaoqing/:task" => :kaoqing,as: :kaoqing
       get :home
     end
   end

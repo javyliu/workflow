@@ -37,7 +37,7 @@ class UsersController < ApplicationController
       tasks
     end
 
-    drop_page_title("部门签到记录")
+    drop_page_title("部门考勤")
     drop_breadcrumb
 
     @rule = AttendRule.find(current_user.leader_data[1])

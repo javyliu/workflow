@@ -97,7 +97,7 @@ $include-html-global-classes: $include-html-classes;
 // $font-weight-bold: bold !default;
 
 // We use these as default colors throughout
-// $primary-color: #008CBA;
+ //$primary-color: #079994;
 // $secondary-color: #e7e7e7;
 // $alert-color: #f04124;
 // $success-color: #43AC6A;
@@ -120,13 +120,13 @@ $include-html-global-classes: $include-html-classes;
 // $steel       : #666666;
 // $charcoal    : #555555;
 // $tuatara     : #444444;
-// $oil         : #333333;
+ $oil         : #333333;
 // $jet         : #222222;
 // $black       : #000000;
 
 // We use these to control various global styles
 // $body-bg: $white;
-// $body-font-color: $jet;
+ $body-font-color: $oil;
 // $body-font-family: $font-family-sans-serif;
 // $body-font-weight: $font-weight-normal;
 // $body-font-style: normal;

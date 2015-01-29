@@ -1,6 +1,5 @@
 <div class="row">
-  <%= render 'users/right_nav' %>
-  <div class="columns medium-9 medium-pull-3">
+  <div class="columns medium-12">
     <h5><span><%= @page_title %></span></h5>
     <% if  can? :search,Checkinout && params[:only] != "me" %>
     <div id="search" class="panel">
