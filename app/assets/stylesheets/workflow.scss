@@ -35,14 +35,15 @@ html.turbolinks-progress-bar::before {
     text-align:center;
     input{
       margin: 0!important;
-      padding:2px 4px;
+      padding:1px 4px;
       box-shadow: none;
       border:solid 1px #ccc;
       height:auto;
+      font-size:12px;
     }
   }
 
-  tr.need_fill td[class^=c_aff] {
+  tr.need_update td[class^=c_aff] {
     border:solid 1px #ccc;
     input{
       width:2em!important;

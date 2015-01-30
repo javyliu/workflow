@@ -2,17 +2,19 @@ class UserDecorator < ApplicationDecorator
   delegate_all
 
   def blank_out(med)
-     if object.journal
-       cktype = Journal::CheckType.assoc(med)
-       return nil if object.journal.check_type != cktype.second
-       if cktype.last == 0
-         object.journal.description
-       else
-         object.journal.dval.to_f / 10
-       end
-     else
-       nil
-     end
+    if object.journal
+      cktype = Journal::CheckType.assoc(med)
+      return nil if object.journal.check_type != cktype.second
+      if cktype.last == 0
+        object.journal.description
+      elsif cktype.last == 1
+        object.journal.dval
+      else
+        object.journal.dval.to_f / cktype.last
+      end
+    else
+      nil
+    end
   end
 
   %w{c_aff_points c_aff_switch_leave c_aff_comment c_aff_later c_aff_leave c_aff_absent c_aff_forget_checkin c_aff_holiday_year c_aff_sick c_aff_persion_leave c_aff_spec_appr}.each do |item|
@@ -234,7 +236,7 @@ class UserDecorator < ApplicationDecorator
         end
       end
 
-    #请假#如果没有签到记录，表明该用户本日考勤异常,检查用户是否有请假
+      #请假#如果没有签到记录，表明该用户本日考勤异常,检查用户是否有请假
     else#记为忘记打卡
       ref_cmd.push("无打卡记录")
       ref_cmd.push episode.name if episode
@@ -247,18 +249,14 @@ class UserDecorator < ApplicationDecorator
     tmp_str = ""
     users.each_with_index do |user,_index|
       user.index = _index + 1
-      cls = user.ref_cmd.blank? ? "" : "need_fill"
-      if need_update #用于网页展示
-       tmp_str << h.content_tag(:tr,class: cls,id: user.id,data:{object: "journal",url: h.user_journals_path(user.id,date)}) do
-          self.report_titles.each do |col|
-            h.concat(h.content_tag(:td,user.send(col.name),class: col.name,data: {attribute: col.name}))
-          end
-        end
-      else #用于邮件展示
-       tmp_str <<  h.content_tag(:tr,class: cls,id: user.id) do
-          self.report_titles.each do |col|
-            h.concat(h.content_tag(:td,user.send(col.name),class: col.name))
-          end
+      #用于网页展示和邮件展示时对于需填充字段用不同的class
+      cls = if user.ref_cmd.present?
+         need_update ? "need_update" : "need_fill"
+      end
+
+      tmp_str << h.content_tag(:tr,class: cls,id: user.id,data: {object: "journal",url: h.user_journals_path(user.id,date)}) do
+        self.report_titles.each do |col|
+          h.concat(h.content_tag(:td,user.send(col.name),class: col.name,data: {attribute: col.name}))
         end
       end
     end

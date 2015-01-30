@@ -44,10 +44,12 @@
       </thead>
       <tbody id="content" class="in_editor">
       <%= current_user.wrap(@task,need_update: @need_update,rule: @rule) %>
+      <% if @need_update %>
       <tr>
         <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
-          <%= link_to "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {remote: true,method: :post,type: :json} %></td>
+          <%= link_to "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %></td>
       </tr>
+      <% end %>
       </tbody>
     </table>
     <fieldset>
@@ -67,8 +69,8 @@
 <script type="text/javascript" charset="utf-8">
 
 $(document).on("ready page:load",function(){
-    $("tr.need_fill td[class^=c_aff]").restInPlace();
-    });
+    $("tr.need_update td[class^=c_aff]").restInPlace();
+  });
 
 </script>
 <% end %>

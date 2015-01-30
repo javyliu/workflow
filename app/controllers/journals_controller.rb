@@ -43,9 +43,17 @@ class JournalsController < ApplicationController
     msg = nil
     #用于考勤确认
     if params[:date].present? && params[:user_id]
+
+      @task = Task.new("F001",current_user.id,date: params[:date])
+      is_mine = @task.leader_user_id == current_user.id
+      #if (current_user.roles & ["department_manager","admin"]).blank? && !is_mine
+      if !is_mine
+        raise CanCan::AccessDenied.new("未授权", home_users_path,params[:task])
+      end
+
       @journal = Journal.find_or_initialize_by(user_id: params[:user_id],update_date: params[:date])
       @journal.dval = 0
-      @task = Task.new("F001",current_user.id,date: params[:date])
+
       params[:journal].each do |k,v|
         cktype = Journal::CheckType.assoc(k)
         raise "类型不存在 #{k}" unless cktype

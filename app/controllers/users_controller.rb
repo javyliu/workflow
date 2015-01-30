@@ -28,16 +28,16 @@ class UsersController < ApplicationController
 
   #确认考勤完成,删除该用户待确认任务
   def confirm
-    unless current_user.pending_tasks.include?(params[:task])
-      raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
-    end
+    #unless current_user.pending_tasks.include?(params[:task])
+    #  raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
+    #end
     @task = Task.init_from_subject(params[:task])
 
     @task.remove(all: true)
 
     respond_to do |format|
-      format.html {  }
-      format.json { render json: @task }
+      format.html { redirect_to kaoqing_users_path(@task) }
+      format.json { render json: @task ,location: kaoqing_users_path(@task)}
     end
   end
 
