@@ -19,7 +19,7 @@ module Workflow
 
     #set auto load paths
     #config.autoload_paths += %W(#{Rails.root}/app/models/chares_database/)
-
+    config.autoload_paths += %W(#{Rails.root}/lib/)
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de

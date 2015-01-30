@@ -29,11 +29,11 @@
     <div class="panel">
       <h4>待确认考勤</h4>
       <% @to_be_confirm.each do |item| %>
-        <%= link_to item , kaoqing_users_path(task: item),class: "button" %>
+      <%= link_to item , kaoqing_users_path(task: item),class: "button" %>
       <% end %>
     </div>
 
-    <h4><%= @date %></h4>
+    <h5><%= @date %> (<%= I18n.t("date.day_names")[Date.parse(@date).wday] %>) 考勤确认</h5>
     <table>
       <thead>
         <tr>
@@ -42,13 +42,33 @@
           <% end %>
         </tr>
       </thead>
-      <tbody id="content">
-      <% @users.each_with_index do |item,index|  %>
-        <%= current_user.wrap(item,index) %>
-      <% end %>
+      <tbody id="content" class="in_editor">
+      <%= current_user.wrap(@task,need_update: @need_update,rule: @rule) %>
+      <tr>
+        <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
+          <%= link_to "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {remote: true,method: :post,type: :json} %></td>
+      </tr>
       </tbody>
     </table>
-
+    <fieldset>
+      <legend><span>操作说明</span></legend>
+      <ul>
+        <li>点击方框内空白处进行编辑,每行只需填写一项</li>
+        <li>回车确认更新</li>
+        <li>方框外点击取消更新</li>
+        <li>点击右下角“考勤确认完成”按钮完成当日考勤确认</li>
+      </ul>
+    </fieldset>
   </div>
+
 </div>
 
+<% foot do %>
+<script type="text/javascript" charset="utf-8">
+
+$(document).on("ready page:load",function(){
+    $("tr.need_fill td[class^=c_aff]").restInPlace();
+    });
+
+</script>
+<% end %>

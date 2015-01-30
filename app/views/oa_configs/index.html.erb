@@ -1,7 +1,7 @@
 
 <div class="row">
   <%= render 'users/right_nav' %>
-  <div class="columns large-8 medium-pull-4">
+  <div class="columns medium-9 medium-pull-3">
     <table>
       <thead>
         <tr>
@@ -10,14 +10,22 @@
         </tr>
       </thead>
 
-      <tbody>
+      <tbody class="in_editor">
       <% @oa_configs.each do |oa_config| %>
       <tr data-object="oa_config" data-url="/oa_configs/<%= oa_config.id %>">
-        <td class="rest-in-place" data-attribute="des"><%= oa_config.des %></td>
+        <td><%= oa_config.des %></td>
         <td class="rest-in-place" data-attribute="value"><%= oa_config.value %></td>
       </tr>
       <% end %>
       </tbody>
     </table>
+    <fieldset>
+      <legend><span>说明</span></legend>
+      <ul>
+        <li>点击方框内空白处进行编辑</li>
+        <li>回车确认更新</li>
+        <li>方框外点击取消更新</li>
+      </ul>
+    </fieldset>
   </div>
 </div>

@@ -26,6 +26,31 @@ html.turbolinks-progress-bar::before {
 
 }
 .mt1em{margin-top:1.8em!important;}
+.mt0{margin-bottom:0!important;}
 .date{
   select{width:33%;}
+}
+.in_editor{
+  td.rip-active{
+    text-align:center;
+    input{
+      margin: 0!important;
+      padding:2px 4px;
+      box-shadow: none;
+      border:solid 1px #ccc;
+      height:auto;
+    }
+  }
+
+  tr.need_fill td[class^=c_aff] {
+    border:solid 1px #ccc;
+    input{
+      width:2em!important;
+      display:inline;
+    }
+    &.c_aff_spec_appr.rip-active input{width:6em!important;}
+  }
+  td.rest-in-place {
+    border:solid 1px #ccc;
+  }
 }

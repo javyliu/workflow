@@ -29,7 +29,6 @@ titles =[
   ['c_switch_hours','倒休时长'],
   ['c_aff_points','确认贡献分'],
   ['c_aff_switch_leave','确认倒休'],
-  ['c_aff_comment','额外说明'],
   ['c_aff_later','迟到'],
   ['c_aff_leave','早退'],
   ['c_aff_absent','旷工'],
@@ -37,7 +36,7 @@ titles =[
   ['c_aff_holiday_year','年假'],
   ['c_aff_sick','病假'],
   ['c_aff_persion_leave','事假'],
-  ['c_aff_spec_appr','特批']
+  ['c_aff_spec_appr','额外说明']
 ]
 ReportTitle.create(titles.map{|name,des| {name: name,des: des}})
 rules = [

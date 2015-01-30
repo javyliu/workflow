@@ -20,7 +20,11 @@ Rails.application.routes.draw do
 
   resources :year_infos
 
-  resources :journals
+  resources :journals do
+   collection do
+     put ":user_id/:date" => :update,as: :user
+   end
+  end
 
   resources :episodes
 
@@ -29,7 +33,7 @@ Rails.application.routes.draw do
   resources :users do
     collection do
       get :checkinout
-      post :confirm
+      post "confirm/:task" => :confirm, as: :confirm
       get "kaoqing/:task" => :kaoqing,as: :kaoqing
       get :home
     end

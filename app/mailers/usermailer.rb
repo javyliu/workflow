@@ -15,72 +15,30 @@ class Usermailer < ApplicationMailer
     leader_user_id = args.first
 
     uids = opts[:uids]
-    date = opts[:date]
+    @date = opts[:date] || Date.yesterday
     @count = opts[:count]
     preview = opts[:preview]
 
-    logger.info("-------------now is #{leader_user_id} #{uids}")
-    #must set the date if the date is not yesterday
-    #can't do the because of the thread safe
-    #User.query_date = date
 
     #date = Date.today - 3.days
 
     @leader_user = User.find(leader_user_id)
     @rule = AttendRule.find(@leader_user.leader_data[1])
-    uids = uids ||  @leader_user.leader_data.try(:last)
-    date ||= Date.yesterday
-    #@users = User.where(uid: @leader_user.leader_data.try(:last)).includes(:dept,:yesterday_checkin,:last_year_info,:yes_holidays,:year_journals).decorate
-    @users = User.where(uid: uids).includes(:last_year_info,:dept).decorate
-
-    date_checkins = Checkinout.where(user_id: uids,rec_date: date.to_s).to_a
-
-    yes_holidays = Holiday.select("holidays.*,episodes.user_id user_id").joins(:episodes).where(["user_id in (:users) and start_date <= :yesd and end_date >= :yesd ",yesd: date.to_s,users: uids]).to_a
-
-    year_journals = Journal.select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type).where(["user_id in (?) and update_date > ?",uids,OaConfig.setting(:end_year_time)]).to_a
-
 
 
     @leader_user = @leader_user.decorate
     @leader_user.report_titles = ReportTitle.where(id: @rule.title_ids).order("ord,id")
-    @leader_user.ref_cmd[0] = 0
-    @users.each do |item|
-      #manually preload yesterday_checkin and yes_holiday
-      ass = item.association(:yesterday_checkin)
-      ass.loaded!
-      ass.target = date_checkins.detect{|_item| _item.user_id == item.id }
+    @leader_user.uids = uids
 
-      ass = item.association(:yes_holidays)
-      ass.loaded!
-      ass.target.concat(
-        yes_holidays.find_all {|_item| _item.user_id == item.id}
-      )
-
-      ass = item.association(:year_journals)
-      ass.loaded!
-      ass.target.concat(
-        year_journals.find_all {|_item| _item.user_id == item.id}
-      )
-
-      ass = item.association(:journal)
-      ass.loaded!
-      ass.target = nil
-
-      item.calculate_journal(@rule)
-      @leader_user.ref_cmd[0] += item.ref_cmd.length
-    end
-
-    _task = Task.new("F001",leader_user_id,date: date)
+    @task = Task.new("F001",leader_user_id,date: @date)
     #预览时不生成任务,如果考勤计算完毕且非异常考勤，则删除任务
     if !preview && @leader_user.ref_cmd[0] == 0
-      _task.remove
+      @task.remove
     end
 
-    mail_subject = @count ? "催缴考勤确认单{#{_task.task_name}}第#{@count}次" : "考勤确认单{#{_task.task_name}}"
+    mail_subject = @count ? "催缴考勤确认单{#{@task.task_name}}第#{@count}次" : "考勤确认单{#{@task.task_name}}"
 
-    @users.sort!{|a,b| b.ref_cmd.length <=> a.ref_cmd.length }
 
-    @date = date
     #TODO: need change to leader_user.email
     full_mailname = %("刘泉" <javy_liu@163.com>)
     mail(to: full_mailname,subject: mail_subject )#,body: "no body",content_type: "text/html")

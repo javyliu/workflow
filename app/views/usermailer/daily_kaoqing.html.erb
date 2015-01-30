@@ -17,12 +17,10 @@
     <th><%= item.des %></th>
     <% end %>
   </tr>
-  <% @users.each_with_index do |item,index|  %>
-  <%= @leader_user.wrap(item,index) %>
-  <% end %>
+  <%= @leader_user.wrap(@task,need_update: false,rule: @rule) %>
 </table>
 
-<b class="red"> 注:上表是员工考勤确认表单，请在背景白色的单元格中填写确认信息(每行除“额外说明”说明外，只须填写一项) </b>
+<b class="red"> 注:上表是员工考勤确认表单，请在背景白色的单元格中填写确认信息(每行除只需填写一项) </b>
 <div>
   <ul>
     <li><b>确认贡献分或确认倒休</b>：填写确认的小时数(负数为扣减:如迟到自动扣减0.5小时而不用算迟到)。</li>

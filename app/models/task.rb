@@ -5,7 +5,7 @@ class Task
   attr_accessor :action_name #处理作务的action名称
   attr_accessor :mid #任务对像id
 
-  SubjectRex = /\{(\w+):(\w+):([-\d]+)(:(\d+))?\}/
+  SubjectRex = /(\w+):(\w+):([-\d]+)(:(\d+))?/
   Expired = "expired"
   Completed = "completed"
   Pending = "pending"
@@ -17,6 +17,9 @@ class Task
     ["加班确认单","F003","Episode"],
     ["出差确认单","F004","Episode"]
   ]
+  def to_s
+    self.task_name
+  end
 
   def initialize(type,leader_user_id,date: nil,mid: nil)
     self.type = type
@@ -35,6 +38,7 @@ class Task
     end
     Task.new(type,leader_user_id,date: date,mid: mid)
   end
+
 
   #任务名称
   def task_name
@@ -105,7 +109,7 @@ class Task
     Sidekiq.redis do |conn|
       conn.hmset(_task.task_name,"state",Task::Pending,"count",0,"date",_task.date,*opts.to_a.flatten(1))
       conn.sadd("task:pendings",_task.task_name)
-      conn.sadd("task:pendings#{_task.leader_user_id}",_task.task_name)
+      conn.sadd("task:pendings:#{_task.leader_user_id}",_task.task_name)
     end
     _task
   end
@@ -125,5 +129,49 @@ class Task
     end
   end
 
+  def self.eager_load_from_task(task,leader_user: nil,rule: nil)
+    leader_user ||= User.find(task.leader_user_id).decorate
+    uids ||= leader_user.uids || leader_user.leader_data.try(:last)
+    rule ||= AttendRule.find(leader_user.leader_data[1])
+
+    leader_user.ref_cmd[0] = 0
+    users = User.where(uid: uids).includes(:last_year_info,:dept).decorate
+
+    date_checkins = Checkinout.where(user_id: uids,rec_date: task.date).to_a
+
+    yes_holidays = Holiday.select("holidays.*,episodes.user_id user_id").joins(:episodes).where(["user_id in (:users) and start_date <= :yesd and end_date >= :yesd ",yesd: task.date,users: uids]).to_a
+
+    year_journals = Journal.select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type).where(["user_id in (?) and update_date > ?",uids,OaConfig.setting(:end_year_time)]).to_a
+
+    journals = task.date.to_s < Date.today.to_s ? Journal.where(["user_id in (?) and update_date = ?",uids,task.date]).to_a : nil
+
+    users.each do |item|
+      #manually preload yesterday_checkin and yes_holiday
+      ass = item.association(:yesterday_checkin)
+      ass.loaded!
+      ass.target = date_checkins.detect{|_item| _item.user_id == item.id }
+
+      ass = item.association(:yes_holidays)
+      ass.loaded!
+      ass.target.concat(
+        yes_holidays.find_all {|_item| _item.user_id == item.id}
+      )
+
+      ass = item.association(:year_journals)
+      ass.loaded!
+      ass.target.concat(
+        year_journals.find_all {|_item| _item.user_id == item.id}
+      )
+
+      ass = item.association(:journal)
+      ass.loaded!
+      ass.target = journals.nil? ? nil : journals.detect {|_item| _item.user_id == item.id}
+
+      item.calculate_journal(rule,task.date)
+      leader_user.ref_cmd[0] += item.ref_cmd.length
+    end
+
+    users.sort!{|a,b| b.ref_cmd.length <=> a.ref_cmd.length }
+  end
 
 end

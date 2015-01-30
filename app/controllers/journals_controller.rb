@@ -1,5 +1,5 @@
 class JournalsController < ApplicationController
-  before_action :set_journal, only: [:show, :edit, :update, :destroy]
+  before_action :set_journal, only: [:show, :edit, :destroy]
 
   # GET /journals
   # GET /journals.json
@@ -40,13 +40,49 @@ class JournalsController < ApplicationController
   # PATCH/PUT /journals/1
   # PATCH/PUT /journals/1.json
   def update
+    msg = nil
+    #用于考勤确认
+    if params[:date].present? && params[:user_id]
+      @journal = Journal.find_or_initialize_by(user_id: params[:user_id],update_date: params[:date])
+      @journal.dval = 0
+      @task = Task.new("F001",current_user.id,date: params[:date])
+      params[:journal].each do |k,v|
+        cktype = Journal::CheckType.assoc(k)
+        raise "类型不存在 #{k}" unless cktype
+        @journal.check_type = cktype.second
+        if @journal.check_type == 10
+          @journal.description = "特批：#{v}"
+        else
+          @journal.dval = v.to_f * cktype.last
+        end
+      end
+
+      if @journal.save
+        @msg = params[:journal]
+      else
+        msg = @journal.errors
+      end
+    elsif params[:id]
+      set_journal
+      unless @journal.update(journal_params)
+        msg = @journal.errors
+      end
+    else
+      msg = {msg:"出错了！"}
+    end
     respond_to do |format|
-      if @journal.update(journal_params)
+      if msg.blank?
         format.html { redirect_to @journal, notice: 'Journal was successfully updated.' }
-        format.json { render :show, status: :ok, location: @journal }
+        format.json do
+          if @msg
+            render json: @msg
+          else
+            render :show, status: :ok, location: @journal
+          end
+        end
       else
         format.html { render :edit }
-        format.json { render json: @journal.errors, status: :unprocessable_entity }
+        format.json { render json: msg, status: :unprocessable_entity }
       end
     end
   end
@@ -62,13 +98,13 @@ class JournalsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_journal
-      @journal = Journal.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_journal
+    @journal = Journal.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def journal_params
-      params.require(:journal).permit(:user_id, :update_date, :check_type, :description, :dval)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def journal_params
+    params.require(:journal).permit(:user_id, :update_date, :check_type, :description, :dval)
+  end
 end

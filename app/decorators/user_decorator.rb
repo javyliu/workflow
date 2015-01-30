@@ -3,7 +3,13 @@ class UserDecorator < ApplicationDecorator
 
   def blank_out(med)
      if object.journal
-       object.journal.check_type == Journal::CheckType.assoc(med).second ? object.journal.dval : nil
+       cktype = Journal::CheckType.assoc(med)
+       return nil if object.journal.check_type != cktype.second
+       if cktype.last == 0
+         object.journal.description
+       else
+         object.journal.dval.to_f / 10
+       end
      else
        nil
      end
@@ -26,6 +32,7 @@ class UserDecorator < ApplicationDecorator
   #return an ReportTitle array
 
   attr_accessor :report_titles
+  attr_accessor :uids
   #def report_titles
   #  @report_title ||= ReportTitle.where(id: object.dept.attend_rule.title_ids).order("ord,id")
   #end
@@ -114,43 +121,46 @@ class UserDecorator < ApplicationDecorator
 
   #计算迟到时间，早退时间
   #大于10点算事假，也就是迟到时间大于30分钟
-  def calculate_journal(attend_rule)
+  def calculate_journal(attend_rule,date)
     yes_ckin = object.yesterday_checkin
-    if yes_ckin
-      @ckin_time =  yes_ckin.checkin
-      @ckout_time = yes_ckin.checkout
-      @ref_ckin_time = yes_ckin.ref_time
 
-      unit = 60/attend_rule.min_unit
+    @ckin_time =  yes_ckin.try(:checkin)
+    @ckout_time = yes_ckin.try(:checkout)
+    @ref_ckin_time = yes_ckin.try(:ref_time)
 
-      #非工作日
-      unless working_date
-        diff_time = ((@ckout_time - @ckin_time)/60).to_i
-        #15进制与30进制
-        if diff_time >= attend_rule.min_unit/2
-          #中午一小时不算加班
-          #@b_point = 0
-          #start_working_time = @ckin_time
-          #end_working_time = @ckout_time
-          #ref_cmd.push("加班")
-          #if @ckin_time.hour <=12 && @ckout_time.hour >=13
-          #  @b_point -= 1
-          #elsif @ckin_time.hour > 12 && @ckout_time.hour >=13
-          #  start_working_time = @ckin_time.change(hour: 13)
-          #elsif @ckin_time.hour <= 12 && @ckout_time.hour < 13
-          #  end_working_time = @ckin_time.change(hour: 12)
-          #else
-          #  start_working_time = end_working_time = 0
-          #end
-          #@b_point += (((end_working_time - start_working_time)/60).to_i/attend_rule.min_unit.to_f).round.to_f / unit
-          @b_point = (diff_time/attend_rule.min_unit.to_f).round.to_f / unit
-          @switch_hours = @b_point
-          ref_cmd.push("加班")
-        end
-        return
+    unit = 60/attend_rule.min_unit
+    #非工作日，且没有考勤记录，直接返回
+    is_work_day = SpecDay.workday?(date: date)
+    if !is_work_day && !yes_ckin
+      return
+    elsif !is_work_day && yes_ckin #非工作日，有考勤
+      diff_time = ((@ckout_time - @ckin_time)/60).to_i
+      #15进制与30进制
+      if diff_time >= attend_rule.min_unit/2
+        #中午一小时不算加班
+        #@b_point = 0
+        #start_working_time = @ckin_time
+        #end_working_time = @ckout_time
+        #ref_cmd.push("加班")
+        #if @ckin_time.hour <=12 && @ckout_time.hour >=13
+        #  @b_point -= 1
+        #elsif @ckin_time.hour > 12 && @ckout_time.hour >=13
+        #  start_working_time = @ckin_time.change(hour: 13)
+        #elsif @ckin_time.hour <= 12 && @ckout_time.hour < 13
+        #  end_working_time = @ckin_time.change(hour: 12)
+        #else
+        #  start_working_time = end_working_time = 0
+        #end
+        #@b_point += (((end_working_time - start_working_time)/60).to_i/attend_rule.min_unit.to_f).round.to_f / unit
+        @b_point = (diff_time/attend_rule.min_unit.to_f).round.to_f / unit
+        @switch_hours = @b_point
+        ref_cmd.push("加班")
       end
+      return
+    end
 
 
+    if yes_ckin
       #工作日
       start_working_time = if attend_rule.time_range == "0" #弹性工作时间
                              if @ckin_time <= @ckin_time.change(hour:9,min:1)
@@ -231,14 +241,28 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
-  def wrap(user,index)
-    user.index = index + 1
-    cls = user.ref_cmd.blank? ? "" : "need_fill"
-    h.content_tag(:tr,class: cls,id: user.id) do
-      self.report_titles.each do |col|
-        h.concat(h.content_tag(:td,user.send(col.name),class: col.name))
+  def wrap(task,need_update: false,rule: nil)
+    date = task.date || Date.yesterday
+    users = Task.eager_load_from_task(task,leader_user: self,rule: rule)
+    tmp_str = ""
+    users.each_with_index do |user,_index|
+      user.index = _index + 1
+      cls = user.ref_cmd.blank? ? "" : "need_fill"
+      if need_update #用于网页展示
+       tmp_str << h.content_tag(:tr,class: cls,id: user.id,data:{object: "journal",url: h.user_journals_path(user.id,date)}) do
+          self.report_titles.each do |col|
+            h.concat(h.content_tag(:td,user.send(col.name),class: col.name,data: {attribute: col.name}))
+          end
+        end
+      else #用于邮件展示
+       tmp_str <<  h.content_tag(:tr,class: cls,id: user.id) do
+          self.report_titles.each do |col|
+            h.concat(h.content_tag(:td,user.send(col.name),class: col.name))
+          end
+        end
       end
     end
+    tmp_str.html_safe
   end
 
   #参考意见
@@ -263,9 +287,6 @@ class UserDecorator < ApplicationDecorator
     @episode ||= object.yes_holidays.first
   end
 
-  def working_date
-    @working_date ||=SpecDay.workday?(date:Date.yesterday)
-  end
 
 
 end

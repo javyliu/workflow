@@ -10,7 +10,8 @@ class ApplicationController < ActionController::Base
   include JavyTool::ConstructQuery
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to root_url, :alert => exception.message
+    return_url = exception.action =~ /^\// ? exception.action : root_url
+    redirect_to return_url, :alert => exception.message
   end
 
   def login_required
