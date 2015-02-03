@@ -4,9 +4,12 @@ class PromptDailyMailJob < ActiveJob::Base
   #催缴邮件
   def perform(*args)
 
+    #如果是非工作日，不作催缴
+    return unless SpecDay.workday?(date: Date.today)
+
     Task.pending_tasks.each do |item|
 
-      _task = Task.init_from_subject("{#{item}}")
+      _task = Task.init_from_subject(item)
 
       next unless _task
 

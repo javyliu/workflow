@@ -137,6 +137,7 @@ class UserDecorator < ApplicationDecorator
       return
     elsif !is_work_day && yes_ckin #非工作日，有考勤
       diff_time = ((@ckout_time - @ckin_time)/60).to_i
+      ref_cmd.push("加班")
       #15进制与30进制
       if diff_time >= attend_rule.min_unit/2
         #中午一小时不算加班
@@ -156,7 +157,8 @@ class UserDecorator < ApplicationDecorator
         #@b_point += (((end_working_time - start_working_time)/60).to_i/attend_rule.min_unit.to_f).round.to_f / unit
         @b_point = (diff_time/attend_rule.min_unit.to_f).round.to_f / unit
         @switch_hours = @b_point
-        ref_cmd.push("加班")
+      else
+        ref_cmd.push("忘打卡")
       end
       return
     end
