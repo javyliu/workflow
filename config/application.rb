@@ -40,7 +40,7 @@ module Workflow
       address:              '114.251.179.140',
       port:                 25,
       domain:               'pipgame.com',
-      user_name:            'x',
+      user_name:            'y',
       password:             ENV['SMTP_PWD'],
       authentication:       'plain'
      }

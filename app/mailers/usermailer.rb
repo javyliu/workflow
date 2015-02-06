@@ -1,5 +1,7 @@
 class Usermailer < ApplicationMailer
   #for test email
+  #default bcc: 'qmliu@pipgame.com'
+  FullMailname = %("javy" <javy_liu@163.com>)
   def welcome_email(user_id)
     @user = User.find(user_id)
     full_mailname = %("#{@user.user_name}" <#{@user.email}>)
@@ -40,7 +42,7 @@ class Usermailer < ApplicationMailer
 
 
     #TODO: need change to leader_user.email
-    full_mailname = %("刘泉" <javy_liu@163.com>)
+    full_mailname = FullMailname
     mail(to: full_mailname,subject: mail_subject )#,body: "no body",content_type: "text/html")
   end
 
@@ -50,7 +52,7 @@ class Usermailer < ApplicationMailer
     @date = date
     @changed_user_names = changed_user_names
     #TODO: need change to leader_user.email
-    full_mailname = %("刘泉" <javy_liu@163.com>)
+    full_mailname = FullMailname
     mail(to: full_mailname,subject: "考勤确认完成{#{date}}")#,body: "no body",content_type: "text/html")
   end
 
@@ -59,7 +61,7 @@ class Usermailer < ApplicationMailer
     @date = date
     @error_msg = msg
     #TODO: need change to leader_user.email_name
-    full_mailname = %("刘泉" <javy_liu@163.com>)
+    full_mailname = FullMailname
     mail(to: full_mailname,subject: "考勤确认错误{#{date}}")#,body: "no body",content_type: "text/html")
   end
 end
