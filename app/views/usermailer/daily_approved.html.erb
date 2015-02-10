@@ -3,9 +3,19 @@
 感谢提交<%= @date %>考勤信息
 </p>
 
-<p>
 <% if @changed_user_names.present? %>
-<b class="red">考勤信息被更改的员工:</b> <%= @changed_user_names.join(",") %>
+<b class="red">考勤信息被更改的员工:</b>
+<table>
+  <tr>
+    <th>名字</th>
+    <th>结论</th>
+  </tr>
+  <% @changed_user_names.each do |user_name,desc,dval| %>
+  <tr>
+    <td><%= user_name %></td>
+    <td> <%= desc  %> <%= dval %> </td>
+  </tr>
+  <% end %>
+</table>
 <% end %>
-</p>
 

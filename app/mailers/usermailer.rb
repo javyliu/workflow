@@ -25,14 +25,15 @@ class Usermailer < ApplicationMailer
     #date = Date.today - 3.days
 
     @leader_user = User.find(leader_user_id)
-    @rule = AttendRule.find(@leader_user.leader_data[1])
+    rule = AttendRule.find(@leader_user.leader_data[1])
 
 
     @leader_user = @leader_user.decorate
-    @leader_user.report_titles = ReportTitle.where(id: @rule.title_ids).order("ord,id")
+    @leader_user.report_titles = ReportTitle.where(id: rule.title_ids).order("ord,id")
     @leader_user.uids = uids
 
     @task = Task.new("F001",leader_user_id,date: @date)
+    @users = Task.eager_load_from_task(@task,leader_user: @leader_user,rule: rule)
     #预览时不生成任务,如果考勤计算完毕且非异常考勤，则删除任务
     if !preview && @leader_user.ref_cmd[0] == 0
       @task.remove

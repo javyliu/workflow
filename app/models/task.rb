@@ -129,6 +129,7 @@ class Task
     end
   end
 
+
   def self.eager_load_from_task(task,leader_user: nil,rule: nil)
     leader_user ||= User.find(task.leader_user_id).decorate
     uids ||= leader_user.uids || leader_user.leader_data.try(:last)

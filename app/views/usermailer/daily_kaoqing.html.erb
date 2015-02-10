@@ -7,6 +7,8 @@
 <h4>考勤确认单 (<%= @date %>)</h4>
 <% if  @leader_user.ref_cmd[0] == 0 %>
 <b class="green">无异常考勤，无需回复！</b>
+<br/>
+<br/>
 <% end %>
 <% if @count %>
 <p><b class="red">您未能在希望的时间内确认考勤数据，这是第 <%= @count %> 次催缴！请尽快回复。（系统将最多催缴10次）</b></p>
@@ -17,7 +19,7 @@
     <th><%= item.des %></th>
     <% end %>
   </tr>
-  <%= @leader_user.wrap(@task,need_update: false,rule: @rule) %>
+  <%= @leader_user.wrap(@task,users: @users,need_update: false) %>
 </table>
 
 <b class="red"> 注:上表是员工考勤确认表单，请在背景白色的单元格中填写确认信息(每行除只需填写一项) </b>

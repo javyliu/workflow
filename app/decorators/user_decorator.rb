@@ -245,9 +245,9 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
-  def wrap(task,need_update: false,rule: nil)
+  def wrap(task,users: nil,need_update: false,rule: nil)
     date = task.date || Date.yesterday
-    users = Task.eager_load_from_task(task,leader_user: self,rule: rule)
+    users = users || Task.eager_load_from_task(task,leader_user: self,rule: rule)
     tmp_str = ""
     users.each_with_index do |user,_index|
       user.index = _index + 1

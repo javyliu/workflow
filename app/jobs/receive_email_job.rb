@@ -69,33 +69,37 @@ class ReceiveEmailJob < ActiveJob::Base
       #get need fill user
       body.css("tr.need_fill").each do |item|
         aff_tds = item.css("td[class^=c_aff]")
-        next if aff_tds.blank?
+        next if aff_tds.text().tap{|t|Rails.logger.info("-------#{t}---------")}.blank?
 
         journal = Journal.new(user_id: item.attr(:id),update_date:date)
         #取邮件中的默认描述
         journal.description = item.css("td[class=c_ref_cmd]").text.strip
+        journal.dval = 0
 
         user_name = item.css("td[class=c_user_name]").text
+        _dval = nil
         aff_tds.each do |td|
           _text = td.text.strip
-          journal.dval = 0
           next if _text.blank?
 
           _med = td.attr(:class).strip
-          Rails.logger.info("----------#{_med}")
+          Rails.logger.info("-------method:#{_med} -text:#{_text}")
           cktype = Journal::CheckType.assoc(_med)
-          if cktype
-            journal.check_type = cktype.second
-            if journal.check_type == 10
-              journal.description = "特批：#{_text}"
-            else
-              journal.dval = _text.to_f * cktype.last
-            end
+          raise "cktype is nil" unless cktype
+          journal.check_type = cktype.second
+          _dval = _text
+          if journal.check_type == 10
+            journal.description = _text
+          else
+            journal.description = cktype.third
+            journal.dval = _text.to_f * cktype.last
+            Rails.logger.info("--#{_text.to_f}--#{cktype.last}--------#{journal.dval}")
           end
+          break #只取第一个有值的td
         end
         if journal.save #成功，发送成功邮件
           Rails.logger.info("success-journal：#{journal.inspect}")
-          changed_user_names.push(user_name)
+          changed_user_names.push([user_name,journal.description,_dval])
         else #存储报错 给用户发送出错邮件
           Rails.logger.info("error-journal：#{journal.inspect}")
         end
