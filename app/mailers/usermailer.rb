@@ -6,7 +6,7 @@ class Usermailer < ApplicationMailer
 
   #发送邮件给错误处理人员
   def expired_error(task_name)
-    @task = task.init_from_subject(task_name)
+    @task = Task.init_from_subject(task_name)
     @user = User.find(@task.leader_user_id)
     @msg = "#{@user.user_name}的#{@task.type_name} #{@task.to_s} 过期未确认"
 

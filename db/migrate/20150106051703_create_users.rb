@@ -12,6 +12,9 @@ class CreateUsers < ActiveRecord::Migration
       t.string :password_digest
       t.integer :role_group
       t.string :remember_token
+      t.date :onboard_date
+      t.date :regular_date
+
       t.datetime :remember_token_expires_at
 
       t.timestamps null: false,default: Time.now

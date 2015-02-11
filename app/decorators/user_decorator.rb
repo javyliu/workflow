@@ -64,13 +64,15 @@ class UserDecorator < ApplicationDecorator
   end
 
   #TODO FIX if for the end_year_time
+  #累计贡献分包括特批的分（负值）
   def c_ab_point
-    (base_holiday_info.ab_point + year_journal(9)).to_f/10
+    (base_holiday_info.ab_point + year_journal(9) + year_journal(10)).to_f/10
   end
 
   #TODO FIX if for the end_year_time
+  #累计倒休包括特批的时间（负值）
   def c_switch_leave
-    (base_holiday_info.switch_leave + year_journal(8)).to_f/10
+    (base_holiday_info.switch_leave + year_journal(8) + year_journal(10)).to_f/10
   end
 
   def c_checkin
@@ -200,13 +202,16 @@ class UserDecorator < ApplicationDecorator
           elsif diff_time > 30 && diff_time <= 2*60
             ref_cmd.push("事假半天")
           else
-            ref_cmd.clear.push("事假一天")
+            ref_cmd.push("事假一天")
           end
         end
-      elsif @ckin_time.tuesday? &&  (_tmp_diff = start_working_time.change(hour: 8) - @ckin_time) > 0 #周二早于8点上班算维护到的情况
+      elsif @ckin_time.tuesday? &&  (_tmp_diff = start_working_time.change(hour: 8) - @ckin_time) > 0 #周二早于8点上班算维护到的情况,截至9点算A分
         @a_point += ((_tmp_diff.to_i/60+60)/attend_rule.min_unit.to_f).round.to_f/unit
-        end_working_time = @ckin_time.change(hour: 16) if attend_rule.name == "platform" #平台因不算ab分，所以设置结束工作时间点
-        ref_cmd.push("维护")
+        if attend_rule.name == "platform" #平台因不算ab分，所以设置结束工作时间点
+          end_working_time = @ckin_time.change(hour: 16)
+        elsif attend_rule.id.in?([1,2]) #ab分为工作室
+          ref_cmd.push("维护")
+        end
       end
 
       end_diff_time = ((@ckout_time - end_working_time)/60).to_i #结束工作时间点
@@ -214,15 +219,15 @@ class UserDecorator < ApplicationDecorator
       if end_diff_time < 0 #早退
         end_diff_time = end_diff_time.abs
         if end_diff_time <= 30
-          ref_cmd.push("早退")
           @leave_time = end_diff_time #
           @a_point -= 0.5 #(end_diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
           @switch_hours -= 0.5
+          ref_cmd.push("早退")
         elsif end_diff_time > 30 && end_diff_time <= 2*60
           ref_cmd.push("事假半天")
         else
           @a_point = @switch_hour = 0
-          ref_cmd.clear.push("事假一天")
+          ref_cmd.push("事假一天")
         end
         ref_cmd.push(episode.name) if episode
       elsif end_diff_time > 0 #加班
@@ -240,6 +245,8 @@ class UserDecorator < ApplicationDecorator
           ref_cmd.push("加班")
         end
       end
+
+      @switch_hours = 0  if @switch_hours < 0  #倒休推荐扣减
 
       #请假#如果没有签到记录，表明该用户本日考勤异常,检查用户是否有请假
     else#记为忘记打卡
@@ -261,7 +268,7 @@ class UserDecorator < ApplicationDecorator
 
       tmp_str << h.content_tag(:tr,class: cls,id: user.id,data: {object: "journal",url: h.user_journals_path(user.id,date)}) do
         self.report_titles.each do |col|
-          h.concat(h.content_tag(:td,user.send(col.name),class: "#{col.name} c_aff",data: {attribute: col.name}))
+          h.concat(h.content_tag(:td,user.send(col.name),abbr:col.name,class: col.name.start_with?("c_aff") ? "c_aff" : "",data: {attribute: col.name}))
         end
       end
     end

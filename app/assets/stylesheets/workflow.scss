@@ -43,13 +43,13 @@ html.turbolinks-progress-bar::before {
     }
   }
 
-  tr.need_update td[class^=c_aff] {
+  tr.need_update td.c_aff {
     border:solid 1px #ccc;
     input{
       width:2em!important;
       display:inline;
     }
-    &.c_aff_spec_appr.rip-active input{width:6em!important;}
+    //&[abbr=c_aff_spec_appr].rip-active input{width:6em!important;}
   }
   td.rest-in-place {
     border:solid 1px #ccc;

@@ -12,14 +12,14 @@ namespace :migrate_data do
   desc "sys the tbldepartment to departments"
   task departments: :environment do
     ActiveRecord::Base.connection.execute(%{truncate departments; })
-    #ActiveRecord::Base.connection.execute(%{insert into departments(code,name,atten_rule,mgr_code,admin) select deptCode,deptName,attenRules,mgrCode,admin from tbldepartment; })
     def which_rule(old_rule)
-      if old_rule.deptCode.start_with?("0108") and old_rule.deptCode != "010899"
+      if old_rule.deptCode.start_with?("0108") and old_rule.deptCode != "010899" #平台用固定工作时间
         return 4
       end
       case old_rule.attenRules
       when "RuleFlexibalWorkingTime"
-        3
+        #运营和市场,天擎无倒休
+        old_rule.deptCode.start_with?('0104','0105','0106') || old_rule.deptCode.start_with?("0106") ? 5 : 3
       when "RuleABPoint"
         2
       when "RuleBPoint4QiLe"
@@ -39,7 +39,10 @@ namespace :migrate_data do
 
 
     CharesDatabase::Tblemployee.find_each do |item|
-      User.create(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title)
+      #User.create!(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title,onboard_date: item.onboardDate,regular_date: item.regularDate,password: '123123')
+      u = User.find_or_initialize_by(uid: item.userId)
+      u.password = "123123" if u.new_record?
+      u.update_attributes!(user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title,onboard_date: item.onboardDate,regular_date: item.regularDate)
     end
 
   end
