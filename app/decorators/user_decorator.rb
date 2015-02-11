@@ -17,7 +17,7 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
-  %w{c_aff_points c_aff_switch_leave c_aff_comment c_aff_later c_aff_leave c_aff_absent c_aff_forget_checkin c_aff_holiday_year c_aff_sick c_aff_persion_leave c_aff_spec_appr}.each do |item|
+  %w{c_aff_points c_aff_switch_leave c_aff_comment c_aff_later c_aff_leave c_aff_absent c_aff_forget_checkin c_aff_holiday_year c_aff_sick c_aff_persion_leave c_aff_spec_appr c_aff_holiday_salary c_aff_switch_time c_aff_holiday_maternity c_aff_holiday_acco_maternity c_aff_holiday_marriary c_aff_holiday_funeral}.each do |item|
     define_method item do
       send :blank_out,item
     end
@@ -170,6 +170,9 @@ class UserDecorator < ApplicationDecorator
                              if @ckin_time <= @ckin_time.change(hour:9,min:1)
                                end_working_time = @ckin_time.change(hour: 18)
                                @ckin_time.change(hour:9)
+                             elsif @ckin_time <= @ckin_time.change(hour:9,min:31)
+                               end_working_time = @ckin_time.change(hour: 18,min: @ckin_time.min)
+                               @ckin_time
                              else
                                end_working_time = @ckin_time.change(hour: 18,min: 30)
                                @ckin_time.change(hour:9,min:31)
@@ -258,7 +261,7 @@ class UserDecorator < ApplicationDecorator
 
       tmp_str << h.content_tag(:tr,class: cls,id: user.id,data: {object: "journal",url: h.user_journals_path(user.id,date)}) do
         self.report_titles.each do |col|
-          h.concat(h.content_tag(:td,user.send(col.name),class: col.name,data: {attribute: col.name}))
+          h.concat(h.content_tag(:td,user.send(col.name),class: "#{col.name} c_aff",data: {attribute: col.name}))
         end
       end
     end

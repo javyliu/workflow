@@ -19,6 +19,9 @@ class PromptDailyMailJob < ActiveJob::Base
         _task.increment!
         _task.update(:state,Task::Expired)
         _task.remove
+        #发送过期邮件至考勤处理人员
+        Usermailer.expired_error(_task.task_name).deliver_later
+        puts "sending expired mail"
         next
       end
 

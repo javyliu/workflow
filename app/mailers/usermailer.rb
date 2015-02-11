@@ -2,10 +2,15 @@ class Usermailer < ApplicationMailer
   #for test email
   #default bcc: 'qmliu@pipgame.com'
   FullMailname = %("javy" <javy_liu@163.com>)
-  def welcome_email(user_id)
-    @user = User.find(user_id)
-    full_mailname = %("#{@user.user_name}" <#{@user.email}>)
-    mail(to: full_mailname,subject: 'welcome to use mailers',body: "no body",content_type: "text/html")
+  HandleErrorUser = %("qmliu" <qmliu@pipgame.com>)
+
+  #发送邮件给错误处理人员
+  def expired_error(task_name)
+    @task = task.init_from_subject(task_name)
+    @user = User.find(@task.leader_user_id)
+    @msg = "#{@user.user_name}的#{@task.type_name} #{@task.to_s} 过期未确认"
+
+    mail(to: HandleErrorUser,subject: "#{@task.type_name}过期未确认")#,body: "no body",content_type: "text/html")
   end
 
   #每日需发送的考勤邮件

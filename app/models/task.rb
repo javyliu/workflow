@@ -21,6 +21,11 @@ class Task
     self.task_name
   end
 
+  #任务类型名称
+  def type_name
+    CfmType.rassoc(self.type).first
+  end
+
   def initialize(type,leader_user_id,date: nil,mid: nil)
     self.type = type
     self.leader_user_id = leader_user_id

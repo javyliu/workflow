@@ -11,7 +11,13 @@ class Journal < ActiveRecord::Base
     ["c_aff_persion_leave",7,"事假",10],
     ["c_aff_switch_leave",8,"倒休",10],
     ["c_aff_points",9,"贡献分",10],
-    ["c_aff_spec_appr",10,"额外说明",0]
+    ["c_aff_spec_appr",10,"特批",10],
+    ['c_aff_holiday_salary',11,'带薪事假',1],
+    ['c_aff_switch_time',12,'倒休',10],
+    ['c_aff_holiday_maternity,12','产假',1],
+    ['c_aff_holiday_acco_maternity',13,'陪产假',1],
+    ['c_aff_holiday_marriary',14,'婚假',1],
+    ['c_aff_holiday_funeral',15,'丧假',1]
   ]
 
 end

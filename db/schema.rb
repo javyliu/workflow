@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 20150109085701) do
   end
 
   create_table "report_titles", force: :cascade do |t|
-    t.string  "name", limit: 20
+    t.string  "name", limit: 40
     t.string  "des",  limit: 20
     t.integer "ord",  limit: 2
   end
