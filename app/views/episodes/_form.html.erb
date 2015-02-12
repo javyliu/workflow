@@ -1,45 +1,35 @@
 <%= form_for(@episode) do |f| %>
-  <% if @episode.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@episode.errors.count, "error") %> prohibited this episode from being saved:</h2>
+<div class="row">
+  <div class="columns medium-12">
+    <%= f.label :holiday_id,'假期类别' %>
+    <%= f.collection_select :holiday_id,Holiday.all,:id,:name,prompt: true %>
+  </div>
+</div>
 
-      <ul>
-      <% @episode.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :user_id %><br>
-    <%= f.text_field :user_id %>
+<div class="row">
+  <div class="columns medium-5 datetime">
+    <%= f.label :start_date,"开始时间" %>
+    <%= f.text_field :start_date,class: "datepicker",data:{:'date-format' =>  "yyyy-mm-dd hh:ii"},readonly: true %>
   </div>
-  <div class="field">
-    <%= f.label :holiday_id %><br>
-    <%= f.number_field :holiday_id %>
+  <div class="columns medium-5 datetime">
+    <%= f.label :end_date,"结束时间" %>
+    <%= f.text_field :start_date,class: "datepicker",data:{:'date-format' =>  "yyyy-mm-dd hh:ii"},readonly: true %>
   </div>
-  <div class="field">
-    <%= f.label :start_date %><br>
-    <%= f.date_select :start_date %>
+  <div class="columns medium-2">
+    <label for="total">总共时间</label>
+    <%= f.text_field :comment,id: "total" %>
   </div>
-  <div class="field">
-    <%= f.label :end_date %><br>
-    <%= f.date_select :end_date %>
+</div>
+<div class="row">
+  <div class="columns medium-12">
+    <%= f.label :comment,"请假事由" %>
+    <%= f.text_area :comment %>
   </div>
-  <div class="field">
-    <%= f.label :comment %><br>
-    <%= f.text_field :comment %>
+</div>
+<div class="row">
+  <div class="columns">
+    <%= f.submit "提交",class: "button" %>
   </div>
-  <div class="field">
-    <%= f.label :approved_by %><br>
-    <%= f.text_field :approved_by %>
-  </div>
-  <div class="field">
-    <%= f.label :approved_time %><br>
-    <%= f.datetime_select :approved_time %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+</div>
 <% end %>
+

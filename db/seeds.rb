@@ -27,7 +27,8 @@ titles =[
   ['c_a_point','A'],
   ['c_b_point','B'],
   ['c_switch_hours','加班时长'],
-  ['c_aff_points','确认贡献分'],
+  ['c_aff_a_points','确认A分'],
+  ['c_aff_b_points','确认B分'],
   ['c_aff_switch_leave','确认加班时长'],
   ['c_aff_later','迟到'],
   ['c_aff_leave','早退'],
@@ -36,21 +37,25 @@ titles =[
   ['c_aff_holiday_year','年假'],
   ['c_aff_sick','病假'],
   ['c_aff_persion_leave','事假'],
-  ['c_aff_spec_appr','特批'],
+  ['c_aff_spec_appr','特批描述'],
   ['c_aff_holiday_salary','带薪事假'],
   ['c_aff_switch_time','倒休'],
   ['c_aff_holiday_maternity','产假'],
   ['c_aff_holiday_acco_maternity','陪产假'],
   ['c_aff_holiday_marriary','婚假'],
-  ['c_aff_holiday_funeral','丧假']
+  ['c_aff_holiday_funeral','丧假'],
+  ['c_aff_sick_salary','带薪病假'],
+  ['c_aff_holiday_trip','出差'],
+  ['c_aff_nursing_later','哺乳期晚来1小时'],
+  ['c_aff_nursing_leave','哺乳期早走1小时']
 ]
 ReportTitle.create(titles.map{|name,des| {name: name,des: des}})
 rules = [
-  ['ab_point4_qiLe','AB分无倒休-奇乐',%w[1 2 3 4 5 6 8 9 10 11 12 13 14  16 18 19 20 21 22 23 24 25 26 27 28 29 30 31],0,30],
-  ['ab_point','AB分工作时间',%w[1 2 3 4 5 6  8 9   12 13 14  16  18 19 20 21 22 23 24 25 26 27 28 29 30 31],0,30],
-  ['flexible_working_time','弹性工作时间',%w[1 2 3 4 5  7 8 9   12   15  17 18 19 20 21 22 23 24 25 26 27 28 29 30 31],0,60],
-  ['platform','固定工作时间',%w[1 2 3 4 5  7 8 9   12   15  17 18 19 20 21 22 23 24 25 26 27 28 29 30 31],"9:01-18:00",60],
-  ['flexible_no_switch','弹性工作时间无倒休',%w[1 2 3 4 5   8 9   12   15  17 18 19 20 21 22 23 24 25 26 27 28 29 30 31],0,60]
+  ['ab_point4_qiLe','AB分无倒休-奇乐',%w[1 2 3 4 5 6 8 9 10 11 12 13 14  16 17 19 20 21 22 23 24 25 26 27  29 30 31 32 33 34 35 36],0,30],
+  ['ab_point','AB分工作时间',%w[1 2 3 4 5 6  8 9   12 13 14  16 17 19 20 21 22 23 24 25 26 27  29 30 31 32 33 34 35 36],0,30],
+  ['flexible_working_time','弹性工作时间',%w[1 2 3 4 5  7 8 9   12   15   18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36],0,60],
+  ['platform','固定工作时间',%w[1 2 3 4 5  7 8 9   12   15   18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36],"9:01-18:00",60],
+  ['flexible_no_switch','弹性工作时间无倒休',%w[1 2 3 4 5   8 9   12   15   18 19 20 21 22 23 24 25 26 27  29 30 31 32 33 34 35 36],0,60]
 ]
 
 AttendRule.create(rules.map{|rule_name,des,title_ids,time_range,min_unit| {name: rule_name, description: des, title_ids: title_ids,time_range: time_range,min_unit: min_unit}})

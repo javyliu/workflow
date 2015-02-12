@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
 
+  resources :approves
+
   root 'welcome#index'
 
   resources :sessions,only: [:new,:create,:destroy]

@@ -3,7 +3,7 @@ class UserDecorator < ApplicationDecorator
 
   def blank_out(med)
     if object.journal
-      cktype = Journal::CheckType.assoc(med)
+      cktype = Journal::CheckType.assoc(med.to_s)
       return nil if object.journal.check_type != cktype.second
       if cktype.last == 0
         object.journal.description
@@ -17,11 +17,32 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
-  %w{c_aff_points c_aff_switch_leave c_aff_comment c_aff_later c_aff_leave c_aff_absent c_aff_forget_checkin c_aff_holiday_year c_aff_sick c_aff_persion_leave c_aff_spec_appr c_aff_holiday_salary c_aff_switch_time c_aff_holiday_maternity c_aff_holiday_acco_maternity c_aff_holiday_marriary c_aff_holiday_funeral}.each do |item|
-    define_method item do
-      send :blank_out,item
-    end
-  end
+ # %w{c_aff_a_points
+ # c_aff_b_points
+ # c_aff_switch_leave
+ # c_aff_comment
+ # c_aff_later
+ # c_aff_leave
+ # c_aff_absent
+ # c_aff_forget_checkin
+ # c_aff_holiday_year
+ # c_aff_sick
+ # c_aff_persion_leave
+ # c_aff_spec_appr
+ # c_aff_holiday_salary
+ # c_aff_switch_time
+ # c_aff_holiday_maternity
+ # c_aff_holiday_acco_maternity
+ # c_aff_holiday_marriary
+ # c_aff_holiday_funeral
+ # c_aff_nursing_later
+ # c_aff_nursing_leave
+ # c_aff_sick_salary
+ # }.each do |item|
+ #   define_method item do
+ #     send :blank_out,item
+ #   end
+ # end
 
 
 
@@ -109,7 +130,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def c_ref_cmd
-    ref_cmd.uniq.join(" ")
+    ref_cmd.uniq.join("<br>").html_safe
   end
 
   # 好
@@ -191,20 +212,18 @@ class UserDecorator < ApplicationDecorator
 
       #签入打卡
       if diff_time > 0
-        if episode
-          ref_cmd.push(episode.name)
+        if diff_time <= 30
+          ref_cmd.push("迟到")
+          @later_time = diff_time
+          @a_point -= 0.5 #-(diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
+          #@switch_hours -= 0.5
+        elsif diff_time > 30 && diff_time <= 2*60
+          ref_cmd.push("事假半天")
         else
-          if diff_time <= 30
-            ref_cmd.push("迟到")
-            @later_time = diff_time
-            @a_point -= 0.5 #-(diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
-            @switch_hours -= 0.5
-          elsif diff_time > 30 && diff_time <= 2*60
-            ref_cmd.push("事假半天")
-          else
-            ref_cmd.push("事假一天")
-          end
+          ref_cmd.push("事假一天")
         end
+        ref_cmd.push("<span>#{episode.name}</span>") if episode
+
       elsif @ckin_time.tuesday? &&  (_tmp_diff = start_working_time.change(hour: 8) - @ckin_time) > 0 #周二早于8点上班算维护到的情况,截至9点算A分
         @a_point += ((_tmp_diff.to_i/60+60)/attend_rule.min_unit.to_f).round.to_f/unit
         if attend_rule.name == "platform" #平台因不算ab分，所以设置结束工作时间点
@@ -221,37 +240,35 @@ class UserDecorator < ApplicationDecorator
         if end_diff_time <= 30
           @leave_time = end_diff_time #
           @a_point -= 0.5 #(end_diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
-          @switch_hours -= 0.5
+          #@switch_hours -= 0.5
           ref_cmd.push("早退")
         elsif end_diff_time > 30 && end_diff_time <= 2*60
           ref_cmd.push("事假半天")
         else
-          @a_point = @switch_hour = 0
+          @a_point = 0
           ref_cmd.push("事假一天")
         end
-        ref_cmd.push(episode.name) if episode
+        ref_cmd.push("<span>#{episode.name}</span>") if episode
       elsif end_diff_time > 0 #加班
-        if attend_rule.name.in?(AttendRule::SpecRuleNames) &&  @ckout_time <= @ckout_time.change(hour: 21) && @ckout_time > @ckout_time.change(hour: 19)
-          end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i #结束工作时间点
-          tmp_a_point = ((end_diff_time)/attend_rule.min_unit.to_f).round.to_f/unit
-          if tmp_a_point > 0
-            ref_cmd.push("加班")
-            @a_point += tmp_a_point
-          end
-        elsif @ckout_time > @ckout_time.change(hour: 21)
-          _tmp = ((end_diff_time)/attend_rule.min_unit.to_f).round.to_f/unit
+        end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
+        _tmp = (end_diff_time/attend_rule.min_unit.to_f).round.to_f/unit #加班时长
+
+        if _tmp >= 2  #大于21点签出
           @b_point += _tmp
           @switch_hours += _tmp
           ref_cmd.push("加班")
+        elsif  _tmp > 0 && attend_rule.name.in?(AttendRule::SpecRuleNames) #小于21点且大于19点签出且是工作室
+          ref_cmd.push("加班")
+          @a_point += _tmp
+          ref_cmd.push("<span>#{episode.name}</span>") if episode #申请的加班
         end
       end
 
-      @switch_hours = 0  if @switch_hours < 0  #倒休推荐扣减
 
       #请假#如果没有签到记录，表明该用户本日考勤异常,检查用户是否有请假
     else#记为忘记打卡
       ref_cmd.push("无打卡记录")
-      ref_cmd.push episode.name if episode
+      ref_cmd.push "<span>#{episode.name}</span>" if episode
     end
   end
 
@@ -268,7 +285,9 @@ class UserDecorator < ApplicationDecorator
 
       tmp_str << h.content_tag(:tr,class: cls,id: user.id,data: {object: "journal",url: h.user_journals_path(user.id,date)}) do
         self.report_titles.each do |col|
-          h.concat(h.content_tag(:td,user.send(col.name),abbr:col.name,class: col.name.start_with?("c_aff") ? "c_aff" : "",data: {attribute: col.name}))
+          _class = col.name.start_with?("c_aff") ? "c_aff" : ""
+          _class += " spec_appr" if col.name == "c_aff_spec_appr" #特批那用于描述
+          h.concat(h.content_tag(:td,user.send(col.name),abbr:col.name,class: _class ,data: {attribute: col.name}))
         end
       end
     end
@@ -278,6 +297,17 @@ class UserDecorator < ApplicationDecorator
   #参考意见
   def ref_cmd
     @ref_cmd ||= []
+  end
+
+  def method_missing(meth,*args,&block)
+    if /^c_aff_\w+/=~ meth
+      self.class.send :define_method, meth do
+        send :blank_out,meth
+      end
+      self.send(meth)
+    else
+      super
+    end
   end
 
   private
@@ -296,7 +326,5 @@ class UserDecorator < ApplicationDecorator
   def episode
     @episode ||= object.yes_holidays.first
   end
-
-
 
 end

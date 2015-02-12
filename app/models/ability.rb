@@ -6,21 +6,26 @@ class Ability
 
     if user.role_group.nil?
       cannot :manage, :all
-      can :read,Checkinout,user_id: user.id
-    elsif user.role?("admin")
-      can :manage, :all
-      #can :read,Checkinout,user_id: user.leader_data.try(:last)
-    elsif user.role?("manager")
-      can :read,Checkinout,user_id: user.leader_data.try(:last)
-      can :search,Checkinout
-      can :read,:all
-    elsif user.role?("department_manager")
+      can :read,[Checkinout,Episode],user_id: user.id
+      can [:index,:home],User,uid: user.id
+      can [:create,:update],Episode,user_id: user.id
+    end
+
+    if user.role?("department_manager")
       cannot :manage, :all
       can :read,Checkinout,user_id: user.leader_data.try(:last)
       can :search,Checkinout
       can :manage,Journal do |journal|
         user.leader_data.try(:include?,journal.user_id)
       end
+    end
+
+    if user.role?("admin")
+      can :manage, :all
+      #can :read,Checkinout,user_id: user.leader_data.try(:last)
+    elsif user.role?("manager")
+      can :read,[Checkinout,Episode]#,user_id: user.leader_data.try(:last)
+      can :search,Checkinout
     end
     # Define abilities for the passed in user here. For example:
     #

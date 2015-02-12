@@ -29,6 +29,15 @@ html.turbolinks-progress-bar::before {
 .mt0{margin-bottom:0!important;}
 .date{
   select{width:33%;}
+  letter-spacing:-4px;
+  label{letter-spacing:normal;}
+
+}
+.datetime{
+  select{width:19.5%;}
+  letter-spacing:-4px;
+  label{letter-spacing:normal;}
+
 }
 .in_editor{
   td.rip-active{
@@ -49,6 +58,7 @@ html.turbolinks-progress-bar::before {
       width:2em!important;
       display:inline;
     }
+    &.spec_appr input{width:6em!important;}
     //&[abbr=c_aff_spec_appr].rip-active input{width:6em!important;}
   }
   td.rest-in-place {

@@ -1,10 +1,14 @@
 class EpisodesController < ApplicationController
-  before_action :set_episode, only: [:show, :edit, :update, :destroy]
+  #before_action :set_episode, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /episodes
   # GET /episodes.json
   def index
-    @episodes = Episode.all
+    drop_page_title("我的假条")
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_breadcrumb
+    @episodes = @episodes.page(params[:page]).includes(:holiday,:user).decorate
   end
 
   # GET /episodes/1
@@ -14,7 +18,10 @@ class EpisodesController < ApplicationController
 
   # GET /episodes/new
   def new
-    @episode = Episode.new
+    drop_page_title("假期申请")
+    drop_breadcrumb("我的假条",home_users_path)
+    drop_breadcrumb
+    #@episode = Episode.new
   end
 
   # GET /episodes/1/edit

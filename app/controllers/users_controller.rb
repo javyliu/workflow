@@ -1,10 +1,13 @@
 class UsersController < ApplicationController
   #before_action :set_user, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
+  skip_load_resource only: [:home,:confirm,:kaoqing]
 
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    #@users = User.all
+    @users = @users.page(params[:page])
   end
 
   # GET /users/1
@@ -42,9 +45,6 @@ class UsersController < ApplicationController
   end
 
   def kaoqing
-    #unless current_user.pending_tasks.include?(params[:task])
-    #  raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
-    #end
 
     @task = Task.init_from_subject(params[:task])
     @need_update = current_user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"

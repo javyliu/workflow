@@ -75,6 +75,7 @@ class ReceiveEmailJob < ActiveJob::Base
         return false if aff_tds.text().tap{|t|Rails.logger.info("-------#{t}---------")}.blank?
 
         user_name = item.css("td[abbr=c_user_name]").text
+        _description = item.css("td[abbr=c_aff_spec_appr]").text
         _user_id = item.attr(:id)
         aff_tds.each do |td|
           _text = td.text.strip
@@ -89,8 +90,12 @@ class ReceiveEmailJob < ActiveJob::Base
           cktype = Journal::CheckType.assoc(_med)
           raise "cktype is nil" unless cktype
           journal.check_type = cktype.second
-          journal.description = "#{cktype.third}#{_text}#{cktype.fourth}"
-          journal.dval = _text.to_f * cktype.last
+          if _med == "c_aff_spec_appr" #特批
+            journal.description = "#{cktype.third}#{_text}"
+          else
+            journal.description = "#{cktype.third}#{_text}#{cktype.fourth} #{_description}"
+            journal.dval = _text.to_f * cktype.last
+          end
           Rails.logger.info("--#{_text.to_f}--#{cktype.last}--------#{journal.dval}")
           if journal.save #成功，发送成功邮件
             Rails.logger.info("success-journal：#{journal.inspect}")

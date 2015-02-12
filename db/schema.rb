@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150109085701) do
+ActiveRecord::Schema.define(version: 20150212094311) do
+
+  create_table "approves", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.string   "user_name",  limit: 20
+    t.integer  "state",      limit: 1,   default: 0
+    t.string   "des",        limit: 255
+    t.integer  "episode_id", limit: 4
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "approves", ["episode_id"], name: "index_approves_on_episode_id", using: :btree
+  add_index "approves", ["user_id"], name: "index_approves_on_user_id", using: :btree
 
   create_table "attend_rules", force: :cascade do |t|
     t.string   "name",        limit: 30
@@ -45,15 +58,15 @@ ActiveRecord::Schema.define(version: 20150109085701) do
   end
 
   create_table "episodes", force: :cascade do |t|
-    t.string   "user_id",       limit: 20
-    t.integer  "holiday_id",    limit: 4
+    t.string   "user_id",    limit: 20
+    t.string   "title",      limit: 20
+    t.integer  "holiday_id", limit: 4
     t.datetime "start_date"
     t.datetime "end_date"
-    t.string   "comment",       limit: 500
-    t.string   "approved_by",   limit: 20
-    t.datetime "approved_time"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.string   "comment",    limit: 500
+    t.integer  "state",      limit: 1,   default: 0
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
   end
 
   create_table "holidays", force: :cascade do |t|

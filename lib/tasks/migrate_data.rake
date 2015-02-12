@@ -16,6 +16,7 @@ namespace :migrate_data do
       if old_rule.deptCode.start_with?("0108") and old_rule.deptCode != "010899" #平台用固定工作时间
         return 4
       end
+      return nil if old_rule.deptCode == '0110' #后勤不做考勤
       case old_rule.attenRules
       when "RuleFlexibalWorkingTime"
         #运营和市场,天擎无倒休
@@ -33,7 +34,7 @@ namespace :migrate_data do
 
   desc "sys the tblemployee to departments"
   task users: :environment do
-    ActiveRecord::Base.connection.execute(%{truncate users; })
+    #ActiveRecord::Base.connection.execute(%{truncate users; })
     #ActiveRecord::Base.connection.execute(%{insert into users(uid,user_name,email,department,title,expire_date,dept_code,mgr_code)
                                           #select userId,name,email,department,title,expireDate,deptCode,mgrCode from tblemployee; })
 
@@ -53,8 +54,11 @@ namespace :migrate_data do
     #Rails.application.paths["app/models"].eager_load!
     holidays = Holiday.pluck(:id,:name)
     Episode.connection.execute("truncate episodes;")
+    Episode.connection.execute("truncate approves;")
     CharesDatabase::TblEpisode.find_each do |item|
-      Episode.create(user_id: item.userId,holiday_id: holidays.rassoc(item.type).try(:first),start_date: item.startDate, end_date: item.endDate, comment: item.comments,approved_by: item.approvedBy, approved_time: item.approvedDate  )
+      e = Episode.create(user_id: item.userId,holiday_id: holidays.rassoc(item.type).try(:first),start_date: item.startDate, end_date: item.endDate, comment: item.comments,state: item.approvedBy.present?) #,approved_by: item.approvedBy, approved_time: item.approvedDate  )
+      Approve.create(user_id: item.approvedBy,user_name: "",updated_at: item.approvedDate,created_at: item.approvedDate,episode_id: e.id,state: e.state)
+
     end
   end
 

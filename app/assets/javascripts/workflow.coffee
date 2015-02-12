@@ -16,4 +16,6 @@ $(->
   $(document).on("click",".export_xls", ->
     $(this).attr("href",$(this).attr("href")+"?"+$(this).closest("form").serialize())
   )
+
+  $(document).on 'ready page:load', -> $('.datepicker').datetimepicker({ format:'Y-m-d H:i', inline:false, lang:'zh' })
 )
