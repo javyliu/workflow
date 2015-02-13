@@ -28,7 +28,12 @@ Rails.application.routes.draw do
    end
   end
 
-  resources :episodes
+  get "episodes/new/:holiday_id" => "episodes#new",as: :new_episode
+  resources :episodes,except: :new do
+    collection do
+      get :list
+    end
+  end
 
   resources :holidays
 

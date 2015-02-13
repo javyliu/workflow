@@ -56,7 +56,8 @@ namespace :migrate_data do
     Episode.connection.execute("truncate episodes;")
     Episode.connection.execute("truncate approves;")
     CharesDatabase::TblEpisode.find_each do |item|
-      e = Episode.create(user_id: item.userId,holiday_id: holidays.rassoc(item.type).try(:first),start_date: item.startDate, end_date: item.endDate, comment: item.comments,state: item.approvedBy.present?) #,approved_by: item.approvedBy, approved_time: item.approvedDate  )
+      holiday = holidays.rassoc(item.type)
+      e = Episode.create(user_id: item.userId,holiday_id: holiday.first,start_date: item.startDate, end_date: item.endDate, comment: item.comments || holiday.last,state: item.approvedBy.present?) #,approved_by: item.approvedBy, approved_time: item.approvedDate  )
       Approve.create(user_id: item.approvedBy,user_name: "",updated_at: item.approvedDate,created_at: item.approvedDate,episode_id: e.id,state: e.state)
 
     end

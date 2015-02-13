@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 20150212094311) do
   create_table "episodes", force: :cascade do |t|
     t.string   "user_id",    limit: 20
     t.string   "title",      limit: 20
+    t.string   "total_time", limit: 20
     t.integer  "holiday_id", limit: 4
     t.datetime "start_date"
     t.datetime "end_date"

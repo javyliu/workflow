@@ -222,7 +222,6 @@ class UserDecorator < ApplicationDecorator
         else
           ref_cmd.push("事假一天")
         end
-        ref_cmd.push("<span>#{episode.name}</span>") if episode
 
       elsif @ckin_time.tuesday? &&  (_tmp_diff = start_working_time.change(hour: 8) - @ckin_time) > 0 #周二早于8点上班算维护到的情况,截至9点算A分
         @a_point += ((_tmp_diff.to_i/60+60)/attend_rule.min_unit.to_f).round.to_f/unit
@@ -248,22 +247,21 @@ class UserDecorator < ApplicationDecorator
           @a_point = 0
           ref_cmd.push("事假一天")
         end
-        ref_cmd.push("<span>#{episode.name}</span>") if episode
       elsif end_diff_time > 0 #加班
         end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
         _tmp = (end_diff_time/attend_rule.min_unit.to_f).round.to_f/unit #加班时长
 
         if _tmp >= 2  #大于21点签出
           @b_point += _tmp
-          @switch_hours += _tmp
+          @switch_hours += (_tmp - 2)
           ref_cmd.push("加班")
         elsif  _tmp > 0 && attend_rule.name.in?(AttendRule::SpecRuleNames) #小于21点且大于19点签出且是工作室
           ref_cmd.push("加班")
           @a_point += _tmp
-          ref_cmd.push("<span>#{episode.name}</span>") if episode #申请的加班
         end
       end
 
+      ref_cmd.push("<span>#{episode.name}</span>") if ref_cmd.present? && episode
 
       #请假#如果没有签到记录，表明该用户本日考勤异常,检查用户是否有请假
     else#记为忘记打卡

@@ -128,6 +128,19 @@ class User < ActiveRecord::Base
     self.class.encrypt(password, Time.now.to_s)
   end
 
+  #当前用户所属部门
+  def dept_group
+    @dept_group = case self.dept_code
+    when /^0104|0105|0106/ #无倒休部门
+      Department::GroupNoSwitchTime
+    when /^0102|0103/ #ab 分部门
+      Department::GroupAB
+    else
+      Department::GroupSwitchTime #倒休部门
+    end
+  end
+
+  #当前用户可管理的部门列表
   def cache_dept
     @cache_dept ||= self.class.cache_departments.detect { |e| e.uid == self.id }
     if self.role?("admin")
@@ -136,6 +149,8 @@ class User < ActiveRecord::Base
     @cache_dept
   end
 
+  #根据管理者id进行分组的部门列表
+  #[uid,depts:[[dept_name,dept_id]]]
   def self.cache_departments
     Rails.cache.fetch(:departments) do
       self.find_by_sql("select mgr_code uid,GROUP_CONCAT(name,' ',code) depts from departments  GROUP BY mgr_code ").map { |e| e.depts = e.depts.split(",").map { |item| item.split($\) };e}

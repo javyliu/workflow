@@ -11,6 +11,14 @@ class EpisodesController < ApplicationController
     @episodes = @episodes.page(params[:page]).includes(:holiday,:user).decorate
   end
 
+  def list
+    drop_page_title("部门假条")
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_breadcrumb
+    @episodes = @episodes.page(params[:page]).includes(:holiday,:user).decorate
+    render template: "episodes/index"
+
+  end
   # GET /episodes/1
   # GET /episodes/1.json
   def show
@@ -18,10 +26,18 @@ class EpisodesController < ApplicationController
 
   # GET /episodes/new
   def new
+    if params[:holiday_id].blank? || (@holiday = Holiday.find_by(id: params[:holiday_id])).nil?
+      flash[:alert] = "请选择假期类别"
+      redirect_to action: :index and return
+    end
+
     drop_page_title("假期申请")
-    drop_breadcrumb("我的假条",home_users_path)
+    drop_breadcrumb("我的假条",episodes_path)
     drop_breadcrumb
-    #@episode = Episode.new
+
+    @episode.start_date =  Time.now.beginning_of_day.strftime("%Y-%m-%d %H:%M")
+    @episode.end_date = Time.now.end_of_day.strftime("%Y-%m-%d %H:%M")
+    @episode.holiday = @holiday
   end
 
   # GET /episodes/1/edit
@@ -32,10 +48,10 @@ class EpisodesController < ApplicationController
   # POST /episodes.json
   def create
     @episode = Episode.new(episode_params)
-
+    @episode.user_id = current_user.id
     respond_to do |format|
       if @episode.save
-        format.html { redirect_to @episode, notice: 'Episode was successfully created.' }
+        format.html { redirect_to @episode, notice: '申请成功，请等待审批!' }
         format.json { render :show, status: :created, location: @episode }
       else
         format.html { render :new }

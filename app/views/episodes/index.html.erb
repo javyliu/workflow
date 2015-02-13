@@ -20,12 +20,19 @@
         <td><%= episode.end_date %></td>
         <td><%= episode.comment %></td>
         <td><%= episode.state %></td>
-        <td><%= link_to '编辑', edit_episode_path(episode) %></td>
+        <td><%= link_to '编辑', edit_episode_path(episode) if episode.state == 0 %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
+<div class="panel">
+  <h4>假单</h4>
+  <% cache [:holiday,current_user.dept_group.first] do %>
+     <% Holiday.where(id: current_user.dept_group.last).each do |item|  %>
+        <%= link_to "申请#{item.name}", new_episode_path(item.id),class: "button medium" %>
+     <% end %>
 
-<%= link_to '申请假期', new_episode_path %>
+  <% end %>
+</div>
+

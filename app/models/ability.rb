@@ -4,28 +4,27 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
 
-    if user.role_group.nil?
-      cannot :manage, :all
-      can :read,[Checkinout,Episode],user_id: user.id
-      can [:index,:home],User,uid: user.id
-      can [:create,:update],Episode,user_id: user.id
-    end
-
-    if user.role?("department_manager")
-      cannot :manage, :all
-      can :read,Checkinout,user_id: user.leader_data.try(:last)
-      can :search,Checkinout
-      can :manage,Journal do |journal|
-        user.leader_data.try(:include?,journal.user_id)
-      end
-    end
+    cannot :manage, :all
+    can :read,[Checkinout,Episode],user_id: user.id
+    can [:home],User,uid: user.id
+    can [:create,:update],Episode,user_id: user.id
 
     if user.role?("admin")
-      can :manage, :all
+      can [:destroy,:list],:all
+      can [:kaoqing,:confirm],User
       #can :read,Checkinout,user_id: user.leader_data.try(:last)
-    elsif user.role?("manager")
-      can :read,[Checkinout,Episode]#,user_id: user.leader_data.try(:last)
+    elsif user.role?("department_manager")
+      can :list,Checkinout,user_id: user.leader_data.try(:last)
       can :search,Checkinout
+      can [:kaoqing,:confirm],User
+      can :list,Journal do |journal|
+        user.leader_data.try(:include?,journal.user_id)
+      end
+    elsif user.role?("manager")
+      can :list,[Checkinout,Episode]#,user_id: user.leader_data.try(:last)
+      can :search,Checkinout
+    elsif user.role_group.nil?
+      can [:index,:home],User,uid: user.id
     end
     # Define abilities for the passed in user here. For example:
     #
