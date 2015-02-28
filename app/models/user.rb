@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_one :last_year_info,-> {where(year: OaConfig.setting(:end_year_time)[0..3]) },class_name: "YearInfo"
   has_many :journals
   #用户在某一天的已确认异常考勤,用于手动加载防止n+1
-  has_one :journal
+  #has_one :journal
   #从本年度计考勤之日起的异常考勤，用于计算每天的剩余年假
   has_many :year_journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type) },class_name: "Journal"
 

@@ -5,4 +5,5 @@ class Checkinout < ActiveRecord::Base
   #scope :dry_clean_only, -> { joins(:washing_instructions).where('washing_instructions.dry_clean_only = ?', true) }
   include JavyTool::Csv
   include JavyTool::ConstructQuery
+
 end

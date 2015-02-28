@@ -1,6 +1,7 @@
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">
+    <% if can?(:confirm, :all) %>
     <h4><span>待确认</span></h4>
     <% @to_be_confirms.each do |key,values| %>
     <div class="panel">
@@ -10,6 +11,24 @@
       <% end %>
     </div>
     <% end %>
+    <hr />
+    <% end %>
+    <h4><span>异常考勤记录</span></h4>
+    <table>
+      <th>日期</th>
+      <th>签入时间</th>
+      <th>签出时间</th>
+      <th>异常描述</th>
+      <% @my_journals.each do |item| %>
+      <tr>
+        <td><%= item.update_date %></td>
+        <td><%= item.checkin.strftime("%H:%M") %></td>
+        <td><%= item.checkout.strftime("%H:%M") %></td>
+        <td><%= item.description %></td>
+      </tr>
+      <% end %>
+    </table>
+    <%= paginate(@my_journals) %>
 
   </div>
 </div>

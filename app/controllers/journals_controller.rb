@@ -4,7 +4,7 @@ class JournalsController < ApplicationController
   # GET /journals
   # GET /journals.json
   def index
-    @journals = Journal.all
+    @journals = Journal.all.page(params[:page])
   end
 
   # GET /journals/1
@@ -51,18 +51,16 @@ class JournalsController < ApplicationController
         raise CanCan::AccessDenied.new("未授权", home_users_path,params[:task])
       end
 
-      @journal = Journal.find_or_initialize_by(user_id: params[:user_id],update_date: params[:date])
+      _key,_value = params[:journal].first
+      cktype = Journal::CheckType.assoc(_key)
+      raise "类型不存在 #{_key}" unless cktype
+      @journal = Journal.find_or_initialize_by(user_id: params[:user_id],update_date: params[:date],check_type: cktype.second)
       @journal.dval = 0
 
-      params[:journal].each do |k,v|
-        cktype = Journal::CheckType.assoc(k)
-        raise "类型不存在 #{k}" unless cktype
-        @journal.check_type = cktype.second
-        if @journal.check_type == 10
-          @journal.description = "特批：#{v}"
-        else
-          @journal.dval = v.to_f * cktype.last
-        end
+      if @journal.check_type == 10
+        @journal.description = "#{_value}"
+      else
+        @journal.dval = _value.to_f * cktype.last
       end
 
       if @journal.save

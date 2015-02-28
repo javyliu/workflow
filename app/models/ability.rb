@@ -10,11 +10,14 @@ class Ability
     can [:create,:update],Episode,user_id: user.id
 
     if user.role?("admin")
+      can :create,:all
+      can :confirm,:all
       can [:destroy,:list],:all
       can [:kaoqing,:confirm],User
       #can :read,Checkinout,user_id: user.leader_data.try(:last)
     elsif user.role?("department_manager")
       can :list,Checkinout,user_id: user.leader_data.try(:last)
+      can :confirm,:all
       can :search,Checkinout
       can [:kaoqing,:confirm],User
       can :list,Journal do |journal|

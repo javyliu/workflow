@@ -1,21 +1,21 @@
 <div class="columns medium-3 medium-push-9">
   <div class="bg_grey border_grey ptl1em">
-    <h5><span>管理功能</span></h5>
+    <h5><span>考勤相关</span></h5>
     <ul class="side-nav">
-      <li class="active">
-      <%= link_to "我的考勤", home_users_path %>
-      </li>
+      <li class=""> <%= link_to_unless_current "我的考勤", home_users_path %> </li>
+      <li><%= link_to_unless_current "我的签到记录", checkinouts_path %></li>
       <li >
-      <%= link_to "我的假单", episodes_path(only: "me") %>
+      <%= link_to_unless_current "我的假单", episodes_path(only: "me") %>
       </li>
-      <li class="divider"></li>
-      <li><%= link_to "节假日管理", spec_days_path %></li>
-      <li><%= link_to "系统配置", oa_configs_path %></li>
-      <li><%= link_to "考勤规则管理", attend_rules_path %></li>
 
       <li class="divider"></li>
-      <li><h6>部门考勤管理</h6></li>
-      <li><%= link_to "部门考勤", checkinouts_path  %></li>
+      <li><%= link_to_unless_current "部门考勤", checkinouts_path  %></li>
+      <% if can?(:create,:all) %>
+      <li class="divider"></li>
+      <li><%= link_to_unless_current "节假日管理", spec_days_path %></li>
+      <li><%= link_to_unless_current "系统配置", oa_configs_path %></li>
+      <li><%= link_to_unless_current "考勤规则管理", attend_rules_path %></li>
+      <% end %>
     </ul>
   </div>
 </div>

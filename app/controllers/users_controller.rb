@@ -27,6 +27,8 @@ class UsersController < ApplicationController
                         end
     end
 
+    @my_journals = current_user.journals.order("id desc").page(params[:page]).select("journals.*,checkin,checkout").joins("inner join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id ")
+
   end
 
   #确认考勤完成,删除该用户待确认任务
@@ -44,9 +46,12 @@ class UsersController < ApplicationController
     end
   end
 
+  #部门考勤
   def kaoqing
 
-    @task = Task.init_from_subject(params[:task])
+    #如果未指定task，则新建一个昨日task
+    @task = Task.init_from_subject(params[:task]) || Task.new("F001",current_user.id,date: Date.yesterday)
+
     @need_update = current_user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
     is_mine = @task.leader_user_id == current_user.id
     if (current_user.roles & ["department_manager","admin"]).blank? && !is_mine
@@ -62,7 +67,7 @@ class UsersController < ApplicationController
       tasks
     end
 
-    @date ||= @task.date || Date.yesterday
+    @date = @task.date
     @rule = AttendRule.find(current_user.leader_data[1])
 
     self.current_user = current_user.decorate

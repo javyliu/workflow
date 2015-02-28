@@ -26,11 +26,13 @@
       <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
     </div>
     <% end %>
-    <div class="panel">
+    <div class="panel need_change_event">
       <h4>待确认考勤</h4>
       <% @to_be_confirm.each do |item| %>
       <%= link_to item , kaoqing_users_path(task: item),class: "button" %>
       <% end %>
+      <h4>已确认考勤 <small>点击选择日期</small></h4>
+      <%= text_field_tag :date,'',class: "datepicker",readonly: true,data: {url: kaoqing_users_path("F001:#{current_user.id}:")} %>
     </div>
 
     <h5><%= @date %> (<%= I18n.t("date.day_names")[Date.parse(@date).wday] %>) 考勤确认</h5>
@@ -44,22 +46,26 @@
       </thead>
       <tbody id="content" class="in_editor">
       <%= current_user.wrap(@task,need_update: @need_update,rule: @rule) %>
-      <% if @need_update %>
       <tr>
         <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
-          <%= link_to "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %></td>
+          <% if @need_update %>
+          <%= link_to "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %>
+          <% else %>
+          <%= link_to("重新确认", kaoqing_users_path(@task,cmd: 'update'),class: "button success small mt0") %>
+          <% end %>
+        </td>
       </tr>
-      <% end %>
       </tbody>
     </table>
     <fieldset>
-      <legend><span>操作说明</span></legend>
-      <ul>
-        <li>点击方框内空白处进行编辑,每行只需填写一项</li>
-        <li>回车确认更新</li>
-        <li>方框外点击取消更新</li>
+      <legend><span>操作步聚说明</span></legend>
+      <ol>
+        <li>点击方框内空白处进行编辑</li>
+        <li>按回车=> 确认更新</li>
+        <li>方框外点击 => 取消更新</li>
         <li>点击右下角“考勤确认完成”按钮完成当日考勤确认</li>
-      </ul>
+        <li>点击右下角“重新确认”可再次确认当日考勤</li>
+      </ol>
     </fieldset>
   </div>
 

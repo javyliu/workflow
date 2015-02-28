@@ -30,7 +30,7 @@ class Task
     self.type = type
     self.leader_user_id = leader_user_id
     self.action_name = CfmType.rassoc(type).try(:second)
-    self.date = date || Date.yesterday.to_s
+    self.date = (date || Date.yesterday).to_s
     self.mid = mid
   end
 
@@ -169,9 +169,9 @@ class Task
         year_journals.find_all {|_item| _item.user_id == item.id}
       )
 
-      ass = item.association(:journal)
+      ass = item.association(:journals)
       ass.loaded!
-      ass.target = journals.nil? ? nil : journals.detect {|_item| _item.user_id == item.id}
+      ass.target.concat(journals.find_all {|_item| _item.user_id == item.id})
 
       item.calculate_journal(rule,task.date)
       leader_user.ref_cmd[0] += item.ref_cmd.length

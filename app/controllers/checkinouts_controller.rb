@@ -5,6 +5,13 @@ class CheckinoutsController < ApplicationController
   # GET /checkinouts
   # GET /checkinouts.json
   def index
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("我的的签到记录")
+    drop_breadcrumb
+    @checkinouts = @checkinouts.page(params[:page]).order("id desc")
+  end
+
+  def list
     drop_page_title("签到记录")
     drop_breadcrumb
 

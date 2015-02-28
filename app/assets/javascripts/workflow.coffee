@@ -17,5 +17,10 @@ $(->
     $(this).attr("href",$(this).attr("href")+"?"+$(this).closest("form").serialize())
   )
 
-  $(document).on 'ready page:load', -> $('.datepicker').datetimepicker({ format:'Y-m-d H:i', inline:false, lang:'zh' })
+  $(document).on 'ready page:load', -> $('.datetimepicker').datetimepicker({ format:'Y-m-d H:i', inline:false, lang:'zh' })
+  $(document).on 'ready page:load', ->
+    $('.datepicker','.need_change_event').datetimepicker({timepicker:false, format:'Y-m-d', inline:false, lang:'zh', onClose: (_time,_input) ->
+      if _input.val().length > 0
+        Turbolinks.visit(_input.data("url")+_input.val())
+    })
 )

@@ -2,15 +2,17 @@ class UserDecorator < ApplicationDecorator
   delegate_all
 
   def blank_out(med)
-    if object.journal
+    if object.journals.present?
       cktype = Journal::CheckType.assoc(med.to_s)
-      return nil if object.journal.check_type != cktype.second
+      #return nil if object.journal.check_type != cktype.second
+      _journal = object.journals.detect { |e| e.check_type == cktype.second }
+      return nil unless _journal
       if cktype.last == 0
-        object.journal.description
+        _journal.description
       elsif cktype.last == 1
-        object.journal.dval
+        _journal.dval
       else
-        object.journal.dval.to_f / cktype.last
+        _journal.dval.to_f / cktype.last
       end
     else
       nil

@@ -1,48 +1,20 @@
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">
-    <h5><span><%= @page_title %></span></h5>
-    <% if  can? :search,Checkinout && params[:only] != "me" %>
-    <div id="search" class="panel">
-      <form data-remote="true"  action="#" data-replace-with="#content">
-        <div class="row">
-          <div class="columns medium-3">
-            <label>用户id:</label>
-            <%= text_field :checkinout, :user_id, placeholder: "用户id" %>
-          </div>
-          <div class="columns medium-3">
-            <label>部门:</label>
-            <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
-          </div>
-          <div class="columns medium-3">
-            <label>日期:</label>
-            <%= text_field :checkinout,:rec_date,type: "date",placeholder: "2013-08-15"  %>
-          </div>
-          <div class="columns medium-3">
-            <input type="submit" class="button small inline-button" text="搜索"/>
-            <%= link_to "导出", checkinouts_path(format: :xls), class: "export_xls small button"  %>
-          </div>
-        </div>
-      </form>
-      <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
-    </div>
-    <% end %>
+    <h4><span>签到记录</span></h4>
     <table>
-      <thead>
-        <tr>
-          <th>日期</th>
-          <th>用户ID</th>
-          <th>名字</th>
-          <th>部门</th>
-          <th>签入时间</th>
-          <th>签出时间</th>
-          <th>参考时间</th>
-        </tr>
-      </thead>
-      <tbody id="content">
-      <%= render partial: 'items', object: @checkinouts %>
-      </tbody>
+      <th>日期</th>
+      <th>签入时间</th>
+      <th>签出时间</th>
+      <% @checkinouts.each do |item| %>
+      <tr>
+        <td><%= item.rec_date %></td>
+        <td><%= item.checkin.strftime("%H:%M") %></td>
+        <td><%= item.checkout.strftime("%H:%M") %></td>
+      </tr>
+      <% end %>
     </table>
+    <%= paginate(@checkinouts) %>
 
   </div>
 </div>

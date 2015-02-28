@@ -19,11 +19,11 @@
 <div class="row">
   <div class="columns medium-4">
     <%= f.label :start_date,"开始时间" %>
-    <%= f.text_field :start_date,class: "datepicker",data:{:'date-format' =>  "yyyy-mm-dd hh:ii"},readonly: true %>
+    <%= f.text_field :start_date,class: "datetimepicker",readonly: true %>
   </div>
   <div class="columns medium-4 datetime">
     <%= f.label :end_date,"结束时间" %>
-    <%= f.text_field :end_date,class: "datepicker",data:{:'date-format' =>  "yyyy-mm-dd hh:ii"},readonly: true %>
+    <%= f.text_field :end_date,class: "datetimepicker",readonly: true %>
   </div>
   <div class="columns medium-4">
     <div class="row">
