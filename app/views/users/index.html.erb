@@ -1,49 +1,56 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Listing Users</h1>
-
+<div id="search" class="panel">
+      <form data-remote="true"  action="#" data-replace-with="#content">
+        <div class="row">
+          <div class="columns medium-2">
+            <label>用户id:</label>
+            <%= text_field :user, :uid, placeholder: "用户id" %>
+          </div>
+          <div class="columns medium-3">
+            <label>姓名:</label>
+            <%= text_field :user,:user_name %>
+          </div>
+          <div class="columns medium-2">
+            <label>部门:</label>
+            <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
+          </div>
+          <div class="columns medium-3">
+            <label>邮箱:</label>
+            <%= text_field :user,:email %>
+          </div>
+          <div class="columns medium-2">
+            <input type="submit" class="button small inline-button" text="搜索"/>
+          </div>
+        </div>
+      </form>
+      <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+    </div>
 <table>
   <thead>
     <tr>
-      <th>Uid</th>
-      <th>User name</th>
-      <th>Email</th>
-      <th>Department</th>
-      <th>Title</th>
-      <th>Expire date</th>
-      <th>Dept code</th>
-      <th>Mgr code</th>
-      <th>Password digest</th>
-      <th>Role group</th>
-      <th>Remember token</th>
-      <th>Remember token expires at</th>
-      <th colspan="3"></th>
+      <th>ID</th>
+      <th>名字</th>
+      <th>邮箱</th>
+      <th>部门</th>
+      <th>职位</th>
+      <th>离职日期</th>
+      <th>直属管理者ID</th>
+      <th>角色</th>
+      <th></th>
     </tr>
   </thead>
 
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td><%= user.uid %></td>
-        <td><%= user.user_name %></td>
-        <td><%= user.email %></td>
-        <td><%= user.department %></td>
-        <td><%= user.title %></td>
-        <td><%= user.expire_date %></td>
-        <td><%= user.dept_code %></td>
-        <td><%= user.mgr_code %></td>
-        <td><%= user.password_digest %></td>
-        <td><%= user.role_group %></td>
-        <td><%= user.remember_token %></td>
-        <td><%= user.remember_token_expires_at %></td>
-        <td><%= link_to 'Show', user %></td>
-        <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
+  <tbody id="content">
+    <%= render partial: 'items',object: @users %>
   </tbody>
 </table>
 
-<br>
 
-<%= link_to 'New User', new_user_path %>
+<fieldset>
+  <legend><span>操作说明</span></legend>
+  <ul>
+    <li>点击进行编辑</li>
+    <li>按回车键进行确认，空白外点击取消编辑</li>
+    <li>在邮件及网页中显示考勤确认单时，表头按排序值由小到大排列</li>
+  </ul>
+</fieldset>
+

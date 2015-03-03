@@ -12,10 +12,10 @@ class Task
 
   #不同类型的确认单对应的邮件方法
   CfmType= [
-    ["考勤确认单","F001","Journal"],
-    ["请假确认单","F002","Episode"],
-    ["加班确认单","F003","Episode"],
-    ["出差确认单","F004","Episode"]
+    ["考勤确认单","F001","kaoqing_users_path"],
+    ["请假确认单","F002","episode_path"],
+    ["加班确认单","F003","episode_path"],
+    ["出差确认单","F004","episode_path"]
   ]
   def to_s
     self.task_name
@@ -110,7 +110,7 @@ class Task
     opts = args.extract_options!
     type,leader_user_id = args
     raise "type is nil" if type.nil? || leader_user_id.nil?
-    _task = self.new(type,leader_user_id,date: opts.delete(:date))
+    _task = self.new(type,leader_user_id,date: opts.delete(:date),mid: opts.delete(:mid))
     Sidekiq.redis do |conn|
       conn.hmset(_task.task_name,"state",Task::Pending,"count",0,"date",_task.date,*opts.to_a.flatten(1))
       conn.sadd("task:pendings",_task.task_name)

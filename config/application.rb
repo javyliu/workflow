@@ -34,7 +34,7 @@ module Workflow
 
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.perform_deliveries = true
-    config.action_mailer.default_url_options = { host: 'pipgame.com' }
+    config.action_mailer.default_url_options = { host: 'kaoqing.pipgame.com' }
     #config.action_mailer.logger = nil
     config.action_mailer.smtp_settings = {
       address:              '114.251.179.140',

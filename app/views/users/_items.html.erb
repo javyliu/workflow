@@ -1,0 +1,16 @@
+<% items.each do |user| %>
+  <tr>
+    <td><%= user.uid %></td>
+    <td><%= user.user_name %></td>
+    <td><%= user.email %></td>
+    <td><%= user.dept.name %></td>
+    <td><%= user.title %></td>
+    <td><%= user.expire_date %></td>
+    <td><%= user.mgr_code %></td>
+    <td><%= user.roles_cn.join(",") %></td>
+    <td><%= link_to '详性', user %> <%= link_to '编辑', edit_user_path(user) %></td>
+  </tr>
+<% end %>
+<tr>
+  <td colspan="9"><%= paginate(items,remote:true) %></td>
+</tr>

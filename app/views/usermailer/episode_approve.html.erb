@@ -1,0 +1,45 @@
+<h4>Dear <%= @leader_user.user_name %>:</h4>
+<p>
+请您确认以下假期申请：
+</p>
+<table style="margin-left:2em;">
+  <tbody>
+  <tr>
+    <td>名字</td>
+    <td><%= @episode.user.user_name %></td>
+  </tr>
+  <tr>
+    <td>部门</td>
+    <td><%= @episode.user.dept.name %></td>
+  </tr>
+  <tr>
+    <td>假别</td>
+    <td><%= @episode.holiday.name %></td>
+  </tr>
+  <tr>
+    <td>开始时间</td>
+    <td><%= @episode.start_date.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+  <tr>
+    <td>结束时间</td>
+    <td><%= @episode.end_date.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+  <tr>
+    <td>申请时长</td>
+    <td><%= @episode.total_time %> <%= @episode.holiday.unit %></td>
+  </tr>
+  <tr>
+    <td>申请事由</td>
+    <td><%= @episode.comment %></td>
+  </tr>
+  <tr>
+    <td>申请时间</td>
+    <td><%= @episode.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+  <tr>
+    <td colspan=2><%= link_to '审批', episode_url(@task.to_s) %></td>
+  </tr>
+  </tbody>
+</table>
+
+

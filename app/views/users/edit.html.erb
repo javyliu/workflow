@@ -1,6 +1,29 @@
-<h1>Editing User</h1>
+<%= form_for(@user) do |f| %>
+  <div class="field">
+    <p><strong>姓名: <%= f.object.user_name %> </strong></p>
+  </div>
+  <div class="field">
+    <%= f.label :password,"密码" %>
+    <%= f.text_field :password %>
+  </div>
+  <div class="field">
+    <%= f.label :roles,"角色" %>
+    <%= f.collection_select :roles,User::ROLES,:to_s,:humanize,prompt: true %>
+  </div>
 
-<%= render 'form' %>
 
-<%= link_to 'Show', @user %> |
-<%= link_to 'Back', users_path %>
+  <div class="actions">
+    <%= f.submit "提交",class: "button" %>
+  </div>
+<% end %>
+
+<%= link_to '返回', users_path %>
+
+<fieldset>
+  <legend><span>操作说明</span></legend>
+  <ul>
+  <li>如不更新密码新留空</li>
+  <li>角色说明：Admin: 系统管理员，Manager: 考勤系统管理人员，department_manager: 部门考勤管理人员，Badman: 坏人：） </li>
+  </ul>
+
+</fieldset>

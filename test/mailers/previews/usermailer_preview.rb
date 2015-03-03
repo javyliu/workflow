@@ -11,6 +11,10 @@ class UsermailerPreview < ActionMailer::Preview
     Usermailer.daily_approved("1461",%w(a b c d e f g),Date.yesterday.to_s())
   end
 
+  def episode_approve
+    Usermailer.episode_approve('F002:1042:2015-03-01:20')
+  end
+
   def error_approved
     #Rails.logger.info(request)
     Usermailer.error_approved("1461","你已经确认过了",Date.yesterday.to_s())

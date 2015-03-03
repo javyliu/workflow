@@ -5,16 +5,19 @@
       <li class=""> <%= link_to_unless_current "我的考勤", home_users_path %> </li>
       <li><%= link_to_unless_current "我的签到记录", checkinouts_path %></li>
       <li >
-      <%= link_to_unless_current "我的假单", episodes_path(only: "me") %>
+      <%= link_to_unless_current "我的假单", episodes_path %>
       </li>
 
       <li class="divider"></li>
-      <li><%= link_to_unless_current "部门考勤", checkinouts_path  %></li>
+      <% if can?(:list,Journal) %>
+        <li><%= link_to_unless_current "部门考勤", kaoqing_users_path("dept")  %></li>
+      <% end %>
       <% if can?(:create,:all) %>
       <li class="divider"></li>
       <li><%= link_to_unless_current "节假日管理", spec_days_path %></li>
       <li><%= link_to_unless_current "系统配置", oa_configs_path %></li>
       <li><%= link_to_unless_current "考勤规则管理", attend_rules_path %></li>
+      <li><%= link_to_unless_current "用户管理", users_path %></li>
       <% end %>
     </ul>
   </div>

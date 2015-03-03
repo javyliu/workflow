@@ -5,7 +5,8 @@ class ReportTitlesController < ApplicationController
   # GET /report_titles
   # GET /report_titles.json
   def index
-    drop_page_title("规则表头列表")
+    drop_breadcrumb("考勤规则管理",attend_rules_path)
+    drop_page_title("规则表头管理")
     drop_breadcrumb
     @report_titles = ReportTitle.all
   end

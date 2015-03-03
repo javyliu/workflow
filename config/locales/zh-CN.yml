@@ -18,6 +18,10 @@
 #
 # To learn more, please read the Rails Internationalization guide
 zh-CN:
+  admin: 系统管理员
+  manager: 管理员
+  department_manager: 部门管理员
+  badman: Badman
   unauthorized:
     default: "无权访问"
   common:
@@ -225,6 +229,13 @@ zh-CN:
       long: ! '%Y年%b%d日 %H:%M'
       short: ! '%b%d日 %H:%M'
     pm: 下午
+  activerecord:
+    models:
+      episode: '假单'
+    attributes:
+      episode:
+        total_time: '申请时长'
+        comment: '申请事由'
 
   views:
     pagination:

@@ -1,7 +1,7 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
 
-  resources :approves
+  resources :approves,only: [:create,:update]
 
   root 'welcome#index'
 
@@ -29,7 +29,8 @@ Rails.application.routes.draw do
   end
 
   get "episodes/new/:holiday_id" => "episodes#new",as: :new_episode
-  resources :episodes,except: :new do
+  get "episodes/:task" => "episodes#show",as: :episode
+  resources :episodes,except: [:show,:new] do
     collection do
       get :list
     end

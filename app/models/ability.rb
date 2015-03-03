@@ -10,6 +10,7 @@ class Ability
     can [:create,:update],Episode,user_id: user.id
 
     if user.role?("admin")
+      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle]
       can :create,:all
       can :confirm,:all
       can [:destroy,:list],:all
@@ -18,6 +19,7 @@ class Ability
     elsif user.role?("department_manager")
       can :list,Checkinout,user_id: user.leader_data.try(:last)
       can :confirm,:all
+      can :create,Approve
       can :search,Checkinout
       can [:kaoqing,:confirm],User
       can :list,Journal do |journal|

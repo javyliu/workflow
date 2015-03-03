@@ -7,13 +7,24 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     #@users = User.all
-    @users = @users.page(params[:page])
+    params.permit!
+    con_hash,_ = construct_condition(:user)
+    drop_page_title("用户管理")
+    drop_breadcrumb
+    @users = @users.where(con_hash) if con_hash
+    @users = @users.page(params[:page]).includes(:dept)
+    respond_to do |format|
+      format.html {  }
+      format.js {render partial: "items",object: @users, content_type: Mime::HTML}
+    end
+
   end
 
   # GET /users/1
   # GET /users/1.json
   def show
-    drop_page_title("我的签到记录")
+    drop_breadcrumb("用户管理",users_path)
+    drop_page_title("用户详情")
     drop_breadcrumb
   end
 
@@ -82,6 +93,9 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    drop_breadcrumb("用户管理",users_path)
+    drop_page_title("用户编辑")
+    drop_breadcrumb
   end
 
   # POST /users
@@ -105,9 +119,10 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
+        format.html { redirect_to @user, notice: "操作成功！"}
         format.json { render :show, status: :ok, location: @user }
       else
+        flash.now[:alert] = @user.errors.full_message
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
@@ -132,7 +147,8 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:uid, :user_name, :email, :department, :title, :expire_date, :dept_code, :mgr_code, :password_digest, :role_group, :remember_token, :remember_token_expires_at)
+      #params.require(:user).permit(:uid, :user_name, :email, :department, :title, :expire_date, :dept_code, :mgr_code, :password_digest, :role_group, :remember_token, :remember_token_expires_at)
+      params.require(:user).permit(:uid, :password, :roles )
     end
 
 end

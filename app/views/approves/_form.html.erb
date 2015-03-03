@@ -1,16 +1,4 @@
-<%= form_for(@approfe) do |f| %>
-  <% if @approfe.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@approfe.errors.count, "error") %> prohibited this approfe from being saved:</h2>
-
-      <ul>
-      <% @approfe.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_for(@approve) do |f| %>
   <div class="field">
     <%= f.label :user_id %><br>
     <%= f.number_field :user_id %>

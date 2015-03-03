@@ -13,6 +13,14 @@ class Usermailer < ApplicationMailer
     mail(to: HandleErrorUser,subject: "#{@task.type_name}过期未确认")#,body: "no body",content_type: "text/html")
   end
 
+  #发送假期确认邮件
+  def episode_approve(task_name)
+    @task = Task.init_from_subject(task_name)
+    @leader_user = User.find(@task.leader_user_id)
+    @episode = Episode.find(@task.mid)
+    mail(to: HandleErrorUser,subject: @task.type_name)#,body: "no body",content_type: "text/html")
+  end
+
   #每日需发送的考勤邮件
   #def daily_kaoqing(leader_user_id,uids = nil,date = nil,preview = nil)
   def daily_kaoqing(*args)

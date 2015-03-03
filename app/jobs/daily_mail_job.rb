@@ -27,6 +27,7 @@ class DailyMailJob < ActiveJob::Base
     #构建邮件并发出去
     leaders.each do |leader_user_id,rule_id,checkin_uids|
       #发送邮件
+      #TODO:是否还要保留checkin_uids?
       if checkin_uids.length > 0
         Task.create("F001",leader_user_id,leader_user_id: leader_user_id,checkin_uids: checkin_uids.uniq.to_json,date: yesterday.to_s)
         Usermailer.daily_kaoqing(leader_user_id,uids: checkin_uids.uniq,date: yesterday.to_s).deliver_later

@@ -18,12 +18,14 @@ class SpecDaysController < ApplicationController
   # GET /spec_days/new
   def new
     #@spec_day = SpecDay.new
+    drop_breadcrumb("节假日管理",spec_days_path)
     drop_page_title("新增假日")
     drop_breadcrumb
   end
 
   # GET /spec_days/1/edit
   def edit
+    drop_breadcrumb("节假日管理",spec_days_path)
     drop_page_title("编辑假日")
     drop_breadcrumb
   end

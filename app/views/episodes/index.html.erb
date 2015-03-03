@@ -1,3 +1,5 @@
+<% if @episodes.present? %>
+
 <table>
   <thead>
     <tr>
@@ -12,26 +14,27 @@
   </thead>
 
   <tbody>
-    <% @episodes.each do |episode| %>
-      <tr>
-        <td><%= episode.user.user_name %></td>
-        <td><%= episode.holiday.name %></td>
-        <td><%= episode.start_date %></td>
-        <td><%= episode.end_date %></td>
-        <td><%= episode.comment %></td>
-        <td><%= episode.state %></td>
-        <td><%= link_to '编辑', edit_episode_path(episode) if episode.state == 0 %></td>
-      </tr>
-    <% end %>
+  <% @episodes.each do |episode| %>
+  <tr>
+    <td><%= episode.user.user_name %></td>
+    <td><%= episode.holiday.name %></td>
+    <td><%= episode.start_date %></td>
+    <td><%= episode.end_date %></td>
+    <td><%= episode.comment %></td>
+    <td><%= episode.state %></td>
+    <td><%= link_to '编辑', edit_episode_path(episode) if episode.state == 0 %></td>
+  </tr>
+  <% end %>
   </tbody>
 </table>
 
+<% end %>
 <div class="panel">
   <h4>提交假单</h4>
   <% cache [:holiday,current_user.dept_group.first] do %>
-     <% Holiday.where(id: current_user.dept_group.last).each do |item|  %>
-        <%= link_to "申请#{item.name}", new_episode_path(item.id),class: "button medium" %>
-     <% end %>
+  <% Holiday.where(id: current_user.dept_group.last).each do |item|  %>
+  <%= link_to "申请#{item.name}", new_episode_path(item.id),class: "button medium" %>
+  <% end %>
 
   <% end %>
 </div>

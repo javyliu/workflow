@@ -1,4 +1,3 @@
-<p id="notice"><%= notice %></p>
 
 <p>
   <strong>Uid:</strong>
@@ -6,59 +5,44 @@
 </p>
 
 <p>
-  <strong>User name:</strong>
+  <strong>姓名:</strong>
   <%= @user.user_name %>
 </p>
 
 <p>
-  <strong>Email:</strong>
+  <strong>邮箱:</strong>
   <%= @user.email %>
 </p>
 
 <p>
-  <strong>Department:</strong>
+  <strong>部门:</strong>
   <%= @user.department %>
 </p>
 
 <p>
-  <strong>Title:</strong>
+  <strong>职位:</strong>
   <%= @user.title %>
 </p>
 
 <p>
-  <strong>Expire date:</strong>
+  <strong>离职日期:</strong>
   <%= @user.expire_date %>
 </p>
 
 <p>
-  <strong>Dept code:</strong>
+  <strong>部门编号:</strong>
   <%= @user.dept_code %>
 </p>
 
 <p>
-  <strong>Mgr code:</strong>
+  <strong>直属管理者ID:</strong>
   <%= @user.mgr_code %>
 </p>
-
 <p>
-  <strong>Password digest:</strong>
-  <%= @user.password_digest %>
+  <strong>角色:</strong>
+  <%= @user.roles_cn.join(",") %>
 </p>
 
-<p>
-  <strong>Role group:</strong>
-  <%= @user.role_group %>
-</p>
 
-<p>
-  <strong>Remember token:</strong>
-  <%= @user.remember_token %>
-</p>
-
-<p>
-  <strong>Remember token expires at:</strong>
-  <%= @user.remember_token_expires_at %>
-</p>
-
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<%= link_to '编辑', edit_user_path(@user) %> |
+<%= link_to '返回', users_path %>

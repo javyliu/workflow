@@ -28,11 +28,21 @@ class User < ActiveRecord::Base
     attr_accessor :query_date
   end
 
+  #当前用户的管理者,去除总管
+  def leader_user
+    @leader_user ||= User.find(self.mgr_code.present? ? self.mgr_code : self.dept.mgr_code)
+    if @leader_user.title.to_i > 400
+      @leader_user.leader_user
+    else
+      @leader_user
+    end
+  end
+
   #每日发送前一天部门的考勤邮件，如果昨天是工作日 ，则发送每个部门的考勤邮件，如果是非工作日 ，则只发送有考勤异常部门的邮件
   def self.leaders_by_date(date)
     if SpecDay.workday?(date: date)
        User.cached_leaders
-    else
+    else #非工作日有签到的都是异常考勤
       y_checkin_uids = Checkinout.where(rec_date: date.to_s).pluck(:user_id)
       leaders = User.cached_leaders
       y_checkin_uids.compact.each do |uid|
@@ -45,11 +55,15 @@ class User < ActiveRecord::Base
   end
 
   def roles=(*_roles)
-    self.role_group = (_roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
+    self[:role_group] = (_roles.flatten(1) & ROLES).map{ |r| 2**ROLES.index(r)}.sum
   end
 
   def roles
     @roles ||= ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
+  end
+
+  def roles_cn
+    roles.map { |e| I18n.t(e) }
   end
 
   def role?(role)
@@ -128,7 +142,7 @@ class User < ActiveRecord::Base
     self.class.encrypt(password, Time.now.to_s)
   end
 
-  #当前用户所属部门
+  #当前用户所属部门分组
   def dept_group
     @dept_group = case self.dept_code
     when /^0104|0105|0106/ #无倒休部门

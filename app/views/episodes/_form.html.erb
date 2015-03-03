@@ -1,9 +1,9 @@
 <%= form_for(@episode) do |f| %>
 <div class="row">
   <div class="columns medium-4">
-    <%= f.label :holiday_id,'假期类别' %>
+    <%= f.label :holiday_id,'类别' %>
     <%= f.hidden_field :holiday_id %>
-    <input type="text" value="<%= @holiday.try(:name) %>" readonly=true>
+    <input type="text" value="<%= @episode.holiday.try(:name) %>" readonly=true>
 
   </div>
   <div class="columns medium-4">
@@ -19,35 +19,34 @@
 <div class="row">
   <div class="columns medium-4">
     <%= f.label :start_date,"开始时间" %>
-    <%= f.text_field :start_date,class: "datetimepicker",readonly: true %>
+    <%= f.text_field :start_date,class: "datetimepicker",readonly: true ,required: true%>
   </div>
   <div class="columns medium-4 datetime">
     <%= f.label :end_date,"结束时间" %>
-    <%= f.text_field :end_date,class: "datetimepicker",readonly: true %>
+    <%= f.text_field :end_date,class: "datetimepicker",readonly: true ,required: true%>
   </div>
   <div class="columns medium-4">
     <div class="row">
       <div class="columns small-9">
         <%= f.label :total_time,"申请时长" %>
-        <%= f.text_field :total_time %>
+        <%= f.text_field :total_time,required: true %>
       </div>
       <div class="columns small-3">
         <label>&nbsp;</label>
-        <span class="unit">天</span>
-        <span class="unit hide">小时</span>
+        <span class="unit"><%= @episode.holiday.unit %></span>
       </div>
     </div>
   </div>
 </div>
 <div class="row">
   <div class="columns medium-12">
-    <%= f.label :comment,"请假事由" %>
-    <%= f.text_area :comment %>
+    <%= f.label :comment,"申请事由" %>
+    <%= f.text_area :comment,required: true %>
   </div>
 </div>
 <div class="row">
   <div class="columns">
-    <%= f.submit "提交",class: "button" %>
+    <%= f.submit "提交",class: "button",data: {disable_with: "提交中,请稍候..."} %>
   </div>
 </div>
 <% end %>

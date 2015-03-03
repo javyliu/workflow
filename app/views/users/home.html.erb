@@ -5,9 +5,10 @@
     <h4><span>待确认</span></h4>
     <% @to_be_confirms.each do |key,values| %>
     <div class="panel">
-      <h5><%= Task::CfmType.rassoc(key).try(:first) %></h5>
+      <% cfm_type = Task::CfmType.rassoc(key) %>
+      <h5><%= cfm_type.try(:first) %></h5>
       <% values.each do |task| %>
-      <%= link_to task , kaoqing_users_path(task: task),class: "button" %>
+      <%= link_to task , send(cfm_type.third,{task: task}),class: "button" %>
       <% end %>
     </div>
     <% end %>
