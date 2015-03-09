@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     collection do
       get :checkinout
       post "confirm/:task" => :confirm, as: :confirm
-      get "kaoqing/:task(/:cmd)" => :kaoqing,as: :kaoqing
+      get "kaoqin/:task(/:cmd)" => :kaoqing,as: :kaoqing
       get :home
     end
   end

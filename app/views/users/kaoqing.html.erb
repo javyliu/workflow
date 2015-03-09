@@ -27,9 +27,11 @@
     </div>
     <% end %>
     <div class="panel need_change_event">
+      <% if  @to_be_confirm.present? %>
       <h4>待确认考勤</h4>
       <% @to_be_confirm.each do |item| %>
       <%= link_to item , kaoqing_users_path(task: item),class: "button" %>
+      <% end %>
       <% end %>
       <h4>已确认考勤 <small>点击选择日期</small></h4>
       <%= text_field_tag :date,'',class: "datepicker",readonly: true,data: {url: kaoqing_users_path("F001:#{current_user.id}:")} %>

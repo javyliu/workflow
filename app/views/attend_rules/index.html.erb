@@ -18,7 +18,7 @@
         <td><%= attend_rule.description %></td>
         <td><%= attend_rule.time_range %></td>
         <td><%= attend_rule.min_unit %></td>
-        <td><%= link_to("点击查看",report_titles_path(ids: attend_rule.title_ids)) %></td>
+        <td><%= link_to("点击查看",report_titles_path(attend_rule_id: attend_rule.id)) %></td>
         <td><%= link_to 'Edit', edit_attend_rule_path(attend_rule) %></td>
       </tr>
       <% end %>

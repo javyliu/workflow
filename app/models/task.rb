@@ -149,7 +149,7 @@ class Task
 
     year_journals = Journal.select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type).where(["user_id in (?) and update_date > ?",uids,OaConfig.setting(:end_year_time)]).to_a
 
-    journals = task.date.to_s < Date.today.to_s ? Journal.where(["user_id in (?) and update_date = ?",uids,task.date]).to_a : nil
+    journals = task.date.to_s < Date.today.to_s ? Journal.where(["user_id in (?) and update_date = ?",uids,task.date]).to_a : []
 
     users.each do |item|
       #manually preload yesterday_checkin and yes_holiday

@@ -1,5 +1,5 @@
 Sidekiq.configure_server do |config|
-  config.redis = {url: 'redis://127.0.0.1:6379/0'}
+  config.redis = {url: 'redis://:pip123@127.0.0.1:6379/0'}
 
   #重新设置连接池大小
   ActiveRecord::Base.configurations[Rails.env]['pool'] = 20
@@ -13,5 +13,5 @@ Sidekiq.configure_server do |config|
   #
 end
 Sidekiq.configure_client do |config|
-  config.redis = {url: 'redis://127.0.0.1:6379/0',size: 1}
+  config.redis = {url: 'redis://:pip123@127.0.0.1:6379/0',size: 1}
 end

@@ -5,10 +5,11 @@ class ReportTitlesController < ApplicationController
   # GET /report_titles
   # GET /report_titles.json
   def index
+    @attend_rule = AttendRule.find(params[:attend_rule_id])
     drop_breadcrumb("考勤规则管理",attend_rules_path)
-    drop_page_title("规则表头管理")
+    drop_page_title("#{@attend_rule.description}规则表头管理")
     drop_breadcrumb
-    @report_titles = ReportTitle.all
+    @report_titles = ReportTitle.where(id: @attend_rule.title_ids)
   end
 
   # GET /report_titles/1

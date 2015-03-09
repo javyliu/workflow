@@ -61,7 +61,8 @@ gem 'dalli'
 gem 'cancancan', '~> 1.10'
 
 #my lib
-gem 'javy_tool',path: '../gems/javy_tool'
+#gem 'javy_tool',path: '../gems/javy_tool'
+gem 'javy_tool',git: 'https://github.com/javyliu/javy_tool.git'
 
 #paginate
 gem 'kaminari'

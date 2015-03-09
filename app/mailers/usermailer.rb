@@ -18,7 +18,9 @@ class Usermailer < ApplicationMailer
     @task = Task.init_from_subject(task_name)
     @leader_user = User.find(@task.leader_user_id)
     @episode = Episode.find(@task.mid)
-    mail(to: HandleErrorUser,subject: @task.type_name)#,body: "no body",content_type: "text/html")
+    rule = AttendRule.find(@leader_user.leader_data[1])
+    full_mailname = rule.name.start_with?("ab") ? FullMailname : %("#{@leader_user.user_name}" <#{@leader_user.email}>)
+    mail(to: full_mailname,subject: @task.type_name)#,body: "no body",content_type: "text/html")
   end
 
   #每日需发送的考勤邮件
@@ -56,7 +58,7 @@ class Usermailer < ApplicationMailer
 
 
     #TODO: need change to leader_user.email
-    full_mailname = FullMailname
+    full_mailname = rule.name.start_with?("ab") ? FullMailname : %("#{@leader_user.user_name}" <#{@leader_user.email}>)
     mail(to: full_mailname,subject: mail_subject )#,body: "no body",content_type: "text/html")
   end
 
@@ -66,7 +68,8 @@ class Usermailer < ApplicationMailer
     @date = date
     @changed_user_names = changed_user_names
     #TODO: need change to leader_user.email
-    full_mailname = FullMailname
+    rule = AttendRule.find(@leader_user.leader_data[1])
+    full_mailname = rule.name.start_with?("ab") ? FullMailname : %("#{@leader_user.user_name}" <#{@leader_user.email}>)
     mail(to: full_mailname,subject: "考勤确认完成{#{date}}")#,body: "no body",content_type: "text/html")
   end
 
@@ -75,7 +78,8 @@ class Usermailer < ApplicationMailer
     @date = date
     @error_msg = msg
     #TODO: need change to leader_user.email_name
-    full_mailname = FullMailname
+    rule = AttendRule.find(@leader_user.leader_data[1])
+    full_mailname = rule.name.start_with?("ab") ? FullMailname : %("#{@leader_user.user_name}" <#{@leader_user.email}>)
     mail(to: full_mailname,subject: "考勤确认错误{#{date}}")#,body: "no body",content_type: "text/html")
   end
 end

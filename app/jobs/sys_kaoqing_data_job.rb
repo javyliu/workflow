@@ -8,7 +8,7 @@ class SysKaoqingDataJob < ActiveJob::Base
     #  conn.incrby('foo', count)
     #end
     puts args.inspect
-    CharesDatabase::Tblcheckinout.sys_data(Date.yesterday,Date.today)
+    CharesDatabase::Checkinout.sys_data(Date.yesterday,Date.today)
     puts "end"
 
   end

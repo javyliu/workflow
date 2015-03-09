@@ -1,5 +1,6 @@
-PATH
-  remote: ../gems/javy_tool
+GIT
+  remote: https://github.com/javyliu/javy_tool.git
+  revision: 3d75d8a8e3a2d0cc6c3f3f41f5e0b608d235fea6
   specs:
     javy_tool (0.1.0)
 

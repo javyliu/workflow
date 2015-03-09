@@ -6,7 +6,7 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
-  config.cache_store = :mem_cache_store
+  config.cache_store = :mem_cache_store,'127.0.0.1'
   # Do not eager load code on boot.
   config.eager_load = false
 
@@ -37,7 +37,7 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
-  config.action_mailer.default_url_options = { host: '192.168.0.252:7080' }
+  config.action_mailer.default_url_options = { host: 'kq.pearlinpalm.com' }
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 end
