@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
     return_url = exception.action =~ /^\// ? exception.action : root_url
     respond_to do |format|
       format.html {redirect_to return_url, :alert => exception.message  }
+      format.json {render :json => exception.message.kind_of?(Hash) ? exception.message : {error: exception.message}}
       format.js {render :js => "alert('#{exception.message}')"}
     end
 

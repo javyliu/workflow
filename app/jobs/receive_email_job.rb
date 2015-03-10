@@ -33,6 +33,8 @@ class ReceiveEmailJob < ActiveJob::Base
               _task.update(:state,Task::Completed)#设置任务完成
               _task.remove(all: true) #删除催缴任务
               Usermailer.daily_approved(_task.leader_user_id,changed_user_names,_task.date).deliver_later
+            else
+              Usermailer.error_approved(_task.leader_user_id,"您部门#{_task.date}的考勤信息确认失败，请确认是否有未填写的异常考勤信息或登录web界面进行更改！",_task.date).deliver_later
             end
           when "F002" #请假确认
             #TODO

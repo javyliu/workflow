@@ -46,7 +46,7 @@
           <% end %>
         </tr>
       </thead>
-      <tbody id="content" class="in_editor">
+      <tbody id="content" class="in_editor" >
       <%= current_user.wrap(@task,need_update: @need_update,rule: @rule) %>
       <tr>
         <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
@@ -79,12 +79,3 @@
 
 </div>
 
-<% foot do %>
-<script type="text/javascript" charset="utf-8">
-
-$(document).on("ready page:load",function(){
-    $("tr.need_update td[class^=c_aff]").restInPlace();
-  });
-
-</script>
-<% end %>

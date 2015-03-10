@@ -23,4 +23,14 @@ $(->
       if _input.val().length > 0
         Turbolinks.visit(_input.data("url")+_input.val())
     })
+
+
+  $(document).on "ready page:load", ->
+    $("tr.need_update td[class^=c_aff]").restInPlace()
+
+  $(document).on 'success.rest-in-place',"tr.need_update td[class^=c_aff]", (event,data)->
+    if data.error
+      $(this).data("restInPlaceEditor").abort()
+      alert(data.error)
+
 )

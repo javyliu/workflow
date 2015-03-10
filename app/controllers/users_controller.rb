@@ -51,9 +51,11 @@ class UsersController < ApplicationController
     _date = Date.parse(@task.date)
     _today = Date.today
     #小于上月25号的考勤不能再作修改,27号以后不能再修改本月考勤
-    if _date < _today.change(day:26,month: _date.month - 1) || (_today.day > 26 && _date.day < 26)
+    if _date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && _date.day < 26)
       raise CanCan::AccessDenied.new("该日考勤已过了确认时间",kaoqing_users_path("dept") ,params[:task])
     end
+
+    @task.update(:state,Task::Completed)#设置任务完成
     @task.remove(all: true)
 
     respond_to do |format|
@@ -74,7 +76,7 @@ class UsersController < ApplicationController
 
     _today = Date.today
     @need_update = current_user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
-    @hide_edit = @need_update || @date < _today.change(day:26,month: @date.month - 1) || (_today.day > 26 && @date.day < 26)
+    @hide_edit = @need_update || @date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && @date.day < 26)
     is_mine = @task.leader_user_id == current_user.id
     if (current_user.roles & ["department_manager","admin"]).blank? && !is_mine
       raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
