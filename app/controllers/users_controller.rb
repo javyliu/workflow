@@ -38,7 +38,7 @@ class UsersController < ApplicationController
                         end
     end
 
-    @my_journals = current_user.journals.order("id desc").page(params[:page]).select("journals.*,checkin,checkout").joins("inner join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id ")
+    @my_journals = current_user.journals.order("update_date desc,id desc").page(params[:page]).select("journals.*,checkin,checkout").joins("inner join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id ")
 
   end
 
@@ -48,7 +48,12 @@ class UsersController < ApplicationController
     #  raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
     #end
     @task = Task.init_from_subject(params[:task])
-
+    _date = Date.parse(@task.date)
+    _today = Date.today
+    #小于上月25号的考勤不能再作修改,27号以后不能再修改本月考勤
+    if _date < _today.change(day:26,month: _date.month - 1) || (_today.day > 26 && _date.day < 26)
+      raise CanCan::AccessDenied.new("该日考勤已过了确认时间",kaoqing_users_path("dept") ,params[:task])
+    end
     @task.remove(all: true)
 
     respond_to do |format|
@@ -62,8 +67,14 @@ class UsersController < ApplicationController
 
     #如果未指定task，则新建一个昨日task
     @task = Task.init_from_subject(params[:task]) || Task.new("F001",current_user.id,date: Date.yesterday)
+    @date = Date.parse(@task.date)
+    if @date > Date.yesterday
+      raise CanCan::AccessDenied.new("无考勤数据！",kaoqing_users_path("dept") ,params[:task])
+    end
 
+    _today = Date.today
     @need_update = current_user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
+    @hide_edit = @need_update || @date < _today.change(day:26,month: @date.month - 1) || (_today.day > 26 && @date.day < 26)
     is_mine = @task.leader_user_id == current_user.id
     if (current_user.roles & ["department_manager","admin"]).blank? && !is_mine
       raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
@@ -78,7 +89,6 @@ class UsersController < ApplicationController
       tasks
     end
 
-    @date = @task.date
     @rule = AttendRule.find(current_user.leader_data[1])
 
     self.current_user = current_user.decorate

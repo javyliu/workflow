@@ -2,7 +2,7 @@ class Usermailer < ApplicationMailer
   #for test email
   #default bcc: 'qmliu@pipgame.com'
   FullMailname = %("javy" <javy_liu@163.com>)
-  HandleErrorUser = %("qmliu" <qmliu@pipgame.com>)
+  HandleErrorUser = %("kaoqin" <kaoqin@pipgame.com>)
 
   #发送邮件给错误处理人员
   def expired_error(task_name)
@@ -41,6 +41,7 @@ class Usermailer < ApplicationMailer
 
     @leader_user = User.find(leader_user_id)
     rule = AttendRule.find(@leader_user.leader_data[1])
+    @rule = rule
 
 
     @leader_user = @leader_user.decorate

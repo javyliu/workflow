@@ -37,7 +37,7 @@
       <%= text_field_tag :date,'',class: "datepicker",readonly: true,data: {url: kaoqing_users_path("F001:#{current_user.id}:")} %>
     </div>
 
-    <h5><%= @date %> (<%= I18n.t("date.day_names")[Date.parse(@date).wday] %>) 考勤确认</h5>
+    <h5><%= @date.to_s %> (<%= I18n.t("date.day_names")[@date.wday] %>) 考勤确认</h5>
     <table>
       <thead>
         <tr>
@@ -51,9 +51,16 @@
       <tr>
         <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
           <% if @need_update %>
-          <%= link_to params[:cmd] == "update" ? "退出编辑" : "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %>
+            <% if params[:cmd] == 'update' %>
+            <span class="red">点击完成本次编辑</span>
+            <%= link_to "退出编辑" , confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %>
+            <% else %>
+            <span class="red">考勤未确认</span>
+            <%= link_to "确认考勤" , confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %>
+            <% end %>
           <% else %>
-          <%= link_to("重新编辑", kaoqing_users_path(@task,cmd: 'update'),class: "button success small mt0") %>
+            <span class='red'>该日考勤已确认</span>
+            <%= link_to("重新编辑", kaoqing_users_path(@task,cmd: 'update'),class: "button success small mt0") unless @hide_edit  %>
           <% end %>
         </td>
       </tr>
@@ -65,7 +72,7 @@
         <li>点击方框内空白处进行编辑</li>
         <li>按回车=> 确认更新</li>
         <li>方框外点击 => 取消更新</li>
-        <li>点击右下角“考勤确认完成”按钮完成当日考勤确认</li>
+        <li><span class="red">注：</span>每次26号之前可进行编辑</li>
       </ol>
     </fieldset>
   </div>

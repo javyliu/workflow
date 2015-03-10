@@ -11,7 +11,11 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     return_url = exception.action =~ /^\// ? exception.action : root_url
-    redirect_to return_url, :alert => exception.message
+    respond_to do |format|
+      format.html {redirect_to return_url, :alert => exception.message  }
+      format.js {render :js => "alert('#{exception.message}')"}
+    end
+
   end
 
   def login_required
