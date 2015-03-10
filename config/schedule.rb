@@ -32,7 +32,7 @@ every '*/2 * * * *' do
   job "ReceiveEmailJob"
 end
 
-every '* 10,14 * * *' do
+every '1 10,14 * * *' do
   job "PromptDailyMailJob"
 end
 #every 1.day,at: '6am' do

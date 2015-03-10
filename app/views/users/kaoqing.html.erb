@@ -51,9 +51,9 @@
       <tr>
         <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
           <% if @need_update %>
-          <%= link_to "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %>
+          <%= link_to params[:cmd] == "update" ? "退出编辑" : "考勤确认完成", confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %>
           <% else %>
-          <%= link_to("重新确认", kaoqing_users_path(@task,cmd: 'update'),class: "button success small mt0") %>
+          <%= link_to("重新编辑", kaoqing_users_path(@task,cmd: 'update'),class: "button success small mt0") %>
           <% end %>
         </td>
       </tr>
