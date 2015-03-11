@@ -71,7 +71,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def c_dept_name
-    object.dept.name
+    object.dept.name.split("-").last
   end
 
   def c_user_name

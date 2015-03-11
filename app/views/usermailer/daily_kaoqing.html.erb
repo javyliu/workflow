@@ -1,10 +1,8 @@
 <h4>Dear <%= @leader_user.user_name %>:</h4>
 <p>
-本邮件由系统自动产生，并需要您回复处理.希望今后可以取代行政助理手工填写的确认的邮件.
-<br>
-目前尚在测试中，请暂时不要放弃原来的人工流程,建议您积极参与以发现问题和错误以便改正.
+本邮件由系统自动产生，并需要您回复处理.希望今后可以取代行政助理手工填写的确认的邮件.  目前尚在测试中，请暂时不要放弃原来的人工流程,建议您积极参与以发现问题和错误以便改正.
 </p>
-<h4>考勤确认单 (<%= @date %>)</h4>
+<h4>考勤确认单 (<%= @date %> <%= @wday %>)</h4>
 <% if  @leader_user.ref_cmd[0] == 0 %>
 <b class="green">无异常考勤，无需回复！</b>
 <br/>
@@ -16,7 +14,7 @@
 <table>
   <tr>
     <% @leader_user.report_titles.each do |item| %>
-    <th><%= item.des %></th>
+    <th class="<%= Journal::CheckType.assoc(item.name).try(:[],4) %>"><%= item.des %></th>
     <% end %>
   </tr>
   <%= @leader_user.wrap(@task,users: @users,need_update: false) %>
@@ -30,9 +28,16 @@
     <% else %>
     <li><b>确认倒休</b>：填写确认的小时数(负数为扣减)。</li>
     <% end %>
+
     <li><b>特批</b>：填写特批的描述</li>
     <li><b>迟到、早退、旷工、漏打卡等项:</b>填写1或不填。</li>
     <li><b>年假、病假、事假：</b>不填或者填写天数(最小天数为半天,用0.5表示)。</li>
+    <li><b>如没有对应的假期请在“其它”列中填写，格式如：x0.5, x1,其中x代表假期类别，后台的数字代表请假天数，假期类别如下:</b><br/>
+    <% Journal::MailDecType.each do |item| %>
+    <% cktype = Journal::CheckType.assoc(item.first) %>
+    <p><%= item.last %> : <%=cktype.third  %> (单位：<%= cktype.fourth %>) </p>
+    <% end %>
+    </li>
   </ul>
 </div>
 

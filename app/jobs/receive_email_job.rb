@@ -71,11 +71,11 @@ class ReceiveEmailJob < ActiveJob::Base
       body =Nokogiri::HTML(part.body.decoded.force_encoding(part.charset),"UTF-8")
       #get need fill user
       next if (_need_fills = body.css("tr.need_fill")).blank?
+
+      #如果有未确认的行，则直接返回
+      return false if _need_fill.any? {|_tr|_tr.css("td[abbr^=c_aff]").text().blank?}
       _need_fills.each do |item|
         aff_tds = item.css("td[abbr^=c_aff]")
-        #如果有未确认的行，则直接返回
-        return false if aff_tds.text().tap{|t|Rails.logger.info("-------#{t}---------")}.blank?
-
         user_name = item.css("td[abbr=c_user_name]").text
         _description = item.css("td[abbr=c_aff_spec_appr]").text
         _user_id = item.attr(:id)
@@ -88,12 +88,18 @@ class ReceiveEmailJob < ActiveJob::Base
           journal.description = item.css("td[abbr=c_ref_cmd]").text.strip
           journal.dval = 0
           _med = td.attr(:abbr).strip
+          #使用others来替换不常用的异常考勤类型
+          if  _med == "c_aff_others"
+            cktype = Journal.cktype_from_key(_text.first)
+            _text = _text[1..-1]
+          else
+            cktype = Journal::CheckType.assoc(_med)
+          end
           Rails.logger.info("-------method:#{_med} -text:#{_text}")
-          cktype = Journal::CheckType.assoc(_med)
           raise "cktype is nil" unless cktype
           journal.check_type = cktype.second
           if _med == "c_aff_spec_appr" #特批
-            journal.description = "#{cktype.third}#{_text}"
+            journal.description = "#{cktype.third}:#{_text}"
           else
             journal.description = "#{cktype.third}#{_text}#{cktype.fourth} #{_description}"
             journal.dval = _text.to_f * cktype.last

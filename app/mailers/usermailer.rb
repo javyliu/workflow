@@ -32,7 +32,8 @@ class Usermailer < ApplicationMailer
     leader_user_id = args.first
 
     uids = opts[:uids]
-    @date = opts[:date] || Date.yesterday
+    @date = opts[:date] || Date.yesterday.to_s
+    @wday = I18n.t("date.day_names")[Date.parse(@date).wday]
     @count = opts[:count]
     preview = opts[:preview]
 
@@ -45,7 +46,8 @@ class Usermailer < ApplicationMailer
 
 
     @leader_user = @leader_user.decorate
-    @leader_user.report_titles = ReportTitle.where(id: rule.title_ids).order("ord,id")
+    #id= 37的列为“其它“
+    @leader_user.report_titles = ReportTitle.where(id: (rule.title_ids + [37])).order("ord,id").find_all{|item| !item.name.in?(Journal.mail_dec_identities)}
     @leader_user.uids = uids
 
     @task = Task.new("F001",leader_user_id,date: @date)
