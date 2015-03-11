@@ -59,7 +59,7 @@
             <%= link_to "确认考勤" , confirm_users_path(@task),class: "button success small mt0",data: {method: :post} %>
             <% end %>
           <% else %>
-            <span class='red'>该日考勤已确认</span>
+            <span class='green'>该日考勤已确认</span>
             <%= link_to("重新编辑", kaoqing_users_path(@task,cmd: 'update'),class: "button success small mt0") unless @hide_edit  %>
           <% end %>
         </td>
@@ -72,7 +72,7 @@
         <li>点击方框内空白处进行编辑</li>
         <li>按回车=> 确认更新</li>
         <li>方框外点击 => 取消更新</li>
-        <li><span class="red">注：</span>每次26号之前可进行编辑</li>
+        <li><span class="red">注：</span>每月26号之前可进行编辑</li>
       </ol>
     </fieldset>
   </div>
