@@ -81,10 +81,10 @@ class User < ActiveRecord::Base
       else
         leaders_ary = User.find_by_sql( <<-heredoc
     select b.attend_rule_id,b.mgr_code uid,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where a.expire_date is NULL and a.mgr_code is NULL and b.attend_rule_id is not NULL GROUP BY b.`code`
+    where (a.expire_date is NULL or a.expire_date > '#{Date.today.to_s}') and a.mgr_code is NULL and b.attend_rule_id is not NULL GROUP BY b.`code`
     UNION
     select b.attend_rule_id,a.mgr_code uid,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where a.expire_date is NULL and a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code;
+    where (a.expire_date is NULL or a.expire_date > '#{Date.today.to_s}') and a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code;
                                        heredoc
                                       ).group_by(&:uid)
         .map{|k,v| [k,v.first.attend_rule_id,v.inject([]){|uids,item|uids + item.user_ids.split(",")}]}

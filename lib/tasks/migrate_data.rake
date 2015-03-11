@@ -52,7 +52,15 @@ namespace :migrate_data do
       u.title= item.title
       u.onboard_date= item.onboardDate
       u.regular_date= item.regularDate
-      u.password = u.email? ? (pwds[u.email[/.*(?=@)/,0]] || '123123') : '123123' #如果邮箱为空,或密码表为空，则设置密码为123123
+      #有email的用户才会设置密码，否则不设
+      if u.email
+        u.password = pwds[u.email[/.*(?=@)/,0]]
+        if u.password.nil? && u.new_record?
+          u.password = '123123'
+        end
+      end
+
+      #u.password = u.email? ? (pwds[u.email[/.*(?=@)/,0]] || '123123') : '123123' #如果邮箱为空,或密码表为空，则设置密码为123123
       #puts u.inspect
       u.save!
     end
@@ -66,10 +74,13 @@ namespace :migrate_data do
     holidays = Holiday.pluck(:id,:name)
     Episode.connection.execute("truncate episodes;")
     Episode.connection.execute("truncate approves;")
+
     CharesDatabase::TblEpisode.find_each do |item|
-      holiday = holidays.rassoc(item.type)
-      e = Episode.create(user_id: item.userId,holiday_id: holiday.first,start_date: item.startDate, end_date: item.endDate, comment: item.comments || holiday.last,state: item.approvedBy.present?) #,approved_by: item.approvedBy, approved_time: item.approvedDate  )
-      Approve.create(user_id: item.approvedBy,user_name: "",updated_at: item.approvedDate,created_at: item.approvedDate,episode_id: e.id,state: e.state)
+      holiday = holidays.rassoc(item.type == "产假" ? "产假/产检假" : item.type)
+      user = User.find(item.userId)
+      approve_user = User.find(item.approvedBy) if item.approvedBy
+      e = Episode.create!(user_id: item.userId,holiday_id: holiday.first,start_date: item.startDate, end_date: item.endDate, comment: item.comments || holiday.last,state: item.approvedBy.present?,title: user.title,total_time: '暂无') #,approved_by: item.approvedBy, approved_time: item.approvedDate  )
+      Approve.create!(user_id: item.approvedBy,user_name: approve_user.try(:user_name),updated_at: item.approvedDate,created_at: item.approvedDate,episode_id: e.id,state: e.state)
 
     end
   end
