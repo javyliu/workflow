@@ -52,9 +52,10 @@ class Usermailer < ApplicationMailer
 
     @task = Task.new("F001",leader_user_id,date: @date)
     @users = Task.eager_load_from_task(@task,leader_user: @leader_user,rule: rule)
+    #全勤，删除催缴及提醒任务
     #预览时不生成任务,如果考勤计算完毕且非异常考勤，则删除任务
     if !preview && @leader_user.ref_cmd[0] == 0
-      @task.remove
+      @task.remove(all: true)
     end
 
     mail_subject = @count ? "催缴考勤确认单{#{@task.task_name}}第#{@count}次" : "考勤确认单{#{@task.task_name}}"
