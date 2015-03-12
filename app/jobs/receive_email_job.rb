@@ -73,7 +73,7 @@ class ReceiveEmailJob < ActiveJob::Base
       next if (_need_fills = body.css("tr.need_fill")).blank?
 
       #如果有未确认的行，则直接返回
-      return false if _need_fill.any? {|_tr|_tr.css("td[abbr^=c_aff]").text().blank?}
+      return false if _need_fills.any? {|_tr|_tr.css("td[abbr^=c_aff]").text().blank?}
       _need_fills.each do |item|
         aff_tds = item.css("td[abbr^=c_aff]")
         user_name = item.css("td[abbr=c_user_name]").text
@@ -99,7 +99,7 @@ class ReceiveEmailJob < ActiveJob::Base
           raise "cktype is nil" unless cktype
           journal.check_type = cktype.second
           if _med == "c_aff_spec_appr" #特批
-            journal.description = "#{cktype.third}:#{_text}"
+            journal.description = _text
           else
             journal.description = "#{cktype.third}#{_text}#{cktype.fourth} #{_description}"
             journal.dval = _text.to_f * cktype.last

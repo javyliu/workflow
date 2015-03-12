@@ -21,7 +21,7 @@ class Journal < ActiveRecord::Base
     ['c_aff_a_points',9,'A贡献分','小时','group_shi',10],
     ['c_aff_spec_appr',10,'特批','','group_te',0],
     ['c_aff_holiday_salary',11,'带薪事假','天','group_tian',10],
-    ['c_aff_switch_time',12,'加班时长','小时','group_shi',10],
+    ['c_aff_switch_time',12,'倒休','小时','group_shi',10],
     ['c_aff_holiday_maternity',13,'产假','天','group_tian',10],
     ['c_aff_holiday_acco_maternity',14,'陪产假','天','group_tian',10],
     ['c_aff_holiday_marriary',15,'婚假','天','group_tian',10],

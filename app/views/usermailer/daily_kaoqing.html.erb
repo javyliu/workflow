@@ -1,8 +1,13 @@
-<h4>Dear <%= @leader_user.user_name %>:</h4>
+<h4 class="blue">Dear <%= @leader_user.user_name %>:</h4>
 <p>
 本邮件由系统自动产生，并需要您回复处理.希望今后可以取代行政助理手工填写的确认的邮件.  目前尚在测试中，请暂时不要放弃原来的人工流程,建议您积极参与以发现问题和错误以便改正.
 </p>
-<h4>考勤确认单 (<%= @date %> <%= @wday %>)</h4>
+
+<span class="blue">
+  考勤确认单 (<%= @date %> <%= @wday %>) &nbsp; <%= link_to("你有历史考勤天数：#{@leader_user.pending_tasks.length} 天未处理，请登录网页进行处理",  kaoqing_users_url("dept")) if @leader_user.pending_tasks.present? %>
+</span>
+<br/>
+<br/>
 <% if  @leader_user.ref_cmd[0] == 0 %>
 <b class="green">无异常考勤，无需回复！</b>
 <br/>
@@ -20,27 +25,31 @@
   <%= @leader_user.wrap(@task,users: @users,need_update: false) %>
 </table>
 
-<b class="red"> 注:上表是员工考勤确认表单，请在背景白色的单元格中填写确认信息（至少确认一个，否则会重复发送确认邮件） </b>
+请直接回复本邮件，并在背景白色的单元格中填写确认的数值后，点击发送。<br>
+<span class="red">
+（每行至少填写1项，否则系统视为未处理，仍会重复发送邮件）
+</span>
 <div>
   <ul>
     <% if @rule.name =~ /^ab/ %>
-    <li><b>确认贡献分:</b>填写确认的小时数(负数为扣减:如迟到自动扣减0.5小时而不用算迟到)。</li>
+    <li>确认贡献分：填写确认的小时数(负数为扣减:如迟到自动扣减0.5小时而不用算迟到)。</li>
     <% else %>
-    <li><b>确认倒休</b>：填写确认的小时数(负数为扣减)。</li>
+    <li>确认加班时长：有效加班时长 （单位：小时，如2表示2小时） </li>
     <% end %>
 
-    <li><b>特批</b>：填写特批的描述</li>
-    <li><b>迟到、早退、旷工、漏打卡等项:</b>填写1或不填。</li>
-    <li><b>年假、病假、事假：</b>不填或者填写天数(最小天数为半天,用0.5表示)。</li>
-    <li><b>如没有对应的假期请在“其它”列中填写，格式如：x0.5, x1,其中x代表假期类别，后台的数字代表请假天数，假期类别如下:</b><br/>
+    <li>迟到、早退、漏打卡:（单位：次，1为1次，空为没有）</li>
+    <li>年假、病假、事假：（单位：天，一般为0.5或1天）</li>
+    <li>特批描述：填写特批的原因，填写文字</li>
+    <li>其它：特殊假期，x0.5, x1。其中x代表类别，数字1或0.5代表天数/次数；如a0.5表示旷工0.5天，i1表示哺乳期晚来1小时1次</li>
+    <li><span class="blue">x如下：</span><br>
     <% Journal::MailDecType.each do |item| %>
     <% cktype = Journal::CheckType.assoc(item.first) %>
-    <p><%= item.last %> : <%=cktype.third  %> (单位：<%= cktype.fourth %>) </p>
+    <%= item.last %> ： <%=cktype.third  %> (单位：<%= cktype.fourth %>) <br>
     <% end %>
     </li>
   </ul>
 </div>
 
-<p>直接回复本邮件并在表格中直接填写内容即可，无需复制表格！或进行<%= link_to "网页确认",kaoqing_users_url(@task.to_s,"dept")  %></p>
+<p>直接回复本邮件并在表格中直接填写内容即可，无需复制表格！或进行<%= link_to "网页确认",kaoqing_users_url("dept")  %></p>
 <p>提示:请勿删除单元格或改变表格结构。</p>
 <p>来自邮件机器人,目前尚在测试阶段。欢迎发邮件至 qmliu@pipgame.com 提出建议或意见。</p>

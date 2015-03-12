@@ -220,9 +220,9 @@ class UserDecorator < ApplicationDecorator
           @a_point -= 0.5 #-(diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
           #@switch_hours -= 0.5
         elsif diff_time > 30 && diff_time <= 4*60
-          ref_cmd.push("事假半天")
+          ref_cmd.push("事假0.5天")
         else
-          ref_cmd.push("事假一天")
+          ref_cmd.push("事假1天")
         end
 
       elsif @ckin_time.tuesday? &&  (_tmp_diff = start_working_time.change(hour: 8) - @ckin_time) > 0 #周二早于8点上班算维护到的情况,截至9点算A分
@@ -244,10 +244,10 @@ class UserDecorator < ApplicationDecorator
           #@switch_hours -= 0.5
           ref_cmd.push("早退")
         elsif end_diff_time > 30 && end_diff_time <= 4*60
-          ref_cmd.push("事假半天")
+          ref_cmd.push("事假0.5天")
         else
           @a_point = 0
-          ref_cmd.push("事假一天")
+          ref_cmd.push("事假1天")
         end
       elsif end_diff_time > 0 #加班
         end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
