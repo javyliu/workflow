@@ -12,8 +12,12 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     return_url = exception.action =~ /^\// ? exception.action : root_url
     respond_to do |format|
-      format.html {redirect_to return_url, :alert => exception.message  }
-      format.json {render :json => exception.message.kind_of?(Hash) ? exception.message : {error: exception.message}}
+      format.html do
+        redirect_to return_url, alert: exception.message
+      end
+      format.json do
+        render :json => exception.message.kind_of?(Hash) ? exception.message : {error: exception.message}
+      end
       format.js {render :js => "alert('#{exception.message}')"}
     end
 

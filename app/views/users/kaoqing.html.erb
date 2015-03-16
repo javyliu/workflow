@@ -38,11 +38,11 @@
     </div>
 
     <h5><%= @date.to_s %> (<%= I18n.t("date.day_names")[@date.wday] %>) 考勤确认</h5>
-    <table>
+    <table class="kaoqin">
       <thead>
         <tr>
           <% current_user.report_titles.each do |item| %>
-          <th><%= item.des %></th>
+          <th><%= item.des.gsub(/.{2}/,'\0<br>').html_safe %></th>
           <% end %>
         </tr>
       </thead>

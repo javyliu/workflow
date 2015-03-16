@@ -31,8 +31,8 @@ end
 every '*/2 * * * *' do
   job "ReceiveEmailJob"
 end
-
-every '30 13 * * *' do
+#每天做一次催缴，第二次即18：30时发送过期邮件
+every '30 13,18 * * *' do
   job "PromptDailyMailJob"
 end
 #every 1.day,at: '6am' do
