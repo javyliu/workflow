@@ -51,6 +51,9 @@ Rails.application.routes.draw do
 
   resources :spec_days
 
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+      username == 'admin' && password == 'Javy123123'
+  end# if Rails.env.production?
   mount Sidekiq::Web => '/sidekiq'
 
   # The priority is based upon order of creation: first created -> highest priority.
