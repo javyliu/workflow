@@ -66,8 +66,9 @@ class JournalsController < ApplicationController
       @journal.dval = 0
 
       if @journal.check_type == 10
-        @journal.description = "#{_value}"
+        @journal.description = _value
       else
+        @journal.description = "#{cktype.third}#{_value}#{cktype.fourth}"
         @journal.dval = _value.to_f * cktype.last
       end
 

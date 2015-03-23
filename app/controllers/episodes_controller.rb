@@ -26,7 +26,11 @@ class EpisodesController < ApplicationController
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
     @task = Task.init_from_subject(params[:task])
-    @episode = Episode.find(@task.mid)
+    @episode = Episode.find_by(id:@task.mid)
+    unless @episode
+      @task.remove(all: true)
+      raise CanCan::AccessDenied.new("该假单不存在！",home_users_path("dept") )
+    end
     @approves = @episode.approves.to_a
     Rails.logger.info @approves.inspect
     if @episode.state.in?([0,3]) && can?(:create,Approve)

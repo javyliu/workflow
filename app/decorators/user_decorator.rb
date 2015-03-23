@@ -283,11 +283,11 @@ class UserDecorator < ApplicationDecorator
          need_update ? "need_update" : "need_fill"
       end
 
-      tmp_str << h.content_tag(:tr,class: cls,id: user.id,data: {object: "journal",url: h.user_journals_path(user.id,date)}) do
+      tmp_str << h.content_tag(:tr,class: cls,id: user.id,name: cls,data: {object: "journal",url: h.user_journals_path(user.id,date)}) do
         self.report_titles.each do |col|
           _class = col.name.start_with?("c_aff") ? "c_aff" : ""
           _class += " spec_appr" if col.name == "c_aff_spec_appr" #特批那用于描述
-          h.concat(h.content_tag(:td,user.send(col.name),abbr:col.name,class: _class ,data: {attribute: col.name}))
+          h.concat(h.content_tag(:td,user.send(col.name),id:col.name,class: _class ,data: {attribute: col.name}))
         end
       end
     end

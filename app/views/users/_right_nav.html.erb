@@ -15,6 +15,7 @@
       <% if can?(:create,:all) %>
       <li class="divider"></li>
       <li><%= link_to_unless_current "节假日管理", spec_days_path %></li>
+      <li><%= link_to_unless_current "基础假期管理", year_infos_path %></li>
       <li><%= link_to_unless_current "系统配置", oa_configs_path %></li>
       <li><%= link_to_unless_current "考勤规则管理", attend_rules_path %></li>
       <li><%= link_to_unless_current "用户管理", users_path %></li>

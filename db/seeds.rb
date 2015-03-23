@@ -62,6 +62,10 @@ rules = [
 AttendRule.create(rules.map{|rule_name,des,title_ids,time_range,min_unit| {name: rule_name, description: des, title_ids: title_ids,time_range: time_range,min_unit: min_unit}})
 
 OaConfig.create(
-  [{key: "prompt_max_times",des: "最多提醒次数",value: "2"},
-  {key: "end_year_time",des: "年度假期截止日",value: "2015-02-18"}]
+  [
+    {key: "prompt_max_times",des: "最多提醒次数",value: "1"},
+    {key: "end_year_time",des: "年度假期截止日",value: "2015-02-18"},
+    {key: "affair_leave_days",des: "带薪事假天数",value: "0"},
+    {key: "sick_leave_days",des: "带薪病假天数",value: "3"}
+  ]
 )

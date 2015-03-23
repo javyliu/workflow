@@ -8,10 +8,10 @@ class UsersController < ApplicationController
   def index
     #@users = User.all
     params.permit!
-    con_hash,_ = construct_condition(:user)
+    con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
     drop_page_title("用户管理")
     drop_breadcrumb
-    @users = @users.where(con_hash) if con_hash
+    @users = @users.where(con_hash).where(like_hash) if con_hash || like_hash
     @users = @users.page(params[:page]).includes(:dept)
     respond_to do |format|
       format.html {  }

@@ -1,39 +1,69 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns large-9 medium-pull-3">
+    <div class="panel">
+      <%= link_to "初始化本年度假期", year_infos_path(type: :all),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年的所有基础假期，确定执行么？',disable_with: '操作中'} %>
+      <%= link_to "初始化年假", year_infos_path(type: :year_holiday),class: 'button medium',method: :post,data: {confirm: '该操作将初始化所有用户的年假，确定执行么？',disable_with: '操作中'} %>
+      <%= link_to "初始化带薪病假", year_infos_path(type: :sick_leave),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年所有用户的带薪病假，确j定执行么？',disable_with: '操作中'} %>
+      <%= link_to "初始化带薪事假", year_infos_path(type: :affair_leave),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年所有用户的带薪病假，确定执行么？',disable_with: '操作中'} %>
+      <%= link_to "清空倒休", year_infos_path(type: :switch_leave),class: 'button medium',method: :post,data: {confirm: '该操作将清空所有用户的倒休时长，确定执行么？',disable_with: '操作中'} %>
+      <%= link_to "清空AB分", year_infos_path(type: :ab_point),class: 'button medium',method: :post,data: {confirm: '该操作将清空所有用户的AB分，确定执行么？',disable_with: '操作中'} %>
+    </div>
+    <div id="search" class="panel">
+      <form data-remote="true"  action="#" data-replace-with="#content">
+        <div class="row">
+          <div class="columns medium-2">
+            <label>年份:</label>
+            <%= select_year(nil, start_year: 2001,field_name: 'year',prompt: "请选择年份") %>
+          </div>
+          <div class="columns medium-3">
+            <label>姓名:</label>
+            <%= text_field :user,:user_name %>
+          </div>
+          <div class="columns medium-2">
+            <label>部门:</label>
+            <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
+          </div>
+          <div class="columns medium-3">
+            <label>邮箱:</label>
+            <%= text_field :user,:email %>
+          </div>
+          <div class="columns medium-2">
+            <input type="submit" class="button small inline-button" text="搜索"/>
+          </div>
+        </div>
+      </form>
+      <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+    </div>
 
-<h1>Listing Year Infos</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>年份</th>
+          <th>用户名</th>
+          <th>年假</th>
+          <th>带薪病假</th>
+          <th>带薪事假</th>
+          <th>倒休</th>
+          <th>AB分</th>
+        </tr>
+      </thead>
+      <tbody id="content" class="in_editor">
+        <%= render partial: 'items',object: @year_infos %>
+      </tbody>
+    </table>
+    <fieldset>
+      <legend><span>说明</span></legend>
+      <ul>
+        <li>假期值为实际值*10</li>
+        <li>点击方框内空白处进行编辑</li>
+        <li>回车确认更新</li>
+        <li>方框外点击取消更新</li>
+      </ul>
+    </fieldset>
+  </div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Year</th>
-      <th>User</th>
-      <th>Year holiday</th>
-      <th>Sick leave</th>
-      <th>Affair leave</th>
-      <th>Switch leave</th>
-      <th>Ab point</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
 
-  <tbody>
-    <% @year_infos.each do |year_info| %>
-      <tr>
-        <td><%= year_info.year %></td>
-        <td><%= year_info.user_id %></td>
-        <td><%= year_info.year_holiday %></td>
-        <td><%= year_info.sick_leave %></td>
-        <td><%= year_info.affair_leave %></td>
-        <td><%= year_info.switch_leave %></td>
-        <td><%= year_info.ab_point %></td>
-        <td><%= link_to 'Show', year_info %></td>
-        <td><%= link_to 'Edit', edit_year_info_path(year_info) %></td>
-        <td><%= link_to 'Destroy', year_info, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
 
-<br>
 
-<%= link_to 'New Year info', new_year_info_path %>

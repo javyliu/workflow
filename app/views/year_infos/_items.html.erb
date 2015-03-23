@@ -1,0 +1,12 @@
+<% items.each do |year_info| %>
+<tr data-object="year_info" data-url="/year_infos/<%= year_info.id %>">
+  <td><%= year_info.year %></td>
+  <td><%= year_info.user.user_name %></td>
+  <td class="rest-in-place" data-attribute="year_holiday"><%= year_info.year_holiday %></td>
+  <td class="rest-in-place" data-attribute="sick_leave"><%= year_info.sick_leave %></td>
+  <td class="rest-in-place" data-attribute="affair_leave"><%= year_info.affair_leave %></td>
+  <td class="rest-in-place" data-attribute="switch_leave"><%= year_info.switch_leave %></td>
+  <td class="rest-in-place" data-attribute="ab_point"><%= year_info.ab_point %></td>
+</tr>
+<% end %>
+<td colspan="7"><%= paginate(items,remote: true) %></td>

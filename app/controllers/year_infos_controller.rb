@@ -1,10 +1,28 @@
 class YearInfosController < ApplicationController
-  before_action :set_year_info, only: [:show, :edit, :update, :destroy]
-
+  #before_action :set_year_info, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource except: [:create]
   # GET /year_infos
   # GET /year_infos.json
   def index
-    @year_infos = YearInfo.all
+    drop_page_title("基础假期管理")
+    drop_breadcrumb
+    @year_infos = @year_infos.order("year desc").page(params[:page])
+    respond_to do |format|
+      format.html do
+        @year_infos = @year_infos.includes(:user)
+      end
+      format.js do
+        params.permit!
+        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
+        _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
+        @year_infos = @year_infos.where(params[:date]) if params[:date] && params[:date][:year].present?
+        @year_infos = @year_infos.where(user_id: _user_ids) if _user_ids
+        @year_infos = @year_infos.includes(:user)
+
+        render partial: "items",object: @year_infos, content_type: Mime::HTML
+
+      end
+    end
   end
 
   # GET /year_infos/1
@@ -24,14 +42,55 @@ class YearInfosController < ApplicationController
   # POST /year_infos
   # POST /year_infos.json
   def create
-    @year_info = YearInfo.new(year_info_params)
+    #@year_info = YearInfo.new(year_info_params)
+
+    msgs = []
+    _calcute_date = Date.parse(OaConfig.setting(:end_year_time))
+    _year = Date.today.year
+    _last_year = _year - 1
+    _attrs = case params[:type]
+             when "all"
+               {year_holiday: 50,sick_leave: OaConfig.setting(:sick_leave_days).to_i * 10,affair_leave: OaConfig.setting(:affair_leave_days).to_i * 10,switch_leave: 0,ab_point: 0}
+             when "year_holiday"
+               {year_holiday: 50}
+             when "sick_leave"
+               {sick_leave: OaConfig.setting(:sick_leave_days).to_i * 10}
+             when "affair_leave"
+               {affair_leave: OaConfig.setting(:affair_leave_days).to_i * 10}
+             when "switch_leave"
+               {switch_leave: 0}
+             when "ab_point"
+               {ab_point: 0}
+             end
+
+
+    User.where("email is not null and (expire_date is null or expire_date > ?)", Date.today.to_s).find_each do |item|
+
+      if _attrs[:year_holiday] #计算年假
+        _total_years = (_calcute_date - item.onboard_date).fdiv(365)
+        _attrs[:year_holiday] = if _total_years < 1
+                                  0
+                                elsif _total_years <= 10
+                                  50
+                                elsif _total_years <= 20
+                                  100
+                                else
+                                  150
+                                end
+
+      end
+      Rails.logger.info _attrs.inspect
+      _year_info = YearInfo.find_or_initialize_by(year: _year,user_id: item.id)
+      _year_info.assign_attributes(_attrs)
+      _year_info.save!
+    end
 
     respond_to do |format|
-      if @year_info.save
-        format.html { redirect_to @year_info, notice: 'Year info was successfully created.' }
+      if msgs.blank?
+        format.html { redirect_to year_infos_path, success: '操作成功' }
         format.json { render :show, status: :created, location: @year_info }
       else
-        format.html { render :new }
+        format.html { redirect_to :back }
         format.json { render json: @year_info.errors, status: :unprocessable_entity }
       end
     end

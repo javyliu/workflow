@@ -48,7 +48,7 @@ class Journal < ActiveRecord::Base
   ]
 
   def self.cktype_from_key(key)
-    CheckType.assoc(MailDecType.rassoc(key).first)
+    CheckType.assoc(MailDecType.rassoc(key.downcase).first)
   end
 
   def self.mail_dec_identities

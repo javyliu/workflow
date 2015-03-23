@@ -74,6 +74,27 @@
         <li>方框外点击 => 取消更新</li>
         <li><span class="red">注：</span>请在26日之前编辑当月考勤</li>
       </ol>
+
+    </fieldset>
+
+    <fieldset>
+      <legend><span>填写说明</span></legend>
+      <ul>
+        <% if @rule.name =~ /^ab/ %>
+        <li>确认贡献分：填写确认的小时数(负数为扣减:如迟到自动扣减0.5小时而不用算迟到)。</li>
+        <% else %>
+        <li>确认加班时长：有效加班时长 （单位：小时，如2表示2小时） </li>
+        <% end %>
+
+        <li>迟到、早退、漏打卡:（单位：次，1为1次，空为没有）</li>
+        <li>年假、病假、事假：（单位：天，一般为0.5或1天）</li>
+        <% Journal::MailDecType.each do |item| %>
+        <% cktype = Journal::CheckType.assoc(item.first) %>
+         <li><%=cktype.third  %> (单位：<%= cktype.fourth %>)</li>
+        <% end %>
+        </li>
+        <li>特批描述：填写特批的原因，如“特批假期”或“因公外出”等，填写文字</li>
+      </ul>
     </fieldset>
   </div>
 

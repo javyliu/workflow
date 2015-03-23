@@ -22,6 +22,10 @@ job_type :job, "cd :path && :environment_variable=:environment bin/sidekiq_pushe
 every 1.day,at: '5am' do
   job "SysKaoqingDataJob"
 end
+#同步用户密码
+every 1.day,at: '9:05' do
+  job "SysUserJob"
+end
 
 #每天早上8.00发出每日考勤邮件
 every 1.day,at: '8:30' do

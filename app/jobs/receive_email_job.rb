@@ -46,8 +46,8 @@ class ReceiveEmailJob < ActiveJob::Base
           end
 
         rescue Exception => e
+          Rails.logger.info  "kaoqing_error:#{e.inspect}"
           Usermailer.error_approved(_task.leader_user_id,"您回复的#{_task.task_name}的确认信息出错了，请与管理员联系或请登录web界面进行更改！",_task.date).deliver_later
-          Rails.logger.info  "kaoqing_error:#{e.message}"
         end
 
         #f.write mail.body
@@ -70,14 +70,14 @@ class ReceiveEmailJob < ActiveJob::Base
       #只解析html格式邮件
       body =Nokogiri::HTML(part.body.decoded.force_encoding(part.charset),"UTF-8")
       #get need fill user
-      next if (_need_fills = body.css("tr.need_fill")).blank?
+      next if (_need_fills = body.css("tr.need_fill").presence || body.css("tr[name=need_fill]")).blank?
 
       #如果有未确认的行，则直接返回
-      return false if _need_fills.any? {|_tr|_tr.css("td[abbr^=c_aff]").text().blank?}
+      return false if _need_fills.any? {|_tr|_tr.css("td[id^=c_aff]").text().blank?}
       _need_fills.each do |item|
-        aff_tds = item.css("td[abbr^=c_aff]")
-        user_name = item.css("td[abbr=c_user_name]").text
-        _description = item.css("td[abbr=c_aff_spec_appr]").text
+        aff_tds = item.css("td[id^=c_aff]")
+        user_name = item.css("td[id=c_user_name]").text.strip
+        #_description = item.css("td[id=c_aff_spec_appr]").text
         _user_id = item.attr(:id)
         aff_tds.each do |td|
           _text = td.text.strip
@@ -85,9 +85,9 @@ class ReceiveEmailJob < ActiveJob::Base
 
           journal = Journal.new(user_id: _user_id ,update_date:date)
           #取邮件中的默认描述
-          journal.description = item.css("td[abbr=c_ref_cmd]").text.strip
+          journal.description = item.css("td[id=c_ref_cmd]").text.strip
           journal.dval = 0
-          _med = td.attr(:abbr).strip
+          _med = td.attr(:id).strip
           #使用others来替换不常用的异常考勤类型
           if  _med == "c_aff_others"
             cktype = Journal.cktype_from_key(_text.first)
@@ -101,7 +101,7 @@ class ReceiveEmailJob < ActiveJob::Base
           if _med == "c_aff_spec_appr" #特批
             journal.description = _text
           else
-            journal.description = "#{cktype.third}#{_text}#{cktype.fourth} #{_description}"
+            journal.description = "#{cktype.third}#{_text}#{cktype.fourth}"
             journal.dval = _text.to_f * cktype.last
           end
           Rails.logger.info("--#{_text.to_f}--#{cktype.last}--------#{journal.dval}")

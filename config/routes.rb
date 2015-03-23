@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   end
 
-  resources :year_infos
+  resources :year_infos,except: [:show,:destroy]
 
   resources :journals do
    collection do
