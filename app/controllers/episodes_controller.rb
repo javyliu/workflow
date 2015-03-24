@@ -12,11 +12,10 @@ class EpisodesController < ApplicationController
   end
 
   def list
-    drop_page_title("部门假条")
+    drop_page_title("部门假单")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.page(params[:page]).includes(:holiday,:user).decorate
-    render template: "episodes/index"
+    @episodes = @episodes.page(params[:page]).includes(:holiday,user:[:dept]).decorate
 
   end
   # GET /episodes/1
