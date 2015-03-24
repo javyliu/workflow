@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   self.primary_key = 'uid'
-  belongs_to :dept, class_name: 'Department', foreign_key: :dept_code,touch: true
+  belongs_to :dept, class_name: 'Department', foreign_key: :dept_code#,touch: true
   has_many :checkinouts
   #昨天签到用户，用于发送日常邮件中的 includes
   has_one :yesterday_checkin,-> {where(rec_date: (User.query_date || Date.yesterday).to_s)},class_name: "Checkinout"
@@ -60,6 +60,15 @@ class User < ActiveRecord::Base
 
   def roles
     @roles ||= ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
+  end
+
+  #当前用户角色可管理的角色列表
+  def managed_roles
+    @managed_roles ||= if (_index = ROLES.inject([]) { |sum,r| sum << ROLES.index(r) if ((self.role_group || 0) & 2**ROLES.index(r))>0;sum }.min).nil?
+                         []
+                       else
+                         ROLES.reject {|r| ROLES.index(r) < _index }
+                       end
   end
 
   def roles_cn
@@ -156,15 +165,22 @@ class User < ActiveRecord::Base
 
   #当前用户可管理的部门列表
   def cache_dept
-    @cache_dept ||= self.class.cache_departments.detect { |e| e.uid == self.id }
-    if self.role?("admin")
-      @cache_dept.depts = Department.cache_all_depts
-    end
-    @cache_dept
+    #@cache_dept ||= self.class.cache_departments.detect { |e| e.uid == self.id }
+    #if self.role?("admin") || self.role?("manager")
+    #  @cache_dept.depts = Department.cache_all_depts
+    #end
+    #@cache_dept
+
+    @cache_dept ||= if self.role?("admin") || self.role?("manager")
+                      OpenStruct.new({uid: self.id,depts: Department.cache_all_depts})
+                    else
+                      self.class.cache_departments.detect { |e| e.uid == self.id }
+                    end
+
   end
 
   #根据管理者id进行分组的部门列表
-  #[uid,depts:[[dept_name,dept_id]]]
+  #{"depts"=>[["掌上飞讯", "01"], ["部门领导", "010599"], ["顾问组", "04"], ["掌上明珠", "02"], ["部门领导", "010399"], ["公司高管", "0201"], ["公司高管", "0101"], ["2014前离职", "03"]], "uid"=>"1002"}
   def self.cache_departments
     Rails.cache.fetch(:departments) do
       self.find_by_sql("select mgr_code uid,GROUP_CONCAT(name,' ',code) depts from departments  GROUP BY mgr_code ").map { |e| e.depts = e.depts.split(",").map { |item| item.split($\) };e}

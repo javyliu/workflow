@@ -17,20 +17,20 @@ class Ability
       can [:kaoqing,:confirm],User
       #can :read,Checkinout,user_id: user.leader_data.try(:last)
     elsif user.role?("department_manager")
-      can :list,Checkinout,user_id: user.leader_data.try(:last)
+      can :list,[Checkinout,Episode,Journal],user_id: user.leader_data.try(:last)
       can :confirm,:all
       can :create,Approve
       can :search,Checkinout
       can [:kaoqing,:confirm],User
-      can :list,Journal do |journal|
-        user.leader_data.try(:include?,journal.user_id)
-      end
+      #can :list,Journal do |journal|
+      #  user.leader_data.try(:include?,journal.user_id)
+      #end
     elsif user.role?("manager")
       can :list,[Checkinout,Episode]#,user_id: user.leader_data.try(:last)
       can :search,Checkinout
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
       can :create,:all
-      cannot :confirm,:all
+      cannot [:kaoqing,:confirm],:all
     elsif user.role_group.nil?
       can [:index,:home],User,uid: user.id
     end

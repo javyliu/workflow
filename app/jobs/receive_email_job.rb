@@ -102,7 +102,7 @@ class ReceiveEmailJob < ActiveJob::Base
             journal.description = _text
           else
             journal.description = "#{cktype.third}#{_text}#{cktype.fourth}"
-            journal.dval = _text.to_f * cktype.last
+            journal.dval = (cktype[5] ? _text.to_f : _text.to_f.abs) * cktype.last
           end
           Rails.logger.info("--#{_text.to_f}--#{cktype.last}--------#{journal.dval}")
           if journal.save #成功，发送成功邮件

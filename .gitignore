@@ -15,3 +15,6 @@ config/database.yml
 *.swp
 *.swo
 *.pid.*
+putlic/assets/
+putlic/assets
+public/assets

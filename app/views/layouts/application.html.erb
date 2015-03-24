@@ -39,7 +39,7 @@
           <li class="<%= cur_page?('episodes') ? 'active' : '' %>"><%= link_to "我的假单", episodes_path %></li>
           <li class="<%= cur_page?('checkinouts', 'index') ? 'active' : '' %>"><%= link_to "我的签到记录", checkinouts_path %></li>
           <% if can?(:kaoqing,User) %>
-          <li class="<%= cur_page?('users','kaoqing') ? 'active' : '' %>"><%= link_to "部门考勤", kaoqing_users_path("dept") %></li>
+            <li class="<%= cur_page?('users','kaoqing') ? 'active' : '' %>"><%= link_to "部门考勤", kaoqing_users_path("dept") %></li>
           <% end %>
           <% end %>
         </ul>

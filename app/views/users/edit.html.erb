@@ -8,7 +8,7 @@
   </div>
   <div class="field">
     <%= f.label :roles,"角色" %>
-    <%= f.collection_select :roles,User::ROLES,:to_s,:humanize,prompt: true %>
+    <%= f.collection_select :roles,current_user.managed_roles,:to_s,:humanize,prompt: true %>
   </div>
 
 

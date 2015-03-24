@@ -69,7 +69,7 @@ class JournalsController < ApplicationController
         @journal.description = _value
       else
         @journal.description = "#{cktype.third}#{_value}#{cktype.fourth}"
-        @journal.dval = _value.to_f * cktype.last
+        @journal.dval = (cktype[5] ? _value.to_f : _value.to_f.abs) * cktype.last
       end
 
       if @journal.save

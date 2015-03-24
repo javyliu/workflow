@@ -19,6 +19,7 @@ class Department < ActiveRecord::Base
   private
 
   def delete_caches
+    Rails.logger.debug "delete all_depts cache"
     Rails.cache.delete(:all_depts)
   end
 end

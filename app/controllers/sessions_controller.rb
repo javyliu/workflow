@@ -12,7 +12,9 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.find_by(email: params[:email]).try(:authenticate,params[:password])
+
+    _email = params[:email] =~ /@/ ? params[:email] : "#{params[:email]}@pipgame.com"
+    user = User.find_by(email: _email).try(:authenticate,params[:password])
     respond_to do |format|
       if user
         self.current_user = user
