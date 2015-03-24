@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   end
 
   get "episodes/new/:holiday_id" => "episodes#new",as: :new_episode
-  get "episodes/:task" => "episodes#show",as: :episode
+  get "episodes/:task" => "episodes#show",as: :episode,task: /\d+|(\w+:)+/
   resources :episodes,except: [:show,:new] do
     collection do
       get :list

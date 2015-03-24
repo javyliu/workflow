@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th>名字</th>
+      <th>部门</th>
       <th>假别</th>
       <th>开始时间</th>
       <th>结束时间</th>
@@ -18,15 +19,21 @@
   <% @episodes.each do |episode| %>
   <tr>
     <td><%= episode.user.user_name %></td>
+    <td><%= episode.user.dept.name %></td>
     <td><%= episode.holiday.name %></td>
     <td><%= episode.start_date %></td>
     <td><%= episode.end_date %></td>
     <td><%= episode.total_time %><%= episode.holiday.unit %></td>
     <td><%= episode.comment %></td>
     <td><%= episode.state %></td>
-    <td><%= link_to('审批', episode_path(episode.id))) if can?(:show,Episode) %> </td>
+    <td><%= link_to('审批', episode_path(episode.id)) if episode.state == 0 && can?(:show,Episode) %> </td>
   </tr>
   <% end %>
+  <tr>
+  <td colspan=9>
+    <%= paginate @episodes %>
+  </td>
+  </tr>
   </tbody>
 </table>
 

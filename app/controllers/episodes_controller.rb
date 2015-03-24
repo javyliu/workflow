@@ -8,27 +8,35 @@ class EpisodesController < ApplicationController
     drop_page_title("我的假条")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.page(params[:page]).includes(:holiday,:user).decorate
+    @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday,:user).decorate
   end
 
   def list
     drop_page_title("部门假单")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.page(params[:page]).includes(:holiday,user:[:dept]).decorate
+    @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday,user:[:dept]).decorate
 
   end
-  # GET /episodes/1
+  # GET /episodes/1 or
+  # GET /episodes/F002:1416:2014-10-10:10
   # GET /episodes/1.json
   def show
     drop_page_title("假期审批")
     drop_breadcrumb("我的考勤",home_users_path)
+    drop_breadcrumb("部门假单",list_episodes_path)
     drop_breadcrumb
-    @task = Task.init_from_subject(params[:task])
-    @episode = Episode.find_by(id:@task.mid)
-    unless @episode
-      @task.remove(all: true)
-      raise CanCan::AccessDenied.new("该假单不存在！",home_users_path("dept") )
+    if /^\d+$/ =~ params[:task]
+      @episode = Episode.find_by(id:params[:task])
+      raise CanCan::AccessDenied.new("该假单不存在！",list_episodes_path ) unless @episode
+      @task = Task.new("F002",@episode.user.leader_user.id,date:@episode.created_at.to_date.to_s,mid:@episode.id)
+    else
+      @task =  Task.init_from_subject(params[:task])
+      @episode = Episode.find_by(id:@task.mid)
+      unless @episode
+        @task.remove(all: true)
+        raise CanCan::AccessDenied.new("该假单不存在！",list_episodes_path )
+      end
     end
     @approves = @episode.approves.to_a
     Rails.logger.info @approves.inspect
