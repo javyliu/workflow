@@ -41,6 +41,9 @@
           <% if can?(:kaoqing,User) %>
             <li class="<%= cur_page?('users','kaoqing') ? 'active' : '' %>"><%= link_to "部门考勤", kaoqing_users_path("dept") %></li>
           <% end %>
+          <% if can?(:list,Episode) %>
+            <li class="<%= cur_page?('episodes') ? 'active' : '' %>"><%= link_to "部门假单", list_episodes_path %></li>
+          <% end %>
           <% end %>
         </ul>
       </section>
