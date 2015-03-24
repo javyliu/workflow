@@ -69,7 +69,7 @@ class EpisodesController < ApplicationController
         #生成任务
         leader_user = current_user.leader_user
 
-        _task = Task.create("F002",leader_user.id,leader_user_id: leader_user.id,date: Date.today.to_s,mid: @episode.id)
+        _task = Task.create("F002",leader_user.id,leader_user_id: leader_user.id,date: @episode.created_at.to_date.to_s,mid: @episode.id)
         Rails.logger.info _task.task_name
         #发送邮件
         Usermailer.episode_approve(_task.task_name).deliver_later

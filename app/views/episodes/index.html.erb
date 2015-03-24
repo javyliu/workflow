@@ -7,6 +7,7 @@
       <th>假别</th>
       <th>开始时间</th>
       <th>结束时间</th>
+      <th>申请时长</th>
       <th>事由</th>
       <th>审批结果</th>
       <th></th>
@@ -20,6 +21,7 @@
     <td><%= episode.holiday.name %></td>
     <td><%= episode.start_date %></td>
     <td><%= episode.end_date %></td>
+    <td><%= episode.total_time %><%= episode.holiday.unit %></td>
     <td><%= episode.comment %></td>
     <td><%= episode.state %></td>
     <td><%= link_to '编辑', edit_episode_path(episode) if episode.state == 0 %></td>

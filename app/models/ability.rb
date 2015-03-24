@@ -17,7 +17,7 @@ class Ability
       can [:kaoqing,:confirm],User
       #can :read,Checkinout,user_id: user.leader_data.try(:last)
     elsif user.role?("department_manager")
-      can :list,[Checkinout,Episode,Journal],user_id: user.leader_data.try(:last)
+      can [:list,:show],[Checkinout,Episode,Journal],user_id: user.leader_data.try(:last)
       can :confirm,:all
       can :create,Approve
       can :search,Checkinout
@@ -31,6 +31,7 @@ class Ability
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
       can :create,:all
       cannot [:kaoqing,:confirm],:all
+      cannot :create,Approve
     elsif user.role_group.nil?
       can [:index,:home],User,uid: user.id
     end

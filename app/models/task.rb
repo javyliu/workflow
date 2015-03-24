@@ -44,6 +44,11 @@ class Task
     Task.new(type,leader_user_id,date: date,mid: mid)
   end
 
+  #生成任务名（字符串）
+  def self.init_task_name(type,leader_user_id,date:nil,mid: nil)
+    mid.nil? ? "#{type}:#{leader_user_id}:#{date.to_s}" : "#{type}:#{leader_user_id}:#{date.to_s}:#{mid}"
+  end
+
 
   #任务名称
   def task_name
