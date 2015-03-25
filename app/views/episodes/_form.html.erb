@@ -26,14 +26,13 @@
     <%= f.text_field :end_date,class: "datetimepicker",readonly: true ,required: true%>
   </div>
   <div class="columns medium-4">
-    <div class="row">
+    <div class="row collapse">
+      <%= f.label :total_time,"申请时长" %>
       <div class="columns small-9">
-        <%= f.label :total_time,"申请时长" %>
         <%= f.text_field :total_time,required: true %>
       </div>
       <div class="columns small-3">
-        <label>&nbsp;</label>
-        <span class="unit"><%= @episode.holiday.unit %></span>
+        <span class="postfix unit"><%= @episode.holiday.unit %></span>
       </div>
     </div>
   </div>

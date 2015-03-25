@@ -78,24 +78,34 @@ class UserDecorator < ApplicationDecorator
     object.user_name
   end
 
+  #带薪事假
+  def c_affair_leave
+    ( base_holiday_info.affair_leave - year_journal(11) ).to_f/10
+  end
+
+  #年假
   def c_holiday_year
     ( base_holiday_info.year_holiday - year_journal(5) ).to_f/10
   end
 
+  #带薪病假
   def c_sick_leaver
-    (base_holiday_info.sick_leave - year_journal(6)).to_f/10
+    (base_holiday_info.sick_leave - year_journal(17)).to_f/10
   end
 
   #TODO FIX if for the end_year_time
   #累计贡献分包括特批的分（负值）
+  #特批修正只是描述 2015-03-25 09:35 javy_liu
+  #a分+b分+基础值
   def c_ab_point
-    (base_holiday_info.ab_point + year_journal(9) + year_journal(10)).to_f/10
+    (base_holiday_info.ab_point + year_journal(9) + year_journal(21)).to_f/10
   end
 
   #TODO FIX if for the end_year_time
   #累计倒休包括特批的时间（负值）
+  #特批修正只是描述 2015-03-25 09:35 javy_liu
   def c_switch_leave
-    (base_holiday_info.switch_leave + year_journal(8) + year_journal(10)).to_f/10
+    (base_holiday_info.switch_leave + year_journal(8) + year_journal(12)).to_f/10
   end
 
   def c_checkin
@@ -309,6 +319,41 @@ class UserDecorator < ApplicationDecorator
       super
     end
   end
+  #=============For web show=========================================
+  #返回当前用户年度假期所需列
+  def check_types
+    return @check_types if @check_types
+    _cktype_ids = object.dept_group.third.dup
+    if object.dept_group.first == :group_switch_time && object.title.to_i < 400 #倒休部门经理及以上无倒休
+      _cktype_ids.delete(12)
+      _cktype_ids.push(8)
+    end
+    @check_types = Journal::CheckType.select{|item| item.second.in?(_cktype_ids)}
+  end
+
+  #UserCheckTypeIds = %w[5 8 9 11 12 17 21]
+  def calcute_remain_holiday(check_type)
+    _value = case check_type.first
+                 when 'c_aff_holiday_year'
+                   c_holiday_year
+                 when 'c_aff_switch_leave' #加班时长+倒休时长(负值)
+                   c_switch_leave
+                 when 'c_aff_a_points'
+                   c_ab_point
+                 when 'c_aff_holiday_salary'
+                   c_affair_leave
+                 when 'c_aff_switch_time'
+                   c_switch_leave
+                 when 'c_aff_sick_salary'
+                   c_sick_leaver
+                 when 'c_aff_b_points'
+                   c_ab_point
+                 end
+    "#{_value} #{check_type.fourth}"
+  end
+
+
+  #======================================================
 
   private
   def base_holiday_info
@@ -316,8 +361,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def year_journal(check_type_id)
-    @year_journal = object.year_journals.detect { |e| e.check_type == check_type_id }
-    @year_journal.try(:dval).to_i
+    object.year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
   end
 
 

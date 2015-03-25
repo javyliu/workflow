@@ -11,12 +11,12 @@ class User < ActiveRecord::Base
   #用户在某一天的已确认异常考勤,用于手动加载防止n+1
   #has_one :journal
   #从本年度计考勤之日起的异常考勤，用于计算每天的剩余年假
-  has_many :year_journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type) },class_name: "Journal"
+  has_many :year_journals, -> { where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:check_type) },class_name: "Journal"
 
   has_many :episodes
   has_many :yes_holidays, -> {where(["start_date <= :yesd and end_date >= :yesd ",yesd: (User.query_date || Date.yesterday).to_s])},through: :episodes,source: :holiday
 
-  before_save :delete_caches
+  before_save :delete_caches,if: -> {(['expire_date','dept_code','mgr_code'] & self.changed).present?}
 
 
   #for login
@@ -28,14 +28,15 @@ class User < ActiveRecord::Base
     attr_accessor :query_date
   end
 
-  #当前用户的管理者,去除总管
+  #当前用户的管理者,去除主管
+  #2015-03-24 22:05 javy_liu 貌似不会到主管级，更改为直接find
   def leader_user
-    @leader_user ||= User.find(self.mgr_code.present? ? self.mgr_code : self.dept.mgr_code)
-    if @leader_user.title.to_i > 400
-      @leader_user.leader_user
-    else
-      @leader_user
-    end
+    @leader_user ||= User.find(self.mgr_code.presence || self.dept.mgr_code)
+    #@leader_user ||= if (_leader_user = User.find(self.mgr_code.present? ? self.mgr_code : self.dept.mgr_code)).title.to_i > 400
+    #                   _leader_user.leader_user
+    #                 else
+    #                   _leader_user
+    #                 end
   end
 
   #每日发送前一天部门的考勤邮件，如果昨天是工作日 ，则发送每个部门的考勤邮件，如果是非工作日 ，则只发送有考勤异常部门的邮件
@@ -153,14 +154,14 @@ class User < ActiveRecord::Base
 
   #当前用户所属部门分组
   def dept_group
-    @dept_group = case self.dept_code
-    when /^0104|0105|0106/ #无倒休部门
-      Department::GroupNoSwitchTime
-    when /^0102|0103/ #ab 分部门
-      Department::GroupAB
-    else
-      Department::GroupSwitchTime #倒休部门
-    end
+    @dept_group ||= case self.dept_code
+                  when /^0104|0105|0106/ #无倒休部门
+                    Department::GroupNoSwitchTime
+                  when /^0102|0103/ #ab 分部门
+                    Department::GroupAB
+                  else
+                    Department::GroupSwitchTime #倒休部门
+                  end
   end
 
   #当前用户可管理的部门列表

@@ -3,6 +3,12 @@ class UsersController < ApplicationController
   load_and_authorize_resource
   skip_load_resource only: [:home,:confirm,:kaoqing]
 
+
+  #c_holiday_year
+  #c_sick_leaver
+  #c_ab_point
+  #c_switch_leave
+
   # GET /users
   # GET /users.json
   def index
@@ -13,6 +19,7 @@ class UsersController < ApplicationController
     drop_breadcrumb
     @users = @users.where(con_hash).where(like_hash) if con_hash || like_hash
     @users = @users.page(params[:page]).includes(:dept)
+    @user = current_user.decorate
     respond_to do |format|
       format.html {  }
       format.js {render partial: "items",object: @users, content_type: Mime::HTML}
@@ -37,7 +44,7 @@ class UsersController < ApplicationController
                           item[0..3]
                         end
     end
-
+    @user = current_user.decorate
     @my_journals = current_user.journals.order("update_date desc,id desc").page(params[:page]).select("journals.*,checkin,checkout").joins("inner join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id ")
 
   end

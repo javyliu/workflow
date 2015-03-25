@@ -35,6 +35,7 @@ class Journal < ActiveRecord::Base
     ['c_aff_others',22,'其它','','group_qi',false,-1]
   ]
 
+  UserCheckTypeIds = %w[5 8 9 11 12 17 21]
   MailDecType= [
     ['c_aff_absent','a'],
     ['c_aff_holiday_salary','b'],
@@ -48,10 +49,12 @@ class Journal < ActiveRecord::Base
     ['c_aff_nursing_leave','j']
   ]
 
+  #得到类别标识，用于邮件回复中通过字符返回标识符
   def self.cktype_from_key(key)
     CheckType.assoc(MailDecType.rassoc(key.downcase).first)
   end
 
+  #用于邮件显示中在“其它”栏中回复的标识符，主要用于邮件中说明的展示
   def self.mail_dec_identities
     @mail_dec_identities ||= MailDecType.transpose.first
   end
