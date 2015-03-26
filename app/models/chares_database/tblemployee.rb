@@ -5,7 +5,7 @@ module CharesDatabase
 
     StaticPwdUsers = %w{postmaster addressbak kjvv gamepipsender techadmin hwang yhzhao jcui cwu kjgao pippay pippay2 yiqing.chang x mzsq y yang.liu yongqing.liu yhrx}
 
-    def self.sys_users(path="/root/sh/mailpasswd.txt")
+    def self.sys_users(need_change_pwd=true,path="/root/sh/mailpasswd.txt")
       pwds = Hash[*YAML.load_file(path).split(/:|\s+/)]
       self.find_each do |item|
         #User.create!(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title,onboard_date: item.onboardDate,regular_date: item.regularDate,password: '123123')
@@ -22,8 +22,12 @@ module CharesDatabase
         #有email的用户才会设置密码，否则不设
         if u.email
           _uname = u.email[/.*(?=@)/,0]
-          u.password = pwds[_uname] unless StaticPwdUsers.include?(_uname)
-          if u.password.nil? && u.new_record?
+          unless StaticPwdUsers.include?(_uname)
+            if u.new_record? || need_change_pwd
+              u.password = pwds[_uname]
+            end
+          end
+          if u.password.nil?
             u.password = '123123'
           end
         end

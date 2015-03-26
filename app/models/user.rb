@@ -31,12 +31,12 @@ class User < ActiveRecord::Base
   #当前用户的管理者,去除主管
   #2015-03-24 22:05 javy_liu 貌似不会到主管级，更改为直接find
   def leader_user
-    @leader_user ||= User.find(self.mgr_code.presence || self.dept.mgr_code)
-    #@leader_user ||= if (_leader_user = User.find(self.mgr_code.present? ? self.mgr_code : self.dept.mgr_code)).title.to_i > 400
-    #                   _leader_user.leader_user
-    #                 else
-    #                   _leader_user
-    #                 end
+    #@leader_user ||= User.find(self.mgr_code.presence || self.dept.mgr_code)
+    @leader_user ||= if (_leader_user = User.find(self.mgr_code.present? ? self.mgr_code : self.dept.mgr_code)).title.to_i > 400
+                       _leader_user.leader_user
+                     else
+                       _leader_user
+                     end
   end
 
   #每日发送前一天部门的考勤邮件，如果昨天是工作日 ，则发送每个部门的考勤邮件，如果是非工作日 ，则只发送有考勤异常部门的邮件
