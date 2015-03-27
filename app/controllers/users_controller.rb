@@ -19,7 +19,7 @@ class UsersController < ApplicationController
     drop_breadcrumb
     @users = @users.where(con_hash).where(like_hash) if con_hash || like_hash
     @users = @users.page(params[:page]).includes(:dept)
-    @user = current_user.decorate
+    #@user = current_user.decorate
     respond_to do |format|
       format.html {  }
       format.js {render partial: "items",object: @users, content_type: Mime::HTML}
