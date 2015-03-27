@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   #before_action :set_user, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
-  skip_load_resource only: [:home,:confirm,:kaoqing]
+  skip_load_resource only: [:home,:confirm,:kaoqing,:change_pwd]
 
 
   #c_holiday_year
@@ -117,6 +117,14 @@ class UsersController < ApplicationController
     drop_breadcrumb
   end
 
+  #更改密码，只允许固定密码用户更改密码
+  def change_pwd
+    @user = current_user
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("更改密码")
+    drop_breadcrumb
+  end
+
   # POST /users
   # POST /users.json
   def create
@@ -167,7 +175,7 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       #params.require(:user).permit(:uid, :user_name, :email, :department, :title, :expire_date, :dept_code, :mgr_code, :password_digest, :role_group, :remember_token, :remember_token_expires_at)
-      params.require(:user).permit(:uid, :password, :roles )
+      params.require(:user).permit(:uid, :password, :roles,:mgr_code,:password_confirmation )
     end
 
 end

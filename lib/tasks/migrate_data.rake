@@ -11,25 +11,8 @@ namespace :migrate_data do
 
   desc "sys the tbldepartment to departments"
   task departments: :environment do
-    ActiveRecord::Base.connection.execute(%{truncate departments; })
-    def which_rule(old_rule)
-      if old_rule.deptCode.start_with?("0108") and old_rule.deptCode != "010899" #平台用固定工作时间
-        return 4
-      end
-      return nil if old_rule.deptCode == '0110' #后勤不做考勤
-      case old_rule.attenRules
-      when "RuleFlexibalWorkingTime"
-        #运营和市场,天擎无倒休
-        old_rule.deptCode.start_with?('0104','0105','0106') || old_rule.deptCode.start_with?("0106") ? 5 : 3
-      when "RuleABPoint"
-        2
-      when "RuleBPoint4QiLe"
-        1
-      end
-    end
-    CharesDatabase::Tbldepartment.find_each do |item|
-      Department.create(code:item.deptCode,name:item.deptName,attend_rule_id:which_rule(item),mgr_code:item.mgrCode,admin:item.admin)
-    end
+    #ActiveRecord::Base.connection.execute(%{truncate departments; })
+    CharesDatabase::Tbldepartment.sys_departments
   end
 
   desc "sys the tblemployee to departments"

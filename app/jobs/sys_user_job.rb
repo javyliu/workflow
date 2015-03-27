@@ -11,5 +11,7 @@ class SysUserJob < ActiveJob::Base
 
     puts "sys user pwd..."
     CharesDatabase::Tblemployee.sys_users(need_change_pwd)
+    puts "sys user department..."
+    CharesDatabase::Tbldepartment.sys_departments
   end
 end

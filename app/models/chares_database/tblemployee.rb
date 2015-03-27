@@ -1,5 +1,6 @@
 module CharesDatabase
-  class Tblemployee < ThirdTable
+  #2015-03-26 17:54 javy 在正式库中添加两个表
+  class Tblemployee < ActiveRecord::Base
     self.table_name = 'tblemployee'
     self.primary_key = 'userId'
 
@@ -15,7 +16,8 @@ module CharesDatabase
         u.department=item.department
         u.expire_date=item.expireDate
         u.dept_code=item.deptCode
-        u.mgr_code=item.mgrCode
+        #2015-03-27 09:37 javy don't sys the mgrcode and department
+        #u.mgr_code=item.mgrCode
         u.title= item.title
         u.onboard_date= item.onboardDate
         u.regular_date= item.regularDate
@@ -37,5 +39,33 @@ module CharesDatabase
         u.save!
       end
     end
+
+    #在users表中的直属管理者,指定经理等人的上一级管理者
+    #CharesDatabase::Tblemployee::MgrCodeList.each{|item|puts item[0..3];puts User.where(uid: item[0..3]).update_all(mgr_code: item[4..-1]);puts item[4..-1]}
+    #MgrCodeList=%w{
+    #  10181009
+    #  10541078
+    #  10891078
+    #  10971009
+    #  10991021
+    #  11381021
+    #  11481009
+    #  11541021
+    #  11851042
+    #  11981078
+    #  12211551
+    #  14161042
+    #  14611011
+    #  16081042
+    #  17851551
+    #  19971551
+    #  20231551
+    #  20681551
+    #  20691551
+    #  20971551
+    #  21171551
+    #  21681303
+    #  21901551
+    #}
   end
 end

@@ -7,15 +7,9 @@
     <%= f.text_field :password %>
   </div>
   <div class="field">
-    <%= f.label :mgr_code,"直属管理者ID" %>
-    <%= f.text_field :mgr_code %>
+    <%= f.label :password_confirmation,"密码确认" %>
+    <%= f.text_field :password_confirmation %>
   </div>
-  <div class="field">
-    <%= f.label :roles,"角色" %>
-    <%= f.collection_select :roles,current_user.managed_roles,:to_s,:humanize,prompt: true %>
-  </div>
-
-
   <div class="actions">
     <%= f.submit "提交",class: "button" %>
   </div>
