@@ -8,9 +8,7 @@ class Ability
     can :read,[Checkinout,Episode],user_id: user.id
     can [:home],User,uid: user.id
     can [:create,:update],Episode,user_id: user.id
-    can :change_pwd,User do |_u|
-       user.email[/.*(?=@)/,0].in? CharesDatabase::Tblemployee::StaticPwdUsers
-    end
+    can [:change_pwd,:update,:show],User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
 
     if user.role?("admin")
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]

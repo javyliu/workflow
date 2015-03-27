@@ -146,10 +146,10 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
-        format.html { redirect_to @user, notice: "操作成功！"}
+        format.html { redirect_to (can?(:manage,User) ? @user : home_users_path), notice: "操作成功！"}
         format.json { render :show, status: :ok, location: @user }
       else
-        flash.now[:alert] = @user.errors.full_message
+        flash.now[:alert] = @user.errors.full_messages
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end

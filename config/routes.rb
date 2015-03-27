@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   resources :users do
     collection do
       get :checkinout
+      get :change_pwd
       post "confirm/:task" => :confirm, as: :confirm
       get "kaoqin/:task(/:cmd)" => :kaoqing,as: :kaoqing
       get :home

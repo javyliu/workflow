@@ -4,25 +4,16 @@
   </div>
   <div class="field">
     <%= f.label :password,"密码" %>
-    <%= f.text_field :password %>
+    <%= f.password_field :password %>
   </div>
   <div class="field">
     <%= f.label :password_confirmation,"密码确认" %>
-    <%= f.text_field :password_confirmation %>
+    <%= f.password_field :password_confirmation %>
   </div>
   <div class="actions">
     <%= f.submit "提交",class: "button" %>
   </div>
 <% end %>
 
-<%= link_to '返回', users_path %>
 
-<fieldset>
-  <legend><span>操作说明</span></legend>
-  <ul>
-  <li>如不更新密码新留空</li>
-  <li>直属管理ID用于指定特定人员的所属管理者</li>
-  <li>角色说明：Admin: 系统管理员，Manager: 考勤系统管理人员，department_manager: 部门考勤管理人员，Badman: 坏人：） </li>
-  </ul>
 
-</fieldset>

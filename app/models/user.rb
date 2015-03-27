@@ -63,6 +63,10 @@ class User < ActiveRecord::Base
     @roles ||= ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
   end
 
+  def email_en_name
+    @email_en_name ||= self.email[/.*(?=@)/,0]
+  end
+
   #当前用户角色可管理的角色列表
   def managed_roles
     @managed_roles ||= if (_index = ROLES.inject([]) { |sum,r| sum << ROLES.index(r) if ((self.role_group || 0) & 2**ROLES.index(r))>0;sum }.min).nil?
