@@ -83,6 +83,15 @@ class Task
     end
   end
 
+  #删除用户所有的待处理任务，用于手动清除
+  def self.remove_pending_tasks(*user_ids)
+    Sidekiq.redis do | conn |
+      user_ids.each do |_id|
+        conn.del("task:pendings:#{_id}")
+      end
+    end
+  end
+
   #任务特定值
   def attr_value(key)
     Sidekiq.redis do |conn|
