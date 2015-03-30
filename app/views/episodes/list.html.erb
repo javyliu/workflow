@@ -3,9 +3,9 @@
     <div class="row">
       <div class="columns medium-2">
         <label>假别:</label>
-        <%= connection_select(:episode,:holiday_id,Holiday.all,:name,:id,prompt: "请选择假期类别") %>
+        <%= collection_select(:episode,:holiday_id,Holiday.all,:id,:name,prompt: "请选择假期类别") %>
       </div>
-      <div class="columns medium-3">
+      <div class="columns medium-1">
         <label>姓名:</label>
         <%= text_field :user,:user_name %>
       </div>
@@ -13,9 +13,17 @@
         <label>部门:</label>
         <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
       </div>
-      <div class="columns medium-3">
+      <div class="columns medium-1">
         <label>邮箱:</label>
         <%= text_field :user,:email %>
+      </div>
+      <div class="columns medium-2">
+        <label>开始时间:</label>
+        <%= text_field :episode, :start_date,class: "datetimepicker",readonly: true %>
+      </div>
+      <div class="columns medium-2">
+        <label>结束时间:</label>
+        <%= text_field :episode, :end_date,class: "datetimepicker",readonly: true %>
       </div>
       <div class="columns medium-2">
         <input type="submit" class="button small inline-button" text="搜索"/>
