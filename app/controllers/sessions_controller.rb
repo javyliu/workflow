@@ -1,6 +1,10 @@
 class SessionsController < ApplicationController
   skip_before_action :login_required
 
+  def index
+    redirect_to action: :new
+  end
+
   def new
     drop_page_title("用户登录")
     drop_breadcrumb

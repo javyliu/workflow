@@ -9,9 +9,9 @@ class SysUserJob < ActiveJob::Base
     #只有在周四及以后才会修改密码 2015-03-26 10:47 javy_liu
     need_change_pwd = Date.today.wday >= 4
 
-    puts "sys user pwd..."
+    Rails.logger.info  "sys user pwd..."
     CharesDatabase::Tblemployee.sys_users(need_change_pwd)
-    puts "sys user department..."
+    Rails.logger.info  "sys user department..."
     CharesDatabase::Tbldepartment.sys_departments
   end
 end

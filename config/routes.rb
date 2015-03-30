@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   root 'welcome#index'
 
-  resources :sessions,only: [:new,:create,:destroy]
+  resources :sessions,only: [:index,:new,:create,:destroy]
 
   resources :oa_configs,only: [:update,:index]
 

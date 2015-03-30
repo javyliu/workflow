@@ -263,7 +263,8 @@ class UserDecorator < ApplicationDecorator
         end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
         _tmp = (end_diff_time/attend_rule.min_unit.to_f).round.to_f/unit #加班时长
 
-        if _tmp >= 2  #大于21点签出
+        #2015-03-30 10:40 javy_liu 更改加班的计算方式 ，_tmp >=2 不准，因为_tmp做了四舍五入计算，如20：45分会被当作加班
+        if @ckout_time.hour >= 21  #大于21点签出
           @b_point += _tmp
           @switch_hours += (_tmp - 2)
           ref_cmd.push("加班")
