@@ -23,6 +23,19 @@ class ApplicationController < ActionController::Base
 
   end
 
+  rescue_from ActionController::InvalidAuthenticityToken do |exception|
+    respond_to do |format|
+      format.html do
+        redirect_to "sessions/new", alert: exception.message
+      end
+      format.json do
+        render :json => exception.message.kind_of?(Hash) ? exception.message : {error: exception.message}
+      end
+      format.js {render :js => "alert('#{exception.message}')"}
+    end
+
+  end
+
   def login_required
     !!current_user || access_denied
   end

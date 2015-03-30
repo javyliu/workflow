@@ -1,4 +1,31 @@
+<div id="search" class="panel">
+  <form data-remote="true"  action="#" data-replace-with="#content">
+    <div class="row">
+      <div class="columns medium-2">
+        <label>假别:</label>
+        <%= connection_select(:episode,:holiday_id,Holiday.all,:name,:id,prompt: "请选择假期类别") %>
+      </div>
+      <div class="columns medium-3">
+        <label>姓名:</label>
+        <%= text_field :user,:user_name %>
+      </div>
+      <div class="columns medium-2">
+        <label>部门:</label>
+        <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
+      </div>
+      <div class="columns medium-3">
+        <label>邮箱:</label>
+        <%= text_field :user,:email %>
+      </div>
+      <div class="columns medium-2">
+        <input type="submit" class="button small inline-button" text="搜索"/>
+      </div>
+    </div>
+  </form>
+  <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+</div>
 <% if @episodes.present? %>
+
 
 <table>
   <thead>
@@ -15,25 +42,8 @@
     </tr>
   </thead>
 
-  <tbody>
-  <% @episodes.each do |episode| %>
-  <tr>
-    <td><%= episode.user.user_name %></td>
-    <td><%= episode.user.dept.name %></td>
-    <td><%= episode.holiday.name %></td>
-    <td><%= episode.start_date %></td>
-    <td><%= episode.end_date %></td>
-    <td><%= episode.total_time %><%= episode.holiday.unit %></td>
-    <td><%= episode.comment %></td>
-    <td><%= episode.state %></td>
-    <td><%= link_to('审批', episode_path(episode.id)) if episode.state == 0 && can?(:show,Episode) %> </td>
-  </tr>
-  <% end %>
-  <tr>
-  <td colspan=9>
-    <%= paginate @episodes %>
-  </td>
-  </tr>
+  <tbody id="content">
+  <%= render :partial => 'items',object: @episodes %>
   </tbody>
 </table>
 

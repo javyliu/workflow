@@ -31,6 +31,7 @@ class Ability
       can :list,[Checkinout,Episode]#,user_id: user.leader_data.try(:last)
       can :search,Checkinout
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
+      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
       can :create,:all
       cannot [:kaoqing,:confirm],:all
       cannot :create,Approve

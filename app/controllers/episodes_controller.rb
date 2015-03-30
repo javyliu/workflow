@@ -15,8 +15,24 @@ class EpisodesController < ApplicationController
     drop_page_title("部门假单")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday,user:[:dept]).decorate
+    @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday,user:[:dept])
 
+    respond_to do |format|
+      format.html do
+        @episodes = @episodes.decorate
+      end
+      format.js do
+        params.permit!
+        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
+        _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
+        @episodes = @episodes.where(params[:date]) if params[:date] && params[:date][:year].present?
+        @episodes = @episodes.where(user_id: _user_ids) if _user_ids
+        @episodes = @episodes.includes(:user)
+
+        render partial: "items",object: @episodes, content_type: Mime::HTML
+
+      end
+    end
   end
   # GET /episodes/1 or
   # GET /episodes/F002:1416:2014-10-10:10
