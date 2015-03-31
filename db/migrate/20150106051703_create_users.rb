@@ -17,7 +17,7 @@ class CreateUsers < ActiveRecord::Migration
 
       t.datetime :remember_token_expires_at
 
-      t.timestamps null: false,default: Time.now
+      t.timestamps null: false
     end
     add_index :users, :email
     add_index :users, :mgr_code

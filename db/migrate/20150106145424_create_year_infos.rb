@@ -9,7 +9,7 @@ class CreateYearInfos < ActiveRecord::Migration
       t.integer :switch_leave, limit: 4,default: 0
       t.integer :ab_point, limit: 5,default: 0
 
-      t.timestamps null: false,default: Time.now
+      t.timestamps null: false
     end
     add_index :year_infos, :user_id
   end

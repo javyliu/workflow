@@ -7,7 +7,7 @@ class CreateAttendRules < ActiveRecord::Migration
       t.string :time_range,limit: 40,default: 0
       t.integer :min_unit,limit: 2,default: 30
 
-      t.timestamps null: false,default: Time.now
+      t.timestamps null: false
     end
   end
 end

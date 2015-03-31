@@ -7,7 +7,7 @@ class CreateJournals < ActiveRecord::Migration
       t.string :description
       t.integer :dval, limit: 4
 
-      t.timestamps null: false,default: Time.now
+      t.timestamps null: false
     end
     add_index :journals, :user_id
   end

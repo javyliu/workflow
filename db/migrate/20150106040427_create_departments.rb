@@ -7,7 +7,7 @@ class CreateDepartments < ActiveRecord::Migration
       t.string :mgr_code, limit: 20
       t.string :admin, limit: 20
 
-      t.timestamps null: false,default: Time.now
+      t.timestamps null: false
     end
     execute %{ alter table departments add primary key (code);}
   end
