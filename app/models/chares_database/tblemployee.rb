@@ -29,7 +29,7 @@ module CharesDatabase
               u.password = pwds[_uname]
             end
           end
-          if u.password.nil?
+          if u.password_digest.nil?
             u.password = '123123'
           end
         end
