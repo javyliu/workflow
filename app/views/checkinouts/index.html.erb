@@ -9,8 +9,8 @@
       <% @checkinouts.each do |item| %>
       <tr>
         <td><%= item.rec_date %></td>
-        <td><%= item.checkin.strftime("%H:%M") %></td>
-        <td><%= item.checkout.strftime("%H:%M") %></td>
+        <td><%= item.checkin %></td>
+        <td><%= item.checkout %></td>
       </tr>
       <% end %>
     </table>

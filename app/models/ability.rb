@@ -12,6 +12,7 @@ class Ability
 
     if user.role?("admin")
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
+      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
       can :create,:all
       can :confirm,:all
       can [:destroy,:list],:all

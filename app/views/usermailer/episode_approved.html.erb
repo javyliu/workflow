@@ -1,0 +1,65 @@
+<h4>Dear <%= @user.user_name %>:</h4>
+<p>
+您申请的 [<%= @episode.holiday.name %>] 已被审批为:<b class="green"><%= Episode::State.rassoc(@episode.state).first %></b>
+<% if @episode.state == 3 %>
+  ,请等待上一级审批。
+<% end %>
+<%= link_to '查看详情', episode_url(@episode.id) %>
+</p>
+<p><strong>审核人员:</strong></p>
+<table style="margin-left:2em;">
+  <tr>
+    <th>审核人</th>
+    <th>简要说明</th>
+    <th>审核状态</th>
+    <th>审核时间</th>
+  </tr>
+  <% @episode.approves.each do |item| %>
+  <tr>
+    <td><%= item.user_name %></td>
+    <td><%= item.des %></td>
+    <td><%= Episode::State.rassoc(item.state).first %></td>
+    <td><%= item.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+  <% end %>
+</table>
+<p><strong>假单详情:</strong></p>
+<table style="margin-left:2em;">
+  <tbody>
+  <tr>
+    <td>名字</td>
+    <td><%= @episode.user.user_name %></td>
+  </tr>
+  <tr>
+    <td>部门</td>
+    <td><%= @episode.user.dept.name %></td>
+  </tr>
+  <tr>
+    <td>假别</td>
+    <td><%= @episode.holiday.name %></td>
+  </tr>
+  <tr>
+    <td>开始时间</td>
+    <td><%= @episode.start_date.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+  <tr>
+    <td>结束时间</td>
+    <td><%= @episode.end_date.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+  <tr>
+    <td>申请时长</td>
+    <td><%= @episode.total_time %> <%= @episode.holiday.unit %></td>
+  </tr>
+  <tr>
+    <td>申请事由</td>
+    <td><%= @episode.comment %></td>
+  </tr>
+  <tr>
+    <td>申请时间</td>
+    <td><%= @episode.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+
+  </tbody>
+</table>
+
+

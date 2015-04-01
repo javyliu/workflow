@@ -24,6 +24,14 @@ class Usermailer < ApplicationMailer
     mail(to: full_mailname,subject: @task.type_name)#,body: "no body",content_type: "text/html")
   end
 
+  #给员工发送假期确认邮件
+  def episode_approved(episode_id)
+    @episode = Episode.find(episode_id)
+    #rule = AttendRule.find(@leader_user.leader_data[1])
+    #full_mailname = rule.name.start_with?("ab") ? FullMailname : %("#{@leader_user.user_name}" <#{@leader_user.email}>)
+    @user = @episode.user
+    mail(to: @user.email_name,subject: "#{@episode.holiday.name}申请确认单")#,body: "no body",content_type: "text/html")
+  end
   #每日需发送的考勤邮件
   #def daily_kaoqing(leader_user_id,uids = nil,date = nil,preview = nil)
   def daily_kaoqing(*args)

@@ -85,7 +85,7 @@ class ReceiveEmailJob < ActiveJob::Base
           _text = td.text.strip
           next if _text.blank?
 
-          journal = Journal.new(user_id: _user_id ,update_date:date)
+          journal = Journal.find_or_initialize_by(user_id: _user_id ,update_date:date)
           #取邮件中的默认描述
           journal.description = item.css("td[id=c_ref_cmd]").text.strip
           journal.dval = 0

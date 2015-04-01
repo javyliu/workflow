@@ -26,7 +26,7 @@
       <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
     </div>
     <% end %>
-    <div class="panel need_change_event">
+    <div class="panel">
       <% if  @to_be_confirm.present? %>
       <h4>待确认考勤</h4>
       <% @to_be_confirm.each do |item| %>
@@ -34,7 +34,7 @@
       <% end %>
       <% end %>
       <h4>已确认考勤 <small>点击选择日期</small></h4>
-      <%= text_field_tag :date,'',class: "datepicker",readonly: true,data: {url: kaoqing_users_path("F001:#{current_user.id}:")} %>
+      <%= text_field_tag :date,'',class: "datepicker need_change_event",readonly: true,data: {url: kaoqing_users_path("F001:#{current_user.id}:")} %>
     </div>
 
     <h5><%= @date.to_s %> (<%= I18n.t("date.day_names")[@date.wday] %>) 考勤确认</h5>

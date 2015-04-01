@@ -24,13 +24,13 @@ class EpisodesController < ApplicationController
       format.js do
         params.permit!
         con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
-        Rails.logger.info con_hash.inspect
-        Rails.logger.info like_hash.inspect
+        #Rails.logger.info con_hash.inspect
+        #Rails.logger.info like_hash.inspect
         _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
 
         con_hash1,array_con = construct_condition(:episode,gt: [:start_date],lt: [:end_date])
 
-        Rails.logger.info array_con.inspect
+        #Rails.logger.info array_con.inspect
 
         @episodes = @episodes.where(user_id: _user_ids) if _user_ids
         @episodes = @episodes.where(con_hash1).where(array_con).includes(:holiday,user:[:dept]).decorate
@@ -62,9 +62,15 @@ class EpisodesController < ApplicationController
       end
     end
     @approves = @episode.approves.to_a
-    Rails.logger.info @approves.inspect
-    if @episode.state.in?([0,3]) && can?(:create,Approve)
+    #Rails.logger.info @approves.inspect
+    #如果当前用户有审批任务
+    if current_user.pending_tasks.include?(@task.to_s)
       @approve = @episode.approves.new
+    end
+
+    respond_to do |format|
+      format.html {  }
+      format.js {render template: 'episodes/show',content_type: Mime::HTML  }
     end
 
   end

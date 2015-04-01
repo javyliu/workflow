@@ -8,35 +8,29 @@ class CheckinoutsController < ApplicationController
     drop_breadcrumb("我的考勤",home_users_path)
     drop_page_title("我的的签到记录")
     drop_breadcrumb
-    @checkinouts = @checkinouts.page(params[:page]).order("id desc")
+    @checkinouts = @checkinouts.page(params[:page]).order("id desc").decorate
   end
 
   def list
-    drop_page_title("签到记录")
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("部门签到记录")
     drop_breadcrumb
 
-    if params[:only] == "me"
-      @checkinouts = Checkinout.all
-      con_hash = {user_id: current_user.id}
-    else
-      params.permit!
-      con_hash,_ = construct_condition(:checkinout)
-    end
+    params.permit!
+    con_hash,ary_con = construct_condition(:checkinout,gt:[:rec_date],lt:[:rec_date])
 
+    _uids = nil
     if params[:user].present?
-      con_hash.merge!("users.dept_code" => params[:user][:dept_code])
+      con_hash1,like_con = construct_condition(:user,like_ary: [:user_name])
+      _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
 
-    @checkinouts = @checkinouts.select("checkinouts.*,users.user_name,departments.name dept_name").joins(user: [:dept]).where(con_hash).order("id desc").page(params[:page])#.includes(user: [:dept])
+    @checkinouts = @checkinouts.where(con_hash).where(ary_con).page(params[:page]).order("id desc")
+    @checkinouts = @checkinouts.where(user_id: _uids) if _uids.present?
 
     respond_to do |format|
-      format.html { @checkinouts = @checkinouts.decorate }
-      format.js {render partial: "items",object: @checkinouts.decorate, content_type: Mime::HTML}
-      format.xls do
-        select_columns = "checkinouts.id,users.user_name,departments.name dept_name,checkinouts.user_id,checkinouts.checkin,checkinouts.checkout"
-        @checkinouts = Checkinout.accessible_by(current_ability).where(con_hash).joins(user: [:dept]).select(select_columns)
-        send_data @checkinouts.to_csv(select: select_columns)
-      end
+      format.html { @checkinouts = @checkinouts.includes(user: [:dept]).decorate }
+      format.js {render partial: "items",object: @checkinouts.includes(user: [:dept]).decorate, content_type: Mime::HTML}
     end
   end
 
@@ -102,6 +96,6 @@ class CheckinoutsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def checkinout_params
-      params.require(:checkinout).permit(:user_id, :rec_date, :checkin, :checkout, :ref_time)
+      params.permit! #.require(:checkinout).permit(:user_id, :rec_date, :checkin, :checkout, :ref_time)
     end
 end

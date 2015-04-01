@@ -2,15 +2,22 @@ class CheckinoutDecorator < ApplicationDecorator
   delegate_all
 
   def checkin
-    object.checkin.try(:strftime,"%Y-%m-%d %H:%M:%S")
+    object.checkin.strftime("%H:%M")
   end
 
   def checkout
-    object.checkout.try(:strftime,"%Y-%m-%d %H:%M:%S")
+    object.checkout.strftime("%H:%M")
   end
 
   def ref_time
-    object.ref_time.try(:strftime,"%Y-%m-%d %H:%M:%S")
+    object.ref_time.strftime("%H:%M")
+  end
+
+  def user_name
+    object.try(:user).try(:user_name)
+  end
+  def dept_name
+    object.try(:user).try(:dept).try(:name)
   end
   # Define presentation-specific methods here. Helpers are accessed through
   # `helpers` (aka `h`). You can override attributes, for example:

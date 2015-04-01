@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   resources :checkinouts,only: [:index] do
     collection do
-      get ":only" => "checkinouts#index",as: :my
+      get :list
     end
 
   end
@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   resources :journals do
    collection do
+     get :list
      put ":user_id/:date" => :update,as: :user
    end
   end

@@ -353,6 +353,14 @@ class UserDecorator < ApplicationDecorator
     "#{_value} #{check_type.fourth}"
   end
 
+  #得到用户的待处理任务数量
+  def pending_task_length(task_type=nil)
+    if task_type
+      object.group_pending_tasks.try(:assoc,task_type.to_s).try(:last)
+    else
+      object.pending_tasks
+    end.try(:length).to_i
+  end
 
   #======================================================
 

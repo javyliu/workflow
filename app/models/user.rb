@@ -121,6 +121,12 @@ class User < ActiveRecord::Base
     @pending_tasks ||= Task.user_pending_tasks(self.id)
   end
 
+  def group_pending_tasks
+    @gpts ||= self.pending_tasks.try(:group_by) do |item|
+      item[0..3]
+    end
+  end
+
   def email_name
     @email_name ||= %("#{self.user_name}" <#{self.email}>)
   end

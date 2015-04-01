@@ -39,11 +39,7 @@ class UsersController < ApplicationController
   def home
     drop_page_title("我的考勤")
     drop_breadcrumb
-    @to_be_confirms = if current_user.pending_tasks
-                        current_user.pending_tasks.group_by do |item|
-                          item[0..3]
-                        end
-    end
+    @to_be_confirms = current_user.group_pending_tasks
     @user = current_user.decorate
     @my_journals = current_user.journals.order("update_date desc,id desc").page(params[:page]).select("journals.*,checkin,checkout").joins("inner join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id ")
 
@@ -150,7 +146,7 @@ class UsersController < ApplicationController
         format.json { render :show, status: :ok, location: @user }
       else
         flash.now[:alert] = @user.errors.full_messages
-        format.html { render :edit }
+        format.html { render can?(:change_pwd,User) ? :change_pwd : :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end

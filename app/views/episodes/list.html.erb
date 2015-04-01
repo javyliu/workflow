@@ -1,5 +1,5 @@
 <div id="search" class="panel">
-  <form data-remote="true"  action="#" data-replace-with="#content">
+  <form data-remote="true" data-no-turbolink  action="#" data-replace-with="#content">
     <div class="row">
       <div class="columns medium-2">
         <label>假别:</label>
@@ -9,7 +9,11 @@
         <label>姓名:</label>
         <%= text_field :user,:user_name %>
       </div>
-      <div class="columns medium-2">
+      <div class="columns medium-1">
+        <label>状态:</label>
+        <%= select :episode, :state, Episode::State,prompt: "选择状态" %>
+      </div>
+      <div class="columns medium-1">
         <label>部门:</label>
         <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
       </div>
@@ -57,3 +61,4 @@
 
 <% end %>
 
+</div>
