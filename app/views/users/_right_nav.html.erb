@@ -5,7 +5,7 @@
       <li class=""> <%= link_to_unless_current "我的考勤", home_users_path %> </li>
       <li><%= link_to_unless_current "我的签到记录", checkinouts_path %></li>
       <li >
-      <%= link_to_unless_current "我的假单", episodes_path %>
+      <%= link_to_unless_current "我的申请", episodes_path %>
       </li>
       <% if can?(:list,Journal) %>
         <li class="divider"></li>

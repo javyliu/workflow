@@ -16,6 +16,7 @@ class ReceiveEmailJob < ActiveJob::Base
         _task = Task.init_from_subject(m.subject)
         next unless _task #不作处理
         begin
+          unless _task.leader_user_id.to_i.in?([1002,1608])
           case _task.attr_value(:state)
           when Task::Completed #已做完确认,发送已确认邮件
             Usermailer.error_approved(_task.leader_user_id,"您部门#{_task.date}的考勤信息已确认完成，请不要重复确认，如有问题，请登录web界面进行更改！",_task.date).deliver_later
@@ -23,6 +24,7 @@ class ReceiveEmailJob < ActiveJob::Base
           when Task::Expired #已催缴十次
             Usermailer.error_approved(_task.leader_user_id,"您部门#{_task.date}的考勤信息确认时间已过期，如有问题，请登录web界面进行更改！",_task.date).deliver_later
             next
+          end
           end
 
           case _task.type
@@ -64,23 +66,27 @@ class ReceiveEmailJob < ActiveJob::Base
   def handle_journal(message,leader_user_id,date)
     changed_user_names = []
     message.parts && message.parts.each do |part|
-      puts part.content_type.inspect
-      puts part.charset
+      Rails.logger.info part.content_type.inspect
+      Rails.logger.info part.charset
       next if part.content_type !~ /^text\/html/
       #只解析html格式邮件
       #binding.pry
       #2015-03-31 21:21 gb2312时要使用 fonce_encoding 为 gbk
+      Rails.logger.info "-------------get body----------------"
       body =Nokogiri::HTML(part.body.decoded.force_encoding(part.charset=="utf-8" ? 'utf-8':'gbk'),"UTF-8") rescue Rails.logger.info("编码错误:#{$!.message}")
+      Rails.logger.info "-------------get body success----------------"
       #get need fill user
       next if (_need_fills = body.css("tr.need_fill").presence || body.css("tr[name=need_fill]")).blank?
-
+      Rails.logger.info "-------------judge blank row----------------"
       #如果有未确认的行，则直接返回
-      return false if _need_fills.any? {|_tr|_tr.css("td[id^=c_aff]").text().blank?}
+      return false if _need_fills.any? {|_tr|_tr.css("td[id^=c_aff]").text().tap{|t|Rails.logger.info("空行======text:#{_tr.inspect}") if t.blank?}.blank?}
+      Rails.logger.info "-------------need_fill rows is presence-----"
       _need_fills.each do |item|
         aff_tds = item.css("td[id^=c_aff]")
         user_name = item.css("td[id=c_user_name]").text.strip
         #_description = item.css("td[id=c_aff_spec_appr]").text
         _user_id = item.attr(:id)
+        Rails.logger.info "-------------cycle need_fills rows-#{user_name}---------------"
         aff_tds.each do |td|
           _text = td.text.strip
           next if _text.blank?
@@ -111,7 +117,8 @@ class ReceiveEmailJob < ActiveJob::Base
             Rails.logger.info("success-journal：#{journal.inspect}")
             changed_user_names.push([user_name,journal.description,_text])
           else #存储报错 给用户发送出错邮件
-            Rails.logger.info("error-journal：#{journal.inspect}")
+            #Rails.logger.info("error-journal：#{journal.inspect}")
+            raise "save journal error#{journal.inspect}"
           end
         end
       end #end parts

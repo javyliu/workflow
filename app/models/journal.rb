@@ -35,7 +35,9 @@ class Journal < ActiveRecord::Base
     ['c_aff_others',22,'其它','','group_qi',false,-1]
   ]
 
-  UserCheckTypeIds = %w[5 8 9 11 12 17 21]
+  #2015-04-02 10:18 无用代码
+  #UserCheckTypeIds = %w[5 8 9 11 12 17 21]
+  #用于其它中的别名对应
   MailDecType= [
     ['c_aff_absent','a'],
     ['c_aff_holiday_salary','b'],
