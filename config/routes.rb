@@ -31,7 +31,9 @@ Rails.application.routes.draw do
 
   get "episodes/list" => "episodes#list",as: "list_episodes"
   get "episodes/new/:holiday_id" => "episodes#new",as: :new_episode
-  resources :episodes,except: [:show,:new]
+  get "episodes/:id/edit" => "episodes#edit",as: :edit_episode
+  get "episodes/:task" => "episodes#show",as: :episode,task: /\d+|(.+?:?)+/
+  resources :episodes,except: [:show,:new,:edit]
 
   resources :holidays
 

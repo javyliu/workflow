@@ -117,6 +117,23 @@ namespace :migrate_data do
     args.with_defaults(file_name: 'yearinfo.csv')
     File.readlines(args.file_name).each do |row|
       _values = row.rstrip.split(",").collect!{|item|(item[/-?\d+/].to_f*10).round}
+
+      _uid = _values.first/10
+
+      _year_info = YearInfo.find_or_initialize_by(user_id: _uid,year:'2015')
+      _year_info.switch_leave = _values[1]
+      _year_info.ab_point = _values[2]
+      _year_info.year_holiday = _values[3]
+      _year_info.sick_leave = _values[4]
+      _year_info.affair_leave = _values[5]
+
+      _year_info.save!
+
+      _journal = Journal.find_or_create(user_id: _uid,update_date: '2015-02-30',check_type: 13 )
+      _journal.dval = _values[6] + _values[7]
+
+
+      _user.update_attributes()
       puts _values.inspect
       #user = User.find(1416)
 
