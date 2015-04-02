@@ -42,7 +42,7 @@ class ApprovesController < ApplicationController
 
         #只做经理，总监，副总确认
         #非驳回请求，如果请假天数大于3天，需要总监再次确认，如果大于等于5天，要求副总进行确认
-        if @episode.total_time.to_i > 3 && @episode.holiday.unit == "天" && @approve.state == 2
+        if @episode.total_time.to_i > 3 && @episode.holiday.unit == "天" && @approve.state != 2
           leader_user = current_user.leader_user
           #如果请假天数大于5天
           if current_user.title.to_i > 300  #确认人员为经理,则要求总监再作确认
