@@ -78,12 +78,12 @@ class EpisodesController < ApplicationController
   # GET /episodes/new
   def new
     if params[:holiday_id].blank? || (@holiday = Holiday.find_by(id: params[:holiday_id])).nil?
-      flash[:alert] = "请选择假期类别"
+      flash[:alert] = "请选择类别"
       redirect_to action: :index and return
     end
 
     drop_page_title("假期申请")
-    drop_breadcrumb("我的假条",episodes_path)
+    drop_breadcrumb("我的申请",episodes_path)
     drop_breadcrumb
 
     @episode.start_date =  Time.now.beginning_of_day.strftime("%Y-%m-%d %H:%M")
@@ -94,6 +94,9 @@ class EpisodesController < ApplicationController
 
   # GET /episodes/1/edit
   def edit
+    drop_breadcrumb("我的申请",episodes_path)
+    drop_page_title("编辑申请")
+    drop_breadcrumb
   end
 
   # POST /episodes
