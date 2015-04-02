@@ -16,7 +16,7 @@ class ReceiveEmailJob < ActiveJob::Base
         _task = Task.init_from_subject(m.subject)
         next unless _task #不作处理
         begin
-          unless _task.leader_user_id.to_i.in?([1002,1608])
+          #unless _task.leader_user_id.to_i.in?([1002,1608])
           case _task.attr_value(:state)
           when Task::Completed #已做完确认,发送已确认邮件
             Usermailer.error_approved(_task.leader_user_id,"您部门#{_task.date}的考勤信息已确认完成，请不要重复确认，如有问题，请登录web界面进行更改！",_task.date).deliver_later
@@ -25,7 +25,7 @@ class ReceiveEmailJob < ActiveJob::Base
             Usermailer.error_approved(_task.leader_user_id,"您部门#{_task.date}的考勤信息确认时间已过期，如有问题，请登录web界面进行更改！",_task.date).deliver_later
             next
           end
-          end
+          #end
 
           case _task.type
           when "F001" #考勤确认

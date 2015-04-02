@@ -95,7 +95,7 @@ class Usermailer < ApplicationMailer
     #TODO: need change to leader_user.email_name
     #rule = AttendRule.find(@leader_user.leader_data[1])
     #full_mailname = rule.name.start_with?("ab") ? FullMailname : %("#{@leader_user.user_name}" <#{@leader_user.email}>)
-    full_mailname = leader_user_id.to_i == 1002 ? "qmliu@pipgame.com" : @leader_user.email_name
+    full_mailname = @leader_user.email_name
     mail(to: full_mailname,subject: "考勤确认错误{#{date}}")#,body: "no body",content_type: "text/html")
   end
 end
