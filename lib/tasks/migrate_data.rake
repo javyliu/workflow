@@ -88,4 +88,41 @@ namespace :migrate_data do
     Rake::Task["migrate_data:checkinouts"].invoke
     Rake::Task["migrate_data:year_infos"].invoke
   end
+
+  #----------------------------------
+  #导入数据，基础假及消耗假期
+  #yearinfo
+  #0 工号,
+  #1 2015年剩余倒休
+  #2 工作室剩余贡献分
+  #3 2015年剩余年假
+  #4 15年剩余带薪病假
+  #5 2015年带薪事假
+  #journal
+  #6 产假
+  #7 产检
+  #8 陪产假
+  #9 婚假
+  #10 丧假
+  #11 出差
+  #12 迟到
+  #13 早退
+  #14 漏打卡
+  #15 病假
+  #16 事假
+  #
+
+  desc '导入数据，基础假及消耗假期,需传入文件名'
+  task :import_data,[:file_name] =>  :environment do |t,args|
+    args.with_defaults(file_name: 'yearinfo.csv')
+    File.readlines(args.file_name).each do |row|
+      _values = row.rstrip.split(",").collect!{|item|(item[/-?\d+/].to_f*10).round}
+      puts _values.inspect
+      #user = User.find(1416)
+
+    end
+
+  end
+
+
 end

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   resources :report_titles,only:[:index,:update]
 
-  resources :checkinouts,only: [:index] do
+  resources :checkinouts,only: [:index,:new,:create] do
     collection do
       get :list
     end
@@ -31,7 +31,6 @@ Rails.application.routes.draw do
 
   get "episodes/list" => "episodes#list",as: "list_episodes"
   get "episodes/new/:holiday_id" => "episodes#new",as: :new_episode
-  get "episodes/:task" => "episodes#show",as: :episode,task: /\d+|(.+?:?)+/
   resources :episodes,except: [:show,:new]
 
   resources :holidays

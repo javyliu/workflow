@@ -1,6 +1,8 @@
 class CheckinoutsController < ApplicationController
   #before_action :set_checkinout, only: [:show, :edit, :update, :destroy]
+
   load_and_authorize_resource param_method: :checkinout_params
+  skip_load_resource only: [:create]
 
   # GET /checkinouts
   # GET /checkinouts.json
@@ -41,7 +43,10 @@ class CheckinoutsController < ApplicationController
 
   # GET /checkinouts/new
   def new
-    @checkinout = Checkinout.new
+    #@checkinout = Checkinout.new
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("考勤数据同步")
+    drop_breadcrumb
   end
 
   # GET /checkinouts/1/edit
@@ -51,13 +56,19 @@ class CheckinoutsController < ApplicationController
   # POST /checkinouts
   # POST /checkinouts.json
   def create
-    @checkinout = Checkinout.new(checkinout_params)
+    #@checkinout = Checkinout.new(checkinout_params)
 
     respond_to do |format|
-      if @checkinout.save
-        format.html { redirect_to @checkinout, notice: 'Checkinout was successfully created.' }
+      if params[:from].present? && params[:to].present?
+        SysKaoqingDataJob.perform_later(from: params[:from],to: params[:to])
+        format.html { redirect_to new_checkinout_path , notice: "#{params[:from]}至#{params[:to]} 的考勤同步任务创建完成,稍后完成同步!" }
         format.json { render :show, status: :created, location: @checkinout }
       else
+        @checkinout = Checkinout.new
+        drop_breadcrumb("我的考勤",home_users_path)
+        drop_page_title("考勤数据同步")
+        drop_breadcrumb
+        flash.now[:alert] = "任务创建失败！请输入正确的日期格式"
         format.html { render :new }
         format.json { render json: @checkinout.errors, status: :unprocessable_entity }
       end

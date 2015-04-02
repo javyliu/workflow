@@ -1,5 +1,30 @@
-<h1>New Checkinout</h1>
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns medium-9 medium-pull-3">
+    <fieldset>
+      <legend><span>数据同步</span></legend>
+      <%= form_for(@checkinout) do |f| %>
+      <div class="row">
+        <div class="columns medium-6">
+          <%= f.label "开始时间" %>
+          <%= text_field_tag "from","",class: "datepicker",readonly:true,type: :date,required: true %>
+        </div>
+        <div class="columns medium-6">
+          <%= f.label "结束时间" %>
+          <%= text_field_tag "to","",class: "datepicker",readonly:true,type: :date ,required: true%>
+        </div>
+      </div>
+      <div class="row">
+        <div class="columns medium-12">
+          <%= f.submit "提交",class: "button",data:{disable_with: "提交中..."} %>
+        </div>
+      </div>
+      <% end %>
 
-<%= render 'form' %>
+    </fieldset>
 
-<%= link_to 'Back', checkinouts_path %>
+
+
+  </div>
+</div>
+

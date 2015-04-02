@@ -7,9 +7,9 @@ class SysKaoqingDataJob < ActiveJob::Base
     #Sidekiq.redis do |conn|
     #  conn.incrby('foo', count)
     #end
-    puts args.inspect
-    CharesDatabase::Checkinout.sys_data(Date.yesterday,Date.today)
-    puts "end"
-
+    #binding.pry
+    opts = args.extract_options!
+    Rails.logger.info("JOB #{Time.now.to_s(:db)} #{opts.inspect}")
+    CharesDatabase::Checkinout.sys_data(opts[:from],opts[:to])
   end
 end
