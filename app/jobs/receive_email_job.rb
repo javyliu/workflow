@@ -73,7 +73,7 @@ class ReceiveEmailJob < ActiveJob::Base
       #binding.pry
       #2015-03-31 21:21 gb2312时要使用 fonce_encoding 为 gbk
       Rails.logger.info "-------------get body----------------"
-      body =Nokogiri::HTML(part.body.decoded.force_encoding(part.charset=="utf-8" ? 'utf-8':'gbk'),"UTF-8") rescue Rails.logger.info("编码错误:#{$!.message}")
+      body =Nokogiri::HTML(part.body.decoded.force_encoding(part.charset=="utf-8" ? 'utf-8':'gbk').tap{|t|Rails.logger.info(t)},"UTF-8") rescue Rails.logger.info("编码错误:#{$!.message}")
       Rails.logger.info "-------------get body success----------------"
       #get need fill user
       next if (_need_fills = body.css("tr.need_fill").presence || body.css("tr[name=need_fill]")).blank?
