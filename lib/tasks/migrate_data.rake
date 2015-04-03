@@ -133,57 +133,57 @@ namespace :migrate_data do
   #7 产检
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 13 )
       _journal.dval = _values[6] + _values[7]
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
 
   #8 陪产假
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 14 )
       _journal.dval = _values[8]
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
 
   #9 婚假
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 15 )
       _journal.dval = _values[9]
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
 
   #10 丧假
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 16 )
       _journal.dval = _values[10]
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
   #11 出差
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 18 )
       _journal.dval = _values[11]
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
 
   #12 迟到
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 1 )
       _journal.dval = _values[12]/10
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
 
   #13 早退
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 2 )
       _journal.dval = _values[13]/10
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
   #14 漏打卡
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 4 )
       _journal.dval = _values[14]/10
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
   #15 病假
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 6 )
       _journal.dval = _values[15]
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
   #16 事假
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 7 )
       _journal.dval = _values[16]
-      _journal.description = "1-3月导入"
+      _journal.description = "1-3月汇总"
       _journal.save!
 
     end

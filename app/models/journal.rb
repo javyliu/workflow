@@ -2,8 +2,9 @@ class Journal < ActiveRecord::Base
   #年假，带薪病假，事假，用的是正值，其它是无符号值
   #迟到，早退，漏打卡按次计
   belongs_to :user
+  include JavyTool::Csv
   #用于数据手动组装,避免n+1
-  has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
+  #has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
   #数组说明
   #0：标识
   #1:数据库对应字id

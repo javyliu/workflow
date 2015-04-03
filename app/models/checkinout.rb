@@ -4,6 +4,6 @@ class Checkinout < ActiveRecord::Base
   #scope :yesterday_checkins, -> { select("").joins(:checkinouts).where(rec_date: Date.yesterday.to_s)}
   #scope :dry_clean_only, -> { joins(:washing_instructions).where('washing_instructions.dry_clean_only = ?', true) }
   include JavyTool::Csv
-  include JavyTool::ConstructQuery
+  #include JavyTool::ConstructQuery
 
 end

@@ -6,10 +6,10 @@ class YearInfosController < ApplicationController
   def index
     drop_page_title("基础假期管理")
     drop_breadcrumb
-    @year_infos = @year_infos.order("year desc").page(params[:page])
+    @year_infos = @year_infos.order("year desc")
     respond_to do |format|
       format.html do
-        @year_infos = @year_infos.includes(:user)
+        @year_infos = @year_infos.page(params[:page]).includes(:user)
       end
       format.js do
         params.permit!
@@ -17,10 +17,32 @@ class YearInfosController < ApplicationController
         _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
         @year_infos = @year_infos.where(params[:date]) if params[:date] && params[:date][:year].present?
         @year_infos = @year_infos.where(user_id: _user_ids) if _user_ids
-        @year_infos = @year_infos.includes(:user)
+        @year_infos = @year_infos.page(params[:page]).includes(:user)
 
         render partial: "items",object: @year_infos, content_type: Mime::HTML
 
+      end
+
+      format.xls do
+        _select = "year,user_id,user_name,name dept_name,year_holiday,sick_leave,affair_leave,switch_leave,ab_point"
+        params.permit!
+        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
+        _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
+        @year_infos = @year_infos.select(_select).joins(" inner join users on user_id = uid inner join departments on dept_code = code")
+        @year_infos = @year_infos.where(params[:date]) if params[:date] && params[:date][:year].present?
+        @year_infos = @year_infos.where(user_id: _user_ids) if _user_ids
+
+        xsl_file = @year_infos.to_csv(select: _select) do |item,cols|
+          _attrs = item.attributes
+          _attrs["year_holiday"] = item.year_holiday.to_f/10
+          _attrs["sick_leave"] = item.sick_leave.to_f/10
+          _attrs["affair_leave"] = item.affair_leave.to_f/10
+          _attrs["switch_leave"] = item.switch_leave.to_f/10
+          _attrs["ab_point"] = item.ab_point.to_f/10
+          _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
+        end
+        #xsl_file
+        send_data xsl_file
       end
     end
   end

@@ -31,6 +31,9 @@
       </div>
       <div class="columns medium-2">
         <input type="submit" class="button small inline-button" text="搜索"/>
+        <% if can?(:export,Episode) %>
+          <%= link_to "导出数据", list_episodes_path(format: :xls), class: "export_xls"  %>
+        <% end %>
       </div>
     </div>
   </form>

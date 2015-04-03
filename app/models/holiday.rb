@@ -33,7 +33,9 @@ class Holiday < ActiveRecord::Base
     end
 
   end
+
   def unit
     self.class.unit(self.id)
   end
+
 end

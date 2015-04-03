@@ -13,6 +13,7 @@ class Ability
     if user.role?("admin")
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
       cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+      can :export,:all
       can :create,:all
       can :confirm,:all
       can [:destroy,:list],:all
@@ -23,6 +24,7 @@ class Ability
       can :show,Episode
       can :confirm,:all
       can :create,Approve
+      can :export,[Journal,Episode],user_id:  user.leader_data.try(:last)
       can :update,Journal
       can :search,Checkinout
       can [:kaoqing,:confirm],User
@@ -30,8 +32,9 @@ class Ability
       #  user.leader_data.try(:include?,journal.user_id)
       #end
     elsif user.role?("manager")
-      can :list,[Checkinout,Episode]#,user_id: user.leader_data.try(:last)
+      can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
       can :search,Checkinout
+      can :export,:all
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
       cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
       can :create,:all

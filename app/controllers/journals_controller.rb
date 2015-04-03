@@ -9,7 +9,6 @@ class JournalsController < ApplicationController
   end
 
   def list
-    @journals = @journals.page(params[:page])
     drop_breadcrumb("我的考勤",home_users_path)
     drop_page_title("部门审批记录")
     drop_breadcrumb
@@ -23,12 +22,41 @@ class JournalsController < ApplicationController
       _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
 
-    @journals = @journals.where(con_hash).where(ary_con).page(params[:page]).order("update_date desc")
+    @journals = @journals.where("check_type = 10 or dval <> 0").where(con_hash).where(ary_con).order("update_date desc")
     @journals = @journals.where(user_id: _uids) if _uids.present?
 
+    _select = "journals.id,update_date,checkin,checkout,journals.user_id,user_name,check_type,dval,null unit,description,departments.name dept_name"
+
+    @journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id inner join users on uid = journals.user_id inner join departments on dept_code = code")
     respond_to do |format|
-      format.html { @journals = @journals.includes(user: [:dept]) }
-      format.js {render partial: "items",object: @journals.includes(user: [:dept]), content_type: Mime::HTML}
+      format.html do
+        @journals = @journals.page(params[:page])
+      end
+      format.js do
+        @journals = @journals.page(params[:page])
+        render partial: "items",object: @journals, content_type: Mime::HTML
+      end
+      format.xls do
+        xsl_file = @journals.to_csv(select: _select) do |item,cols|
+          ck_type = Journal::CheckType.rassoc(item.check_type)
+          _attrs = item.attributes
+          _attrs["check_type"] = ck_type.third
+          _attrs["checkin"] = item.checkin.try(:strftime,"%H:%M")
+          _attrs["checkout"] = item.checkout.try(:strftime,"%H:%M")
+          _attrs["unit"] = ck_type.fourth
+          _attrs["dval"] = case ck_type.last
+                           when 0
+                             ""
+                           when 1
+                             item.dval
+                           else
+                             item.dval.to_f / ck_type.last
+                           end
+          _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
+        end
+        #xsl_file
+        send_data xsl_file
+      end
     end
   end
   # GET /journals/1

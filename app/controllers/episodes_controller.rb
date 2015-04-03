@@ -5,21 +5,21 @@ class EpisodesController < ApplicationController
   # GET /episodes
   # GET /episodes.json
   def index
-    drop_page_title("我的假条")
+    drop_page_title("我的申请")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
     @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday,:user).decorate
   end
 
   def list
-    drop_page_title("部门假单")
+    drop_page_title("部门申请")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.order("id desc").page(params[:page])
+    @episodes = @episodes.order("id desc")
 
     respond_to do |format|
       format.html do
-        @episodes = @episodes.includes(:holiday,user:[:dept]).decorate
+        @episodes = @episodes.page(params[:page]).includes(:holiday,user:[:dept]).decorate
       end
       format.js do
         params.permit!
@@ -33,32 +33,58 @@ class EpisodesController < ApplicationController
         #Rails.logger.info array_con.inspect
 
         @episodes = @episodes.where(user_id: _user_ids) if _user_ids
-        @episodes = @episodes.where(con_hash1).where(array_con).includes(:holiday,user:[:dept]).decorate
+        @episodes = @episodes.page(params[:page]).where(con_hash1).where(array_con).includes(:holiday,user:[:dept]).decorate
 
 
         render partial: "items",object: @episodes, content_type: Mime::HTML
-
       end
+
+      format.xls do
+        params.permit!
+        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
+        _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
+        con_hash1,array_con = construct_condition(:episode,gt: [:start_date],lt: [:end_date])
+        @episodes = @episodes.where(user_id: _user_ids) if _user_ids
+        @episodes = @episodes.where(con_hash1).where(array_con)
+
+        _select = "user_id,user_name,name dept_name,holiday_id,start_date,end_date,total_time,null unit,state,comment,episodes.created_at"
+        @episodes = @episodes.select(_select).joins(" inner join users on user_id=uid inner join departments on dept_code = code")
+        _holidays = Holiday.all.pluck(:id,:name)
+        xsl_file = @episodes.to_csv(select: _select) do |item,cols|
+          _attrs = item.attributes
+          _attrs["created_at"] = item.created_at.try(:strftime,"%F %T")
+          _attrs["unit"] = Holiday.unit(item.holiday_id)
+          _attrs["start_date"] = item.start_date.try(:strftime,"%F %T")
+          _attrs["end_date"] = item.end_date.try(:strftime,"%F %T")
+          _attrs["state"] = Episode::State.rassoc(item.state).first
+          _attrs["holiday_id"] = _holidays.assoc(item.holiday_id).last
+          _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
+        end
+        #xsl_file
+        send_data xsl_file
+      end
+
+
     end
   end
   # GET /episodes/1 or
   # GET /episodes/F002:1416:2014-10-10:10
   # GET /episodes/1.json
   def show
-    drop_page_title("假期审批")
+    drop_page_title("申请审批")
     drop_breadcrumb("我的考勤",home_users_path)
-    drop_breadcrumb("部门假单",list_episodes_path)
+    drop_breadcrumb("部门申请",list_episodes_path)
     drop_breadcrumb
     if /^\d+$/ =~ params[:task]
       @episode = Episode.find_by(id:params[:task])
-      raise CanCan::AccessDenied.new("该假单不存在！",list_episodes_path ) unless @episode
+      raise CanCan::AccessDenied.new("该申请不存在！",list_episodes_path ) unless @episode
       @task = Task.new("F002",@episode.user.leader_user.id,date:@episode.created_at.to_date.to_s,mid:@episode.id)
     else
       @task =  Task.init_from_subject(params[:task])
       @episode = Episode.find_by(id:@task.mid)
       unless @episode
         @task.remove(all: true)
-        raise CanCan::AccessDenied.new("该假单不存在！",list_episodes_path )
+        raise CanCan::AccessDenied.new("该申请不存在！",list_episodes_path )
       end
     end
     @approves = @episode.approves.to_a
@@ -118,7 +144,7 @@ class EpisodesController < ApplicationController
         format.json { render :show, status: :created, location: @episode }
       else
         drop_page_title("假期申请")
-        drop_breadcrumb("我的假条",episodes_path)
+        drop_breadcrumb("我的申请",episodes_path)
         drop_breadcrumb
         flash.now[:alert] = @episode.errors.full_messages
 

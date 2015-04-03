@@ -47,6 +47,9 @@
           <% if can?(:list,Episode) %>
             <li class="<%= cur_page?('episodes','list') ? 'active' : '' %>"><%= link_to "部门假单", list_episodes_path %></li>
           <% end %>
+          <% if can?(:list,Journal) %>
+            <li class="<%= cur_page?('journals','list') ? 'active' : '' %>"><%= link_to "部门异常考勤", list_journals_path %></li>
+          <% end %>
           <% if can?(:change_pwd,User) %>
             <li class="<%= cur_page?('users','change_pwd') ? 'active' : '' %>"><%= link_to "更改密码", change_pwd_users_path %></li>
           <% end %>

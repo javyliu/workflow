@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/javyliu/javy_tool.git
-  revision: c388b6592412d66e996d32f34294f95f1f51ba82
+  revision: 26d4646c5d53b3c858a1df704213038f7cd91192
   specs:
     javy_tool (0.1.0)
 

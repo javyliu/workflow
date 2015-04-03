@@ -25,6 +25,9 @@ $(->
         Turbolinks.visit(_input.data("url")+_input.val())
     })
 
+  $(document).on('click',".export_xls", ->
+      $(this).attr("href",$(this).attr("href")+"?"+$(this).closest("form").serialize())
+  )
 
   $(document).on "ready page:load ajax:success", (event)->
     $("tr.need_update td[class^=c_aff]").restInPlace()

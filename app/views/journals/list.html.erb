@@ -27,6 +27,9 @@
           </div>
           <div class="columns medium-2">
             <input type="submit" class="button small inline-button" text="搜索"/>
+            <% if can?(:export,Journal) %>
+              <%= link_to "导出数据", list_journals_path(format: :xls), class: "export_xls"  %>
+            <% end %>
           </div>
         </div>
       </form>
@@ -39,22 +42,15 @@
         <th>日期</th>
         <th>名字</th>
         <th>部门</th>
+        <th>类别</th>
+        <th>时长</th>
         <th>签入时间</th>
         <th>签出时间</th>
         <th>异常描述</th>
         </tr>
       </thead>
       <tbody id="content">
-      <% @journals.each do |item| %>
-      <tr>
-        <td><%= item.update_date %></td>
-        <td><%= item.user.user_name %></td>
-        <td><%= item.user.dept.name %></td>
-        <td><%= item.checkin.strftime("%H:%M") %></td>
-        <td><%= item.checkout.strftime("%H:%M") %></td>
-        <td><%= item.description %></td>
-      </tr>
-      <% end %>
+      <%= render partial: 'items',object: @journals %>
       </tbody>
     </table>
 

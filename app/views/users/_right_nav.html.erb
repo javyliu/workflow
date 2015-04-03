@@ -12,7 +12,7 @@
         <li><%= link_to_unless_current "部门考勤", kaoqing_users_path("dept")  %></li>
         <li><%= link_to_unless_current "部门假单", list_episodes_path  %></li>
         <li><%= link_to_unless_current "部门签到记录", list_checkinouts_path  %></li>
-        <!--li><%= link_to_unless_current "部门异常考勤", list_journals_path  %></li-->
+        <li><%= link_to_unless_current "部门异常考勤", list_journals_path  %></li>
       <% end %>
       <% if can?(:create,:all) %>
       <li class="divider"></li>
