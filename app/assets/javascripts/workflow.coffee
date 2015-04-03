@@ -26,8 +26,9 @@ $(->
     })
 
 
-  $(document).on "ready page:load", ->
+  $(document).on "ready page:load ajax:success", (event)->
     $("tr.need_update td[class^=c_aff]").restInPlace()
+    $("td.edit-in-place").restInPlace()
 
   $(document).on 'success.rest-in-place',"tr.need_update td[class^=c_aff]", (event,data)->
     if data.error
