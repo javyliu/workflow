@@ -1,12 +1,36 @@
 class JournalsController < ApplicationController
-  before_action :set_journal, only: [:show, :edit, :destroy]
+  #before_action :set_journal, only: [:show, :edit, :destroy]
+  load_and_authorize_resource# param_method: :journal_params
 
   # GET /journals
   # GET /journals.json
   def index
-    @journals = Journal.all.page(params[:page])
+    @journals = @journals.page(params[:page])
   end
 
+  def list
+    @journals = @journals.page(params[:page])
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("部门审批记录")
+    drop_breadcrumb
+
+    params.permit!
+    con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
+
+    _uids = nil
+    if params[:user].present?
+      con_hash1,like_con = construct_condition(:user,like_ary: [:user_name])
+      _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
+    end
+
+    @journals = @journals.where(con_hash).where(ary_con).page(params[:page]).order("update_date desc")
+    @journals = @journals.where(user_id: _uids) if _uids.present?
+
+    respond_to do |format|
+      format.html { @journals = @journals.includes(user: [:dept]) }
+      format.js {render partial: "items",object: @journals.includes(user: [:dept]), content_type: Mime::HTML}
+    end
+  end
   # GET /journals/1
   # GET /journals/1.json
   def show

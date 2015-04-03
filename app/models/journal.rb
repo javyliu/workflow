@@ -2,6 +2,8 @@ class Journal < ActiveRecord::Base
   #年假，带薪病假，事假，用的是正值，其它是无符号值
   #迟到，早退，漏打卡按次计
   belongs_to :user
+  #用于数据手动组装,避免n+1
+  has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
   #数组说明
   #0：标识
   #1:数据库对应字id
@@ -10,6 +12,8 @@ class Journal < ActiveRecord::Base
   #4：标头css类
   #5：是否允许负数
   #6：数据库存储对应倍数，（小时及天须乘以10存储)
+
+
   CheckType = [
     ['c_aff_later',1, '迟到','次','group_chi',false,1],
     ['c_aff_leave',2,'早退','次','group_chi',false,1],

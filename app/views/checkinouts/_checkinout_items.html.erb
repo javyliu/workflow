@@ -1,0 +1,8 @@
+<% checkinout_items.each do |item| %>
+<tr>
+  <td><%= item.rec_date %></td>
+  <td><%= item.checkin %></td>
+  <td><%= item.checkout %></td>
+</tr>
+<% end %>
+<tr><td colspan=3> <%= paginate(checkinout_items) %> </td></tr>

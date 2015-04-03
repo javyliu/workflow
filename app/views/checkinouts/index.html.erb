@@ -1,20 +1,32 @@
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">
-    <h4><span>签到记录</span></h4>
+    <div id="search" class="panel">
+      <form data-remote="true"  action="#" data-replace-with="#content">
+        <div class="row">
+          <div class="columns medium-4">
+            <label>开始日期:</label>
+            <%= text_field_tag "checkinout[gt_rec_date]","",class: 'datepicker' ,readonly: true %>
+          </div>
+          <div class="columns medium-4">
+            <label>结束日期:</label>
+            <%= text_field_tag "checkinout[lt_rec_date]","",class: 'datepicker',readonly: true  %>
+          </div>
+          <div class="columns medium-4">
+            <input type="submit" class="button small inline-button" text="搜索"/>
+          </div>
+        </div>
+      </form>
+      <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+    </div>
     <table>
       <th>日期</th>
       <th>签入时间</th>
       <th>签出时间</th>
-      <% @checkinouts.each do |item| %>
-      <tr>
-        <td><%= item.rec_date %></td>
-        <td><%= item.checkin %></td>
-        <td><%= item.checkout %></td>
-      </tr>
-      <% end %>
+      <tbody id="content">
+      <%= render partial: 'checkinout_items',object: @checkinouts %>
+      </tbody>
     </table>
-    <%= paginate(@checkinouts) %>
 
   </div>
 </div>

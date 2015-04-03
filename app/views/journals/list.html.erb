@@ -1,13 +1,13 @@
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">
-    <% if  can? :list,Checkinout %>
+    <% if can? :list,Journal %>
     <div id="search" class="panel">
       <form data-remote="true"  action="#" data-replace-with="#content">
         <div class="row">
           <div class="columns medium-2">
             <label>用户id:</label>
-            <%= text_field :checkinout, :user_id, placeholder: "用户id" %>
+            <%= text_field :journal, :user_id, placeholder: "用户id" %>
           </div>
           <div class="columns medium-2">
             <label>用户名:</label>
@@ -19,11 +19,11 @@
           </div>
           <div class="columns medium-2">
             <label>开始日期:</label>
-            <%= text_field_tag "checkinout[gt_rec_date]","",class: 'datepicker' ,readonly: true %>
+            <%= text_field_tag "journal[gt_update_date]","",class: 'datepicker' ,readonly: true %>
           </div>
           <div class="columns medium-2">
             <label>结束日期:</label>
-            <%= text_field_tag "checkinout[lt_rec_date]","",class: 'datepicker',readonly: true  %>
+            <%= text_field_tag "journal[lt_update_date]","",class: 'datepicker',readonly: true  %>
           </div>
           <div class="columns medium-2">
             <input type="submit" class="button small inline-button" text="搜索"/>
@@ -36,15 +36,25 @@
     <table>
       <thead>
         <tr>
-          <th>日期</th>
-          <th>名字</th>
-          <th>部门</th>
-          <th>签入时间</th>
-          <th>签出时间</th>
+        <th>日期</th>
+        <th>名字</th>
+        <th>部门</th>
+        <th>签入时间</th>
+        <th>签出时间</th>
+        <th>异常描述</th>
         </tr>
       </thead>
       <tbody id="content">
-      <%= render partial: 'items', object: @checkinouts %>
+      <% @journals.each do |item| %>
+      <tr>
+        <td><%= item.update_date %></td>
+        <td><%= item.user.user_name %></td>
+        <td><%= item.user.dept.name %></td>
+        <td><%= item.checkin.strftime("%H:%M") %></td>
+        <td><%= item.checkout.strftime("%H:%M") %></td>
+        <td><%= item.description %></td>
+      </tr>
+      <% end %>
       </tbody>
     </table>
 

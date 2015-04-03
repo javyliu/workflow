@@ -10,7 +10,14 @@ class CheckinoutsController < ApplicationController
     drop_breadcrumb("我的考勤",home_users_path)
     drop_page_title("我的的签到记录")
     drop_breadcrumb
-    @checkinouts = @checkinouts.page(params[:page]).order("id desc").decorate
+    params.permit!
+    con_hash,ary_con = construct_condition(:checkinout,gt:[:rec_date],lt:[:rec_date])
+
+    @checkinouts = @checkinouts.where(con_hash).where(ary_con).page(params[:page]).order("rec_date desc").decorate
+    respond_to do |format|
+      format.html {  }
+      format.js {render partial: "checkinout_items",object: @checkinouts, content_type: Mime::HTML}
+    end
   end
 
   def list
@@ -27,7 +34,7 @@ class CheckinoutsController < ApplicationController
       _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
 
-    @checkinouts = @checkinouts.where(con_hash).where(ary_con).page(params[:page]).order("id desc")
+    @checkinouts = @checkinouts.where(con_hash).where(ary_con).page(params[:page]).order("rec_date desc")
     @checkinouts = @checkinouts.where(user_id: _uids) if _uids.present?
 
     respond_to do |format|
