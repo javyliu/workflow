@@ -8,7 +8,7 @@
   <td><%= episode.total_time %><%= episode.holiday.unit %></td>
   <td><%= episode.comment %></td>
   <td><%= episode.state %></td>
-  <td><%= link_to('查看', episode_path(episode.id)) if episode.state.to_i.in?([0,3]) && can?(:show,Episode) %> </td>
+  <td><%= link_to('查看', episode_path(episode.id)) if can?(:show,Episode) %> </td>
 </tr>
 <% end %>
 <tr>
