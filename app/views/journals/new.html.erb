@@ -1,5 +1,14 @@
-<h1>New Journal</h1>
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns medium-9 medium-pull-3">
+    <%= render 'form' %>
+    <fieldset>
+      <legend><span>说明</span></legend>
+      <ul>
+        <li>本功能用于补齐缺失异常考勤</li>
+        <li>时长那填写与异常类别相对应的实际值,为数值，ab分可为负数</li>
+      </ul>
+    </fieldset>
+  </div>
+</div>
 
-<%= render 'form' %>
-
-<%= link_to 'Back', journals_path %>

@@ -10,9 +10,13 @@
     <%= f.label :mgr_code,"直属管理者ID" %>
     <%= f.text_field :mgr_code %>
   </div>
+
   <div class="field">
     <%= f.label :roles,"角色" %>
-    <%= f.collection_select :roles,current_user.managed_roles,:to_s,:humanize,prompt: true %>
+    <% for role in current_user.managed_roles %>
+    <%= check_box_tag "user[roles][#{role}]", role, @user.roles.include?(role), {:name => "user[roles][]"}%>
+    <%= label_tag "user_roles_#{role}", I18n.t(role) %><br />
+    <% end %>
   </div>
 
 
@@ -28,6 +32,15 @@
   <ul>
   <li>如不更新密码新留空</li>
   <li>直属管理ID用于指定特定人员的所属管理者</li>
-  <li>角色说明：Admin: 系统管理员，Manager: 考勤系统管理人员，department_manager: 部门考勤管理人员，Badman: 坏人：） </li>
+  <li>
+  <dl>
+    <dt>角色说明：</dt>
+    <dd>系统管理员: 管理整个系统</dd>
+    <dd>管理员:考勤系统管理人员,管理节假日，人员等</dd>
+    <dd>部门管理员:部门考勤管理人员,审核每日考勤</dd>
+    <dd>考勤查看员:允许查看所有部门考勤及审批情况</dd>
+    <dd>Badman: 坏人,不允许登录系统</dd>
+  </dl>
+  </li>
   </ul>
 </fieldset>

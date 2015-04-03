@@ -1,21 +1,24 @@
 <div class="row">
-  <%= render 'users/right_nav' %>
-  <div class="columns medium-9 medium-pull-3">
+  <div class="columns medium-12">
     <% if can? :list,Journal %>
     <div id="search" class="panel">
       <form data-remote="true"  action="#" data-replace-with="#content">
         <div class="row">
-          <div class="columns medium-2">
+          <div class="columns medium-1">
             <label>用户id:</label>
             <%= text_field :journal, :user_id, placeholder: "用户id" %>
           </div>
-          <div class="columns medium-2">
+          <div class="columns medium-1">
             <label>用户名:</label>
             <%= text_field :user, :user_name, placeholder: "用户名" %>
           </div>
           <div class="columns medium-2">
             <label>部门:</label>
             <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
+          </div>
+          <div class="columns medium-2">
+            <label>类别 :</label>
+            <%= select :journal, :check_type, Journal::CheckType[0...-1].map{|item|[item.third,item.second]},prompt: "类别" %>
           </div>
           <div class="columns medium-2">
             <label>开始日期:</label>
@@ -28,7 +31,7 @@
           <div class="columns medium-2">
             <input type="submit" class="button small inline-button" text="搜索"/>
             <% if can?(:export,Journal) %>
-              <%= link_to "导出数据", list_journals_path(format: :xls), class: "export_xls"  %>
+              <%= link_to "导出数据", list_journals_path(format: :xls), class: "export_xls button small secondary"  %>
             <% end %>
           </div>
         </div>

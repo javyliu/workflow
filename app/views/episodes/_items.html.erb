@@ -12,7 +12,8 @@
 </tr>
 <% end %>
 <tr>
-  <td colspan=9>
+  <td colspan=5>
     <%= paginate items,remote:true %>
   </td>
+    <td colspan=4><%= page_entries_info items,entry_name: "记录" %></td>
 </tr>

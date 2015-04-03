@@ -1,6 +1,7 @@
 class JournalsController < ApplicationController
   #before_action :set_journal, only: [:show, :edit, :destroy]
   load_and_authorize_resource# param_method: :journal_params
+  skip_load_resource only: [:new,:create]
 
   # GET /journals
   # GET /journals.json
@@ -66,6 +67,9 @@ class JournalsController < ApplicationController
 
   # GET /journals/new
   def new
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("新增异常考勤")
+    drop_breadcrumb
     @journal = Journal.new
   end
 
@@ -77,12 +81,22 @@ class JournalsController < ApplicationController
   # POST /journals.json
   def create
     @journal = Journal.new(journal_params)
+    _cktype = Journal::CheckType.rassoc(@journal.check_type)
+
+    if _cktype && @journal.check_type != 10 #非特批
+      _dval = @journal.dval_before_type_cast
+      @journal.dval = (_cktype[5] ? _dval.to_f : _dval.to_f.abs) * _cktype.last
+    end
 
     respond_to do |format|
       if @journal.save
-        format.html { redirect_to @journal, notice: 'Journal was successfully created.' }
+        format.html { redirect_to new_journal_path, notice: '操作成功,可继续添加!' }
         format.json { render :show, status: :created, location: @journal }
       else
+        drop_breadcrumb("我的考勤",home_users_path)
+        drop_page_title("新增异常考勤")
+        drop_breadcrumb
+        flash.now[:alert] = @journal.errors.full_messages
         format.html { render :new }
         format.json { render json: @journal.errors, status: :unprocessable_entity }
       end

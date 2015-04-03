@@ -21,6 +21,7 @@ zh-CN:
   admin: 系统管理员
   manager: 管理员
   department_manager: 部门管理员
+  kaoqin_viewer: 考勤查看员
   badman: Badman
   unauthorized:
     default: "无权访问"
@@ -247,9 +248,9 @@ zh-CN:
     page_entries_info:
       one_page:
         display_entries:
-          zero: "没有 %{entry_name} "
-          one: "显示 <b>1</b> %{entry_name}"
-          other: "显示 <b>所有 %{count}</b> %{entry_name}"
+          zero: "无记录"
+          one: "显示 <b>1</b> 记录"
+          other: "显示 <b>所有 %{count}</b> 记录"
       more_pages:
-        display_entries: "Displaying %{entry_name} <b>%{first}&nbsp;-&nbsp;%{last}</b> of <b>%{total}</b> in total"
+        display_entries: "显示第 %{first}&nbsp;-&nbsp;%{last}</b> 条 共有 <b>%{total}</b> 记录<b>"
 

@@ -24,14 +24,14 @@
             <label>部门:</label>
             <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
           </div>
-          <div class="columns medium-3">
+          <div class="columns medium-2">
             <label>邮箱:</label>
             <%= text_field :user,:email %>
           </div>
-          <div class="columns medium-2">
+          <div class="columns medium-3">
             <input type="submit" class="button small inline-button" text="搜索"/>
           <% if can?(:export,YearInfo) %>
-            <%= link_to "导出数据", year_infos_path(format: :xls), class: "export_xls"  %>
+            <%= link_to "导出数据", year_infos_path(format: :xls), class: "export_xls button small secondary"  %>
           <% end %>
           </div>
         </div>
@@ -48,7 +48,7 @@
           <th>带薪病假</th>
           <th>带薪事假</th>
           <th>倒休</th>
-          <th>AB分</th>
+          <th>贡献分</th>
         </tr>
       </thead>
       <tbody id="content" class="in_editor">

@@ -1,37 +1,39 @@
-<%= form_for(@journal) do |f| %>
-  <% if @journal.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@journal.errors.count, "error") %> prohibited this journal from being saved:</h2>
-
-      <ul>
-      <% @journal.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :user_id %><br>
+  <%= form_for(@journal) do |f| %>
+<div class="row">
+  <div class="columns medium-6">
+    <%= f.label :update_date,"日期" %>
+    <%= f.text_field :update_date,class: "datepicker",readonly:true %>
+  </div>
+  <div class="columns medium-6">
+    <%= f.label :user_id,"用户ID" %>
     <%= f.text_field :user_id %>
   </div>
-  <div class="field">
-    <%= f.label :update_date %><br>
-    <%= f.date_select :update_date %>
+</div>
+<div class="row">
+  <div class="columns medium-6">
+    <%= f.label :check_type,"异常类别" %>
+    <%= f.select :check_type,Journal::CheckType[0...-1].map{|item| [item.third,item.second]} %>
   </div>
-  <div class="field">
-    <%= f.label :check_type %><br>
-    <%= f.number_field :check_type %>
+  <div class="columns medium-6">
+    <div class="row collapse">
+      <%= f.label :dval,"时长" %>
+      <div class="columns small-8">
+          <%= f.text_field :dval %>
+      </div>
+      <div class="columns small-4">
+        <span class="postfix">天/次/小时</span>
+      </div>
+    </div>
   </div>
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_field :description %>
+</div>
+<div class="row">
+  <div class="columns medium-6">
+    <%= f.label :description,"描述" %>
+    <%= f.text_area :description %>
   </div>
-  <div class="field">
-    <%= f.label :dval %><br>
-    <%= f.number_field :dval %>
+  <div class="columns medium-6">
+    <label for="">&nbsp;</label>
+    <%= f.submit "提交",class: "button small",data:{disable_with: '提交中...'} %>
   </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+</div>
+  <% end %>

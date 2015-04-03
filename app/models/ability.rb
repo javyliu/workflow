@@ -6,9 +6,44 @@ class Ability
 
     cannot :manage, :all
     can :read,[Checkinout,Episode],user_id: user.id
-    can [:home],User,uid: user.id
+    can [:index,:home],User,uid: user.id
     can [:create,:update],Episode,user_id: user.id
     can [:change_pwd,:update,:show],User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+
+    if user.role?("kaoqin_viewer")
+      can [:list],[Checkinout,Episode,Journal]
+      can :show,Episode
+      can :list,Department
+      can :export,[Journal,Episode]
+      #can [:kaoqing],User
+      #can :list,Journal do |journal|
+      #  user.leader_data.try(:include?,journal.user_id)
+      #end
+    end
+
+    if user.role?("department_manager")
+      can [:list],[Checkinout,Episode,Journal],user_id: user.leader_data.try(:last)
+      can :show,Episode
+      can :confirm,:all
+      can :create,Approve
+      can :export,[Journal,Episode],user_id:  user.leader_data.try(:last)
+      can :update,Journal
+      can [:kaoqing,:confirm],User
+      #can :list,Journal do |journal|
+      #  user.leader_data.try(:include?,journal.user_id)
+      #end
+    end
+
+    if user.role?("manager")
+      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
+      can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
+      can :export,:all
+      can :show,Episode
+      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+      can :create,:all
+      cannot [:kaoqing,:confirm],:all
+      cannot :create,Approve
+    end
 
     if user.role?("admin")
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
@@ -17,31 +52,11 @@ class Ability
       can :create,:all
       can :confirm,:all
       can [:destroy,:list],:all
-      can [:kaoqing,:confirm],User
       #can :read,Checkinout,user_id: user.leader_data.try(:last)
-    elsif user.role?("department_manager")
-      can [:list],[Checkinout,Episode,Journal],user_id: user.leader_data.try(:last)
-      can :show,Episode
-      can :confirm,:all
-      can :create,Approve
-      can :export,[Journal,Episode],user_id:  user.leader_data.try(:last)
-      can :update,Journal
-      can :search,Checkinout
-      can [:kaoqing,:confirm],User
-      #can :list,Journal do |journal|
-      #  user.leader_data.try(:include?,journal.user_id)
-      #end
-    elsif user.role?("manager")
-      can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
-      can :search,Checkinout
-      can :export,:all
-      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
-      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
-      can :create,:all
-      cannot [:kaoqing,:confirm],:all
-      cannot :create,Approve
-    elsif user.role_group.nil?
-      can [:index,:home],User,uid: user.id
+    end
+
+    if user.role?("badman")
+      cannot manage,:all
     end
     # Define abilities for the passed in user here. For example:
     #

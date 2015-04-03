@@ -49,7 +49,9 @@
         <td><%= item.description %></td>
       </tr>
       <% end %>
-    <tr><td colspan=6><%= paginate(@my_journals) %></td></tr>
+    <tr><td colspan=3><%= paginate(@my_journals) %></td>
+    <td colspan=3><%= page_entries_info(@my_journals,entry_name:'') %></td>
+    </tr>
     </table>
 
   </div>

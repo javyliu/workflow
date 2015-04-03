@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
   #for login
   has_secure_password # validations: false
 
-  ROLES = %w[admin manager department_manager badman]
+  ROLES = %w[admin manager department_manager kaoqin_viewer badman]
 
   class << self
     attr_accessor :query_date
@@ -182,7 +182,7 @@ class User < ActiveRecord::Base
     #end
     #@cache_dept
 
-    @cache_dept ||= if self.role?("admin") || self.role?("manager")
+    @cache_dept ||= if 11 & self.role_group > 0#self.("admin") || self.role?("manager")
                       OpenStruct.new({uid: self.id,depts: Department.cache_all_depts})
                     else
                       self.class.cache_departments.detect { |e| e.uid == self.id }

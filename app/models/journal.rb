@@ -3,6 +3,9 @@ class Journal < ActiveRecord::Base
   #迟到，早退，漏打卡按次计
   belongs_to :user
   include JavyTool::Csv
+  validates :check_type, presence: true
+  validates :user_id, presence: true
+  validates :update_date, presence: true
   #用于数据手动组装,避免n+1
   #has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
   #数组说明
