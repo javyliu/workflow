@@ -23,6 +23,7 @@ class Ability
       can :show,Episode
       can :confirm,:all
       can :create,Approve
+      can :update,Journal
       can :search,Checkinout
       can [:kaoqing,:confirm],User
       #can :list,Journal do |journal|
