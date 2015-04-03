@@ -5,7 +5,10 @@ module CharesDatabase
     self.table_name = 'checkinout'
 
     #2015-04-02 13:30 javy_liu upgrade to multi days
-    def self.sys_data(from= Date.yesterday,to= Date.today)
+    def self.sys_data(from,to )
+      from = Date.yesterday unless from
+      to = Date.today unless to
+
       email_checks = self.find_by_sql(["select b.email,group_concat(checktime) check_times,date(checktime) rec_date from checkinout a inner join userinfo b on a.userid=b.userid  where a.checktime > ? and a.checktime < ? group by a.userid,rec_date",from,to])
 
       user_id_emails = User.where(email: email_checks.map{|item|item.email}).pluck(:uid,:email)
