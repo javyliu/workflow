@@ -23,8 +23,14 @@ module CharesDatabase
           ref_time = normal_ctimes.sort.first
         end
         user_id = user_id_emails.rassoc(item.email).try(:first)
-        next if ::Checkinout.where(rec_date: item.rec_date,user_id: user_id).count() > 0
-        ::Checkinout.create!(rec_date: item.rec_date,user_id: user_id ,checkin: checkin,checkout: checkout,ref_time: ref_time)
+        _ck = ::Checkinout.find_or_initialize_by(rec_date: item.rec_date,user_id: user_id)
+        _ck.checkin = checkin
+        _ck.checkout = checkout
+        _ck.ref_time = ref_time
+
+        _ck.save!
+
+        #::Checkinout.create!(rec_date: item.rec_date,user_id: user_id ,checkin: checkin,checkout: checkout,ref_time: ref_time)
       end
 
     end
