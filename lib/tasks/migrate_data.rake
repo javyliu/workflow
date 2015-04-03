@@ -161,18 +161,18 @@ namespace :migrate_data do
 
   #12 迟到
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 1 )
-      _journal.dval = _values[12]
+      _journal.dval = _values[12]/10
       _journal.description = "1-3月导入"
       _journal.save!
 
   #13 早退
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 2 )
-      _journal.dval = _values[13]
+      _journal.dval = _values[13]/10
       _journal.description = "1-3月导入"
       _journal.save!
   #14 漏打卡
       _journal = Journal.find_or_create_by(user_id: _uid,update_date: '2015-03-01',check_type: 4 )
-      _journal.dval = _values[14]
+      _journal.dval = _values[14]/10
       _journal.description = "1-3月导入"
       _journal.save!
   #15 病假
