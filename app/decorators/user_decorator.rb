@@ -274,12 +274,12 @@ class UserDecorator < ApplicationDecorator
         end
       end
 
-      ref_cmd.push("<span>#{episode.name}</span>") if ref_cmd.present? && episode
+      episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,h.episode_url(item.id),data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
 
       #请假#如果没有签到记录，表明该用户本日考勤异常,检查用户是否有请假
     else#记为忘记打卡
       ref_cmd.push("无打卡记录")
-      ref_cmd.push "<span>#{episode.name}</span>" if episode
+      episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,h.episode_url(item.id),data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if episodes.present?
     end
   end
 
@@ -376,8 +376,9 @@ class UserDecorator < ApplicationDecorator
 
 
   #昨天的请假记录,返回请假的名称
-  def episode
-    @episode ||= object.yes_holidays.first
+  #"holidays.name,episodes.user_id,episodes.id,description,total_time,holiday_id"
+  def episodes
+    @episodes ||= object.yes_holidays
   end
 
 end

@@ -8,7 +8,7 @@ class EpisodesController < ApplicationController
     drop_page_title("我的申请")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday,:user).decorate
+    @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday).decorate
   end
 
   def list

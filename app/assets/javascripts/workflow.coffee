@@ -1,4 +1,16 @@
 $(->
+
+  #$.extend({to_js_url: (url)->
+  #  if /\.js|\.html|\.htm/.test(url)
+  #    url
+  #  else if /\?/.test(url)
+  #    url.replace('?', '.js?')
+  #  else
+  #    url + '.js'
+  #}
+  #)
+
+
   $(document).on('ajax:success','[data-remote][data-replace-with]', (event, data) ->
     _this = $(this)
     $(_this.data('replace-with')).html(data)
@@ -28,6 +40,14 @@ $(->
   $(document).on('click',".export_xls", ->
       $(this).attr("href",$(this).attr("href")+"?"+$(this).closest("form").serialize())
   )
+
+  #reveal modal
+  $(document).on('opened', '[data-reveal]', ->
+    _modal = $(this)
+    if $("a.close-reveal-modal",_modal).length == 0
+      _modal.append('<a class="close-reveal-modal" aria-label="Close">&#215;</a>')
+  )
+
 
   $(document).on "ready page:load ajax:success", (event)->
     $("tr.need_update td[class^=c_aff]").restInPlace()

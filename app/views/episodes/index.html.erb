@@ -13,7 +13,6 @@
 <table>
   <thead>
     <tr>
-      <th>名字</th>
       <th>类别</th>
       <th>开始时间</th>
       <th>结束时间</th>
@@ -26,21 +25,26 @@
   <tbody>
   <% @episodes.each do |episode| %>
   <tr>
-    <td><%= episode.user.user_name %></td>
     <td><%= episode.holiday.name %></td>
     <td><%= episode.start_date %></td>
     <td><%= episode.end_date %></td>
     <td><%= episode.total_time %><%= episode.holiday.unit %></td>
     <td><%= episode.comment %></td>
     <td><%= episode.state %></td>
-    <td><%= link_to('编辑', edit_episode_path(episode)) if episode.object.state == 0 %></td>
+    <td><%= link_to('详情', episode_path(episode,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})%> &nbsp;<%= link_to('编辑', edit_episode_path(episode)) if episode.object.state == 0 %>
+      </td>
   </tr>
   <% end %>
   <tr>
-    <td colspan=8>
+    <td colspan=7>
       <%= paginate @episodes %>
     </td>
   </tr>
   </tbody>
 </table>
 <% end %>
+
+<div id="modal_window" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+  <p>loading...</p>
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
