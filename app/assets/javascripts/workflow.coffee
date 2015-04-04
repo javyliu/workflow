@@ -1,14 +1,12 @@
 $(->
 
-  #$.extend({to_js_url: (url)->
-  #  if /\.js|\.html|\.htm/.test(url)
-  #    url
-  #  else if /\?/.test(url)
-  #    url.replace('?', '.js?')
-  #  else
-  #    url + '.js'
-  #}
-  #)
+  $.extend to_js_url: (url)->
+    if /\.js|\.html|\.htm/.test(url)
+      url
+    else if /\?/.test(url)
+      url.replace('?', '.js?')
+    else
+      url + '.js'
 
 
   $(document).on('ajax:success','[data-remote][data-replace-with]', (event, data) ->
