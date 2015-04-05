@@ -1,0 +1,2 @@
+<%= render :partial => 'item', :collection => j_items %>
+<tr> <td colspan=3><%= page_entries_info(j_items,entry_name:'') %></td> <td colspan=3> <%= paginate j_items,remote: true %></td>

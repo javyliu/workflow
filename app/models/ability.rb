@@ -7,6 +7,7 @@ class Ability
     cannot :manage, :all
     can :read,[Checkinout,Episode],user_id: user.id
     can [:index,:home],User,uid: user.id
+    can [:index],Journal,user_id: user.id
     can [:create,:update],Episode,user_id: user.id
     can [:change_pwd,:update,:show],User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
 

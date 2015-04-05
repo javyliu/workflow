@@ -5,6 +5,7 @@
   <td><%= item.checkout %></td>
 </tr>
 <% end %>
-<tr><td colspan=2> <%= paginate(checkinout_items) %>
+<tr>
   <td colspan=1> <%= page_entries_info(checkinout_items,entry_name: "") %> </td>
+  <td colspan=2> <%= paginate(checkinout_items) %>
 </tr>

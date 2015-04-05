@@ -2,11 +2,11 @@
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">
     <% if @to_be_confirms.present? && can?(:confirm, :all)  %>
-    <h4><span>待确认</span></h4>
+    <h4><span></span></h4>
     <% @to_be_confirms.each do |key,values| %>
     <div class="panel">
       <% cfm_type = Task::CfmType.rassoc(key) %>
-      <h5><%= cfm_type.try(:first) %></h5>
+      <h5>待确认:<%= cfm_type.try(:first) %></h5>
       <% values.each do |task| %>
       <%= link_to task , send(cfm_type.third,{task: task}),class: "button" %>
       <% end %>
@@ -14,7 +14,8 @@
     <% end %>
     <hr />
     <% end %>
-    <h4><span>年度剩余假期</span></h4>
+
+    <h5><span>年度剩余假期</span></h5>
     <table>
       <tr>
         <% @user.check_types.each do |item| %>
@@ -26,9 +27,9 @@
         <td><%=@user.calcute_remain_holiday(item)  %></td>
         <% end %>
       </tr>
-      <table>
+    </table>
 
-    <h4><span>异常考勤记录</span></h4>
+    <h5><span>异常考勤记录</span></h5>
     <table>
       <tr>
         <th>日期</th>
@@ -38,20 +39,11 @@
         <th>时长</th>
         <th>异常描述</th>
       </tr>
-      <% @my_journals.each do |item| %>
-      <% ck_type = Journal::CheckType.rassoc(item.check_type) %>
+      <%= render :partial => 'journals/item', :collection => @my_journals %>
       <tr>
-        <td><%= item.update_date %></td>
-        <td><%= item.checkin.try(:strftime,"%H:%M") %></td>
-        <td><%= item.checkout.try(:strftime,"%H:%M") %></td>
-        <td><%= ck_type.third %></td>
-        <td><%= dis_dval(item,ck_type) %></td>
-        <td><%= item.description %></td>
+        <td colspan=3><%= page_entries_info(@my_journals,entry_name:'') %></td>
+        <td colspan=3> <%= link_to "更多", journals_path %></td>
       </tr>
-      <% end %>
-    <tr><td colspan=3><%= paginate(@my_journals) %></td>
-    <td colspan=3><%= page_entries_info(@my_journals,entry_name:'') %></td>
-    </tr>
     </table>
 
   </div>

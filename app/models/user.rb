@@ -166,13 +166,19 @@ class User < ActiveRecord::Base
   #当前用户所属部门分组
   def dept_group
     @dept_group ||= case self.dept_code
-                  when /^0104|0105|0106/ #无倒休部门
+                  when /^(0104|0105|0106)/ #无倒休部门
                     Department::GroupNoSwitchTime
-                  when /^0102|0103/ #ab 分部门
+                  when /^(0102|0103)/ #ab 分部门
                     Department::GroupAB
                   else
                     Department::GroupSwitchTime #倒休部门
                   end
+  end
+
+  #当前用户可用 check_type
+  #用于异常考勤搜索页面显示
+  def check_types
+    @check_types ||= Journal::CheckType.find_all{|item| !item[1].in?(self.dept_group[3])}
   end
 
   #当前用户可管理的部门列表

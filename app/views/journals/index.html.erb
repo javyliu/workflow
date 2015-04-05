@@ -1,35 +1,44 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns medium-9 medium-pull-3">
+    <div id="search" class="panel">
+      <form data-remote="true"  action="#" data-replace-with="#content">
+        <div class="row">
+          <div class="columns medium-3">
+            <label>类别 :</label>
+            <%= select :journal, :check_type, current_user.check_types.map{|item|[item.third,item.second]},prompt: "类别" %>
+          </div>
+          <div class="columns medium-3">
+            <label>开始日期:</label>
+            <%= text_field_tag "journal[gt_update_date]","",class: 'datepicker' ,readonly: true %>
+          </div>
+          <div class="columns medium-3">
+            <label>结束日期:</label>
+            <%= text_field_tag "journal[lt_update_date]","",class: 'datepicker',readonly: true  %>
+          </div>
+          <div class="columns medium-3">
+            <input type="submit" class="button small inline-button" text="搜索"/>
+          </div>
+        </div>
+      </form>
+      <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+        <th>日期</th>
+        <th>签入时间</th>
+        <th>签出时间</th>
+        <th>类别</th>
+        <th>时长</th>
+        <th>异常描述</th>
+        </tr>
+      </thead>
+      <tbody id="content">
+        <%= render partial: 'j_items',object: @journals %>
+      </tbody>
+    </table>
 
-<h1>Listing Journals</h1>
+  </div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Update date</th>
-      <th>Check type</th>
-      <th>Description</th>
-      <th>Dval</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @journals.each do |journal| %>
-      <tr>
-        <td><%= journal.user_id %></td>
-        <td><%= journal.update_date %></td>
-        <td><%= journal.check_type %></td>
-        <td><%= journal.description %></td>
-        <td><%= journal.dval %></td>
-        <td><%= link_to 'Show', journal %></td>
-        <td><%= link_to 'Edit', edit_journal_path(journal) %></td>
-        <td><%= link_to 'Destroy', journal, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Journal', new_journal_path %>

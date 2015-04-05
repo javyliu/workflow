@@ -6,7 +6,17 @@ class JournalsController < ApplicationController
   # GET /journals
   # GET /journals.json
   def index
-    @journals = @journals.page(params[:page])
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("异常考勤记录")
+    drop_breadcrumb
+    params.permit!
+    con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
+    @journals = @journals.where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page]).select("journals.*,checkin,checkout").joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id ")
+
+    respond_to do |format|
+      format.html {  }
+      format.js { render partial: "j_items",object: @journals, content_type: Mime::HTML}
+    end
   end
 
   def list
