@@ -19,4 +19,6 @@
 //= require workflow
 // require_tree .
 Turbolinks.enableProgressBar();
-$(function(){ $(document).foundation(); });
+$(document).on("ready page:load",function(){
+  $(document).foundation();
+});
