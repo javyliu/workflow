@@ -55,5 +55,7 @@ $(->
     if data.error
       $(this).data("restInPlaceEditor").abort()
       alert(data.error)
-
+  $(document).on("ajax:success","[data-remote][data-method=delete]",(e,data) ->
+    $(this).closest($(this).data("destroy") || "tr").remove()
+  )
 )

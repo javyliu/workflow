@@ -7,7 +7,7 @@
       <li >
       <%= link_to_unless_current "我的申请", episodes_path %>
       </li>
-      <li><%= link_to_unless_current "异常考勤记录", journals_path %></li>
+      <li><%= link_to_unless_current "我的异常考勤", journals_path %></li>
       <% if can?(:list,Journal) %>
         <li class="divider"></li>
         <li><%= link_to_unless_current "部门考勤", kaoqing_users_path("dept")  %></li>

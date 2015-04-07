@@ -108,6 +108,8 @@ class EpisodesController < ApplicationController
       redirect_to action: :index and return
     end
 
+    @user = current_user.decorate
+
     drop_page_title("假期申请")
     drop_breadcrumb("我的申请",episodes_path)
     drop_breadcrumb
@@ -130,6 +132,7 @@ class EpisodesController < ApplicationController
   def create
     @episode = Episode.new(episode_params)
     @episode.user_id = current_user.id
+    @episode.ck_type = Journal::CheckType.detect{|item|item[6] == @episode.holiday_id}.try(:second)
     respond_to do |format|
       if @episode.save
         #生成任务
@@ -146,6 +149,7 @@ class EpisodesController < ApplicationController
         drop_page_title("假期申请")
         drop_breadcrumb("我的申请",episodes_path)
         drop_breadcrumb
+        @user = current_user.decorate
         flash.now[:alert] = @episode.errors.full_messages
 
 

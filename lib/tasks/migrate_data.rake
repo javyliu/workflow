@@ -89,6 +89,14 @@ namespace :migrate_data do
     Rake::Task["migrate_data:year_infos"].invoke
   end
 
+  desc 'cover old data for ck_type in episodes'
+  task update_ck_type: :environment do
+    ck_types = Journal::CheckType.map{|item| [item[1],item[6]]}
+    Episode.find_each do |episode|
+      episode.update_column(:ck_type,ck_types.rassoc(episode.holiday_id).first)
+    end
+  end
+
   #----------------------------------
   #导入数据，基础假及消耗假期
   #yearinfo
@@ -110,8 +118,6 @@ namespace :migrate_data do
   #14 漏打卡
   #15 病假
   #16 事假
-  #
-
   desc '导入数据，基础假及消耗假期,需传入文件名'
   task :import_data,[:file_name] =>  :environment do |t,args|
     args.with_defaults(file_name: 'yearinfo.csv')

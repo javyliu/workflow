@@ -36,9 +36,13 @@ class JournalsController < ApplicationController
     @journals = @journals.where("check_type = 10 or dval <> 0").where(con_hash).where(ary_con).order("update_date desc")
     @journals = @journals.where(user_id: _uids) if _uids.present?
 
-    _select = "journals.id,update_date,checkin,checkout,journals.user_id,user_name,check_type,dval,null unit,description,departments.name dept_name"
+    _select = "journals.id,update_date,checkin,checkout,journals.user_id,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
 
-    @journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id inner join users on uid = journals.user_id inner join departments on dept_code = code")
+    @journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id
+                                                inner join users on uid = journals.user_id
+                                                inner join departments on dept_code = code
+                                                left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and update_date between start_date and end_date
+                                                ")
     respond_to do |format|
       format.html do
         @journals = @journals.page(params[:page])
@@ -55,6 +59,8 @@ class JournalsController < ApplicationController
           _attrs["checkin"] = item.checkin.try(:strftime,"%H:%M")
           _attrs["checkout"] = item.checkout.try(:strftime,"%H:%M")
           _attrs["unit"] = ck_type.fourth
+          _attrs["holiday_id"] = view_context.dis_episode(item,ck_type,link: false)
+          _attrs["state"] = Episode::State.rassoc(item.state).first if item.state
           _attrs["dval"] = case ck_type.last
                            when 0
                              ""

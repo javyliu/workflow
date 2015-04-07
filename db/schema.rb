@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150212094311) do
+ActiveRecord::Schema.define(version: 20150407045649) do
 
   create_table "approves", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -32,8 +32,8 @@ ActiveRecord::Schema.define(version: 20150212094311) do
     t.string   "title_ids",   limit: 255
     t.string   "time_range",  limit: 40,  default: "0"
     t.integer  "min_unit",    limit: 2,   default: 30
-    t.datetime "created_at",              default: '2015-03-09 14:55:03', null: false
-    t.datetime "updated_at",              default: '2015-03-09 14:55:03', null: false
+    t.datetime "created_at",              default: '2015-01-14 15:38:29', null: false
+    t.datetime "updated_at",              default: '2015-01-14 15:38:29', null: false
   end
 
   create_table "checkinouts", force: :cascade do |t|
@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(version: 20150212094311) do
     t.integer  "attend_rule_id", limit: 2
     t.string   "mgr_code",       limit: 20
     t.string   "admin",          limit: 20
-    t.datetime "created_at",                 default: '2015-03-09 14:55:01', null: false
-    t.datetime "updated_at",                 default: '2015-03-09 14:55:01', null: false
+    t.datetime "created_at",                 default: '2015-01-09 10:27:40', null: false
+    t.datetime "updated_at",                 default: '2015-01-09 10:27:40', null: false
   end
 
   create_table "episodes", force: :cascade do |t|
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20150212094311) do
     t.integer  "state",      limit: 1,   default: 0
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.integer  "ck_type",    limit: 1
   end
 
   create_table "holidays", force: :cascade do |t|
@@ -80,8 +81,8 @@ ActiveRecord::Schema.define(version: 20150212094311) do
     t.integer  "check_type",  limit: 4
     t.string   "description", limit: 255
     t.integer  "dval",        limit: 4
-    t.datetime "created_at",              default: '2015-03-09 14:55:02', null: false
-    t.datetime "updated_at",              default: '2015-03-09 14:55:02', null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "journals", ["user_id"], name: "index_journals_on_user_id", using: :btree
@@ -118,8 +119,8 @@ ActiveRecord::Schema.define(version: 20150212094311) do
     t.date     "onboard_date"
     t.date     "regular_date"
     t.datetime "remember_token_expires_at"
-    t.datetime "created_at",                            default: '2015-03-09 14:55:01', null: false
-    t.datetime "updated_at",                            default: '2015-03-09 14:55:01', null: false
+    t.datetime "created_at",                            default: '2015-02-11 15:27:09', null: false
+    t.datetime "updated_at",                            default: '2015-02-11 15:27:09', null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
@@ -133,8 +134,8 @@ ActiveRecord::Schema.define(version: 20150212094311) do
     t.integer  "affair_leave", limit: 4,  default: 0
     t.integer  "switch_leave", limit: 4,  default: 0
     t.integer  "ab_point",     limit: 8,  default: 0
-    t.datetime "created_at",              default: '2015-03-09 14:55:02', null: false
-    t.datetime "updated_at",              default: '2015-03-09 14:55:02', null: false
+    t.datetime "created_at",              default: '2015-01-09 22:02:50', null: false
+    t.datetime "updated_at",              default: '2015-01-09 22:02:50', null: false
   end
 
   add_index "year_infos", ["user_id"], name: "index_year_infos_on_user_id", using: :btree
