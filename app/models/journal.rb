@@ -53,11 +53,12 @@ class Journal < ActiveRecord::Base
     ['c_aff_holiday_acco_maternity',14,'陪产假','天','group_tian',false,11,10],
     ['c_aff_holiday_marriary',15,'婚假','天','group_tian',false,12,10],
     ['c_aff_holiday_funeral',16,'丧假','天','group_tian',false,13,10],
-    ['c_aff_sick_salary',17,'带薪病假','天','group_tian',false,8,10],
+    ['c_aff_sick_salary',17,'带薪病假','天','group_tian',false,9,10],
     ['c_aff_holiday_trip',18,'出差','天','group_tian',false,15,10],
     ['c_aff_nursing_later',19,'哺乳期晚来1小时','次','group_chi',false,2,1],
     ['c_aff_nursing_leave',20,'哺乳期早走1小时','次','group_chi',false,3,1],
     ['c_aff_b_points',21,'B贡献分','小时','group_shi',true,16,10],
+    ['c_aff_outing',23,'外出','天','group_tian',false,14,10],
     ['c_aff_others',22,'其它','','group_qi',false,nil,-1]
   ]
 
@@ -74,7 +75,8 @@ class Journal < ActiveRecord::Base
     ['c_aff_sick_salary','g'],
     ['c_aff_holiday_trip','h'],
     ['c_aff_nursing_later','i'],
-    ['c_aff_nursing_leave','j']
+    ['c_aff_nursing_leave','j'],
+    ['c_aff_outing','l']
   ]
 
   #得到类别标识，用于邮件回复中通过字符返回标识符
