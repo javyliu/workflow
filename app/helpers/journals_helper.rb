@@ -15,7 +15,6 @@ module JournalsHelper
     if ck_type[6].nil?
       ""
     else
-      Rails.logger.info item.episode_id.inspect
       item.episode_id ? (link ? link_to(ck_type[2],episode_url(item.episode_id)) : ck_type[2]) : "无假条"
     end
   end
