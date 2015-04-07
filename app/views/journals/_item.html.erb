@@ -1,9 +1,11 @@
-<% ck_type = Journal::CheckType.rassoc(item.check_type) %>
+<% ck_type = Journal::CheckType.rassoc(item.check_type)
+  ab_user = item.check_type.in?([9,21]) && item.dval < 0
+%>
 <tr>
   <td><%= item.update_date %></td>
   <td><%= item.checkin.try(:strftime,"%H:%M") %></td>
   <td><%= item.checkout.try(:strftime,"%H:%M") %></td>
-  <td><%= ck_type.third %></td>
+  <td><%=  ab_user ? "特批" : ck_type.third %></td>
   <td><%= dis_dval(item,ck_type) %></td>
-  <td><%= item.description %></td>
+  <td><%= ab_user ? item.description.gsub(/(A|B)贡献分/,"特批") : item.description %></td>
 </tr>
