@@ -4,7 +4,12 @@
 </p>
 
 <span class="blue">
-  考勤确认单 (<%= @date %> <%= @wday %>) &nbsp; <%= link_to("你有历史考勤天数：#{@leader_user.pending_task_length(:F001)-1} 天未处理，请登录网页进行处理",  kaoqing_users_url("dept")) if @leader_user.pending_task_length(:F001)>1 %>
+  考勤确认单 (<%= @date %> <%= @wday %>) &nbsp;
+  <%  if @leader_user.pending_task_length(:F001)>1 %>
+  <%= link_to("你有历史考勤天数：#{@leader_user.pending_task_length(:F001)-1} 天未处理，请登录网页进行处理",  kaoqing_users_url("dept")) %>
+  <% else %>
+    <%= link_to("网页确认本日考勤",  kaoqing_users_url(@task.to_s)) %>
+  <% end %>
 </span>
 <br/>
 <br/>
@@ -50,6 +55,6 @@
   </ul>
 </div>
 
-<p>直接回复本邮件并在表格中直接填写内容即可，无需复制表格！或进行<%= link_to "网页确认",kaoqing_users_url("dept")  %></p>
+<p>直接回复本邮件并在表格中直接填写内容即可，无需复制表格！或进行<%= link_to "网页确认",kaoqing_users_url(@task.to_s)  %></p>
 <p>提示:请勿删除单元格或改变表格结构。</p>
 <p>来自邮件机器人,目前尚在测试阶段。欢迎发邮件至 qmliu@pipgame.com 提出建议或意见。</p>
