@@ -3,7 +3,7 @@ class Department < ActiveRecord::Base
   has_many :users, foreign_key: :dept_code
   belongs_to :attend_rule
 
-  before_save :delete_caches
+  after_save :delete_caches
 
   #[
   #0,组名，
