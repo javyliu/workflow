@@ -141,7 +141,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params.reject{|_,v| v.blank?})
+      if @user.update(user_params)
         format.html { redirect_to (can?(:manage,User) ? @user : home_users_path), notice: "操作成功！"}
         format.json { render :show, status: :ok, location: @user }
       else

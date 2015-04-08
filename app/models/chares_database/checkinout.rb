@@ -11,8 +11,9 @@ module CharesDatabase
 
       email_checks = self.find_by_sql(["select b.email,group_concat(checktime) check_times,date(checktime) rec_date from checkinout a inner join userinfo b on a.userid=b.userid  where a.checktime > ? and a.checktime < ? group by a.userid,rec_date",from,to])
 
-      user_id_emails = User.where(email: email_checks.map{|item|item.email}).pluck(:uid,:email)
+      user_id_emails = User.pluck(:uid,:email)
       email_checks.each do |item|
+        next if item.email.blank?
         ck_times = item.check_times.split(',')
         checkin = ck_times.min
         checkout = ck_times.max
@@ -22,11 +23,12 @@ module CharesDatabase
           normal_ctimes = ck_times.partition{|ct| ct < _date}.last
           ref_time = normal_ctimes.sort.first
         end
-        user_id = user_id_emails.rassoc(item.email).try(:first)
+        user_id = user_id_emails.rassoc(item.email.strip).try(:first)
         _ck = ::Checkinout.find_or_initialize_by(rec_date: item.rec_date,user_id: user_id)
         _ck.checkin = checkin
         _ck.checkout = checkout
         _ck.ref_time = ref_time
+        Rails.logger.info "SysCheckout: #{item.email} #{_ck.inspect}"
 
         _ck.save!
 

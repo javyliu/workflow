@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   #用于在Task#eager_load_from_task方法中手动组装数据，
   has_many :yes_holidays , -> {where(["start_date <= :yesd and end_date >= :yesd ",yesd: (User.query_date || Date.yesterday).to_s])},through: :episodes,source: :holiday
 
+  before_save -> {self.mgr_code.blank? and self.mgr_code=nil}
   before_save :delete_caches,if: -> {(['expire_date','dept_code','mgr_code'] & self.changed).present?}
 
 
@@ -213,4 +214,5 @@ class User < ActiveRecord::Base
     end
     Rails.cache.delete(:departments)
   end
+
 end

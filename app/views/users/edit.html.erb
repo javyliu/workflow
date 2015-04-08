@@ -17,6 +17,7 @@
     <%= check_box_tag "user[roles][#{role}]", role, @user.roles.include?(role), {:name => "user[roles][]"}%>
     <%= label_tag "user_roles_#{role}", I18n.t(role) %><br />
     <% end %>
+    <%= hidden_field_tag "user[roles][]", "" %>
   </div>
 
 
