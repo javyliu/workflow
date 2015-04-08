@@ -17,7 +17,7 @@ class PromptDailyMailJob < ActiveJob::Base
       next if _task.attr_value(:state) == Task::Expired
       #每个任务的日期可能不同,周末的情况
 
-      if _task.count > OaConfig.setting(:prompt_max_times).to_i #不再发起催缴
+      if _task.count >= OaConfig.setting(:prompt_max_times).to_i #不再发起催缴
         _task.increment!
         _task.update(:state,Task::Expired)
         _task.remove

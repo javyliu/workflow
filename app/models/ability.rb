@@ -6,7 +6,9 @@ class Ability
 
     cannot :manage, :all
     can :read,[Checkinout,Episode],user_id: user.id
-    can :destroy,[Episode],user_id: user.id,state: 0
+    can :destroy,[Episode] do |episode|
+      episode.user_id == user.id && episode.state.to_i == 0
+    end
     can [:index,:home],User,uid: user.id
     can [:index],Journal,user_id: user.id
     can [:create,:update],Episode,user_id: user.id

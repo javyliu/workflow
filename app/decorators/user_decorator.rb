@@ -274,12 +274,12 @@ class UserDecorator < ApplicationDecorator
         end
       end
 
-      episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,h.episode_url(item.id),data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
+      episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
 
       #请假#如果没有签到记录，表明该用户本日考勤异常,检查用户是否有请假
     else#记为忘记打卡
       ref_cmd.push("无打卡记录")
-      episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,h.episode_url(item.id),data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if episodes.present?
+      episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if episodes.present?
     end
   end
 
