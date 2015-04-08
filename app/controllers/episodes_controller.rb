@@ -122,6 +122,7 @@ class EpisodesController < ApplicationController
 
   # GET /episodes/1/edit
   def edit
+    @user = current_user.decorate
     drop_breadcrumb("我的申请",episodes_path)
     drop_page_title("编辑申请")
     drop_breadcrumb

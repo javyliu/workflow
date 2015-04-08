@@ -48,6 +48,11 @@ class Usermailer < ApplicationMailer
 
 
     #date = Date.today - 3.days
+    if leader_user_id.blank?
+        Rails.logger.info  "Error: leader_user_id is blank"
+        return false
+    end
+
 
     @leader_user = User.find(leader_user_id)
     rule = AttendRule.find(@leader_user.leader_data[1])

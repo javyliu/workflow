@@ -33,7 +33,7 @@
     <td><%= episode.state %></td>
     <td><%= link_to('详情', episode_path(episode,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})%> &nbsp;
       <%= link_to('编辑', edit_episode_path(episode)) if episode.object.state == 0 %>
-      <%= link_to('删除', episode_path(episode),data: {remote: true,method: :delete,type: :json}) if can?(:destroy,Episode) %>
+      <%= link_to('删除', episode_path(episode),data: {remote: true,method: :delete,type: :json}) if can?(:destroy,episode.object) %>
     </td>
   </tr>
   <% end %>
