@@ -3,7 +3,7 @@ class UsermailerPreview < ActionMailer::Preview
 
   def daily_kaoqing
     #Rails.logger.info(request)
-    Usermailer.daily_kaoqing("1004")
+    Usermailer.daily_kaoqing("1416",date: '2015-04-03',preview: true)
   end
 
   def daily_approved
