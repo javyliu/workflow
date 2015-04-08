@@ -122,7 +122,7 @@ namespace :migrate_data do
   task :import_data,[:file_name] =>  :environment do |t,args|
     args.with_defaults(file_name: 'yearinfo.csv')
     File.readlines(args.file_name).each do |row|
-      _values = row.rstrip.split(",").collect!{|item|(item[/-?\d+/].to_f*10).round}
+      _values = row.rstrip.split(",").collect!{|item|(item[/-?[\d.]+/].to_f*10).round}
 
       _uid = _values.first/10
 
