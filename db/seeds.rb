@@ -9,7 +9,7 @@ Holiday.connection.execute("truncate holidays")
 Holiday.connection.execute("truncate report_titles")
 Holiday.connection.execute("truncate attend_rules")
 Holiday.connection.execute("truncate oa_configs")
-types = %w{病假 哺乳期晚到1小时 哺乳期早走1小时 产假 产检假 倒休 事假 漏打卡 带薪事假 带薪病假 年假 陪产假 婚假 丧假 外出 出差 特批 加班}
+types = %w{病假 哺乳期晚到1小时 哺乳期早走1小时 产假/产检假 倒休 事假 漏打卡 带薪事假 带薪病假 年假 陪产假 婚假 丧假 外出 出差 特批 加班}
 Holiday.create(types.map{|item|{name: item}})
 titles =[
   ['c_line_num','行号',1],
