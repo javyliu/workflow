@@ -44,7 +44,7 @@
     <div class="row collapse">
       <%= f.label :total_time,"申请时长" %>
       <div class="columns small-9">
-        <%= f.text_field :total_time,required: true %>
+        <%= f.number_field :total_time,required: true %>
       </div>
       <div class="columns small-3">
         <span class="postfix unit"><%= @episode.holiday.unit %></span>
