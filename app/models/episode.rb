@@ -1,7 +1,7 @@
 class Episode < ActiveRecord::Base
   belongs_to :holiday
   belongs_to :user
-  has_many :approves
+  has_many :approves,dependent: :delete_all
 
   validates :user_id, presence: true
   validates :comment, presence: true

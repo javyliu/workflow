@@ -1,6 +1,11 @@
 # Preview all emails at http://localhost:3000/rails/mailers/usermailer
 class UsermailerPreview < ActionMailer::Preview
 
+  def info_msg
+    #Rails.logger.info(request)
+    Usermailer.info_msg("1416","申请删除通知", "您的哺乳期晚到1小时  次申请已被 刘泉美 删除。")
+  end
+
   def daily_kaoqing
     #Rails.logger.info(request)
     Usermailer.daily_kaoqing("1416",date: '2015-04-03',preview: true)

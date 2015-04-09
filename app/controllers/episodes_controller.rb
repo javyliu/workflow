@@ -108,7 +108,6 @@ class EpisodesController < ApplicationController
       redirect_to action: :index and return
     end
 
-    @user = current_user.decorate
 
     drop_page_title("假期申请")
     drop_breadcrumb("我的申请",episodes_path)
@@ -150,11 +149,7 @@ class EpisodesController < ApplicationController
         drop_page_title("假期申请")
         drop_breadcrumb("我的申请",episodes_path)
         drop_breadcrumb
-        @user = current_user.decorate
         flash.now[:alert] = @episode.errors.full_messages
-
-
-
         format.html { render :new }
         format.json { render json: @episode.errors, status: :unprocessable_entity }
       end
@@ -181,7 +176,10 @@ class EpisodesController < ApplicationController
     @episode.destroy
     respond_to do |format|
       format.html { redirect_to episodes_url, notice: 'Episode was successfully destroyed.' }
-      format.json { head :no_content }
+      format.json do
+        Usermailer.info_msg(@episode.user_id,"申请删除通知","您的#{@episode.holiday.name} #{@episode.total_time} #{Holiday.unit(@episode.holiday_id)}申请已被 #{current_user.user_name} 删除。".tap{|t|Rails.logger.info(t)}).deliver_later
+        head :no_content
+      end
     end
   end
 

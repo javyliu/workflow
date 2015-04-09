@@ -13,6 +13,13 @@ class Usermailer < ApplicationMailer
     mail(to: HandleErrorUser,subject: "#{@task.type_name}过期未确认")#,body: "no body",content_type: "text/html")
   end
 
+  def info_msg(to_user_id,subject,content)
+    @user = User.find(to_user_id)
+    @content = content
+
+    mail(to: @user.email_name ,subject: subject) #,body: "no body",content_type: "text/html")
+  end
+
   #发送假期确认邮件
   def episode_approve(task_name)
     @task = Task.init_from_subject(task_name)

@@ -9,7 +9,8 @@ module CharesDatabase
       from = Date.yesterday unless from
       to = Date.today unless to
 
-      email_checks = self.find_by_sql(["select b.email,group_concat(checktime) check_times,date(checktime) rec_date from checkinout a inner join userinfo b on a.userid=b.userid  where a.checktime > ? and a.checktime < ? group by a.userid,rec_date",from,to])
+      email_checks = self.find_by_sql(["select b.email,group_concat(checktime) check_times,date(checktime) rec_date from checkinout a
+                                       inner join userinfo b on a.userid=b.userid  where a.checktime > ? and a.checktime < ? group by a.userid,rec_date",from,to])
 
       user_id_emails = User.pluck(:uid,:email)
       email_checks.each do |item|

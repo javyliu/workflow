@@ -1,18 +1,4 @@
-<div class="panel  callout radius">
-  <h5><span>年度剩余假期</span></h5>
-  <table>
-    <tr>
-      <% @user.check_types.each do |item| %>
-      <th><%= item.third %></th>
-      <% end %>
-    </tr>
-    <tr>
-      <% @user.check_types.each do |item| %>
-      <td><%=@user.calcute_remain_holiday(item)  %></td>
-      <% end %>
-    </tr>
-  </table>
-</div>
+<%= render partial: 'remain_holiday',object: current_user.decorate %>
 <%= form_for(@episode) do |f| %>
 <div class="row">
   <div class="columns medium-4">
