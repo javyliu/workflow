@@ -41,7 +41,7 @@ class JournalsController < ApplicationController
     @journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id
                                                 inner join users on uid = journals.user_id
                                                 inner join departments on dept_code = code
-                                                left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date between start_date and end_date
+                                                left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date
                                                 ")
     respond_to do |format|
       format.html do

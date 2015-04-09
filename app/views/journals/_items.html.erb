@@ -13,6 +13,7 @@
   <td><%= Episode::State.rassoc(item.state).try(:first) if item.state %></td>
 </tr>
 <% end %>
-<tr><td colspan=4><%= paginate items,remote: true %></td>
-    <td colspan=4><%= page_entries_info items %></td>
+<tr>
+    <td colspan=6><%= page_entries_info items %></td>
+  <td colspan=5><%= paginate items,remote: true %></td>
 </tr>

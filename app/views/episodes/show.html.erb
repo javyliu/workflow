@@ -61,7 +61,7 @@
 <div class="field">
   <%= f.label :des,"简要说明" %><br>
   <%= f.hidden_field :episode_id %>
-  <%= hidden_field_tag :task,params[:task] %>
+  <%= hidden_field_tag :task,@task %>
   <%= f.hidden_field :state %>
   <%= f.text_area :des %>
 </div>
