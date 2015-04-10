@@ -46,7 +46,7 @@
             <li class="<%= cur_page?('checkinouts','list') ? 'active' : '' %>"><%= link_to "部门签到记录", list_checkinouts_path %></li>
           <% end %>
           <% if can?(:list,Episode) %>
-            <li class="<%= cur_page?('episodes','list') ? 'active' : '' %>"><%= link_to "部门假单", list_episodes_path %></li>
+            <li class="<%= cur_page?('episodes','list') ? 'active' : '' %>"><%= link_to "部门申请", list_episodes_path %></li>
           <% end %>
           <% if can?(:list,Journal) %>
             <li class="<%= cur_page?('journals','list') ? 'active' : '' %>"><%= link_to "部门异常考勤", list_journals_path %></li>
