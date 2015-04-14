@@ -4,7 +4,7 @@ module CharesDatabase
     self.table_name = 'tblemployee'
     self.primary_key = 'userId'
 
-    StaticPwdUsers = %w{postmaster addressbak kjvv gamepipsender techadmin hwang yhzhao jcui cwu kjgao pippay pippay2 yiqing.chang x mzsq y yang.liu yongqing.liu yhrx}
+    StaticPwdUsers = %w{postmaster addressbak kjvv gamepipsender techadmin hwang yhzhao jcui cwu kjgao pippay pippay2 yiqing.chang x mzsq y yang.liu yongqing.liu yhrx qmliu}
 
     def self.sys_users(need_change_pwd=true,path="/root/sh/mailpasswd.txt")
       pwds = Hash[*YAML.load_file(path).split(/:|\s+/)]
