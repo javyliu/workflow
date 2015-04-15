@@ -173,6 +173,6 @@ class YearInfosController < ApplicationController
 
 
     def year_journal(user_id,check_type_id)
-      @user_year_journals.detect { |e| e.user_id == user_id && e.check_type == check_type_id }.try(:dval).to_i.tap{|t|Rails.logger.info("-#{user_id}--#{check_type_id}---#{t}")}
+      @user_year_journals.detect { |e| e.user_id == user_id && e.check_type == check_type_id }.try(:dval).to_i #.tap{|t|Rails.logger.info("-#{user_id}--#{check_type_id}---#{t}")}
     end
 end
