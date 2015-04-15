@@ -32,7 +32,7 @@ class YearInfosController < ApplicationController
         @year_infos = @year_infos.where(params[:date]) if params[:date] && params[:date][:year].present?
 
 
-        @user_year_journals = Journal.where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:check_type)
+        @user_year_journals = Journal.where(["update_date > ?",OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type)
 
         if _user_ids
           @year_infos = @year_infos.where(user_id: _user_ids)
