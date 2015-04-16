@@ -27,6 +27,11 @@ $(->
     $(this).attr("href",$(this).attr("href")+"?"+$(this).closest("form").serialize())
   )
 
+  #for top-bar
+  $(document).on 'ready page:load', ->
+    $('.has-dropdown').removeClass("active")
+    $('ul.dropdown li.active').closest("li.has-dropdown").addClass("active")
+
   $(document).on 'ready page:load', -> $('.datetimepicker').datetimepicker({ format:'Y-m-d H:i', inline:false, lang:'zh' })
   $(document).on 'ready page:load', -> $('.datepicker').datetimepicker({timepicker:false, format:'Y-m-d', inline:false, lang:'zh' })
   $(document).on 'ready page:load', ->

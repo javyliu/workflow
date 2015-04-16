@@ -1,6 +1,6 @@
 <div class="row">
   <%= render 'users/right_nav' %>
-  <div class="columns large-8 medium-pull-4">
+  <div class="columns large-9 medium-pull-3">
     <table>
       <thead>
         <tr>
@@ -19,20 +19,16 @@
         <td><%= attend_rule.time_range %></td>
         <td><%= attend_rule.min_unit %></td>
         <td><%= link_to("点击查看",report_titles_path(attend_rule_id: attend_rule.id)) %></td>
-        <td><%= link_to 'Edit', edit_attend_rule_path(attend_rule) %></td>
+        <td><%= link_to '编辑', edit_attend_rule_path(attend_rule) %></td>
       </tr>
       <% end %>
       </tbody>
     </table>
     <fieldset>
       <legend><span>说明</span></legend>
-      <p>时间区间：默认为弹性工作时间</p>
-      <p>最小单位：即最小时间单位，分钟,为15的倍数</p>
-
-
+      <p>时间区间：默认(0)为弹性工作时间</p>
+      <p>最小单位：最小时间计时单位，分钟(15的倍数),如工作室最少计时单位为半小时（30），后台部门为1小时（60）</p>
     </fieldset>
-
-
   </div>
 </div>
 

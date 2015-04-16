@@ -1,29 +1,21 @@
-<p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Code:</strong>
+  <strong>编号:</strong>
   <%= @department.code %>
 </p>
 
 <p>
-  <strong>Name:</strong>
+  <strong>名字:</strong>
   <%= @department.name %>
 </p>
 
 <p>
-  <strong>Atten rule:</strong>
-  <%= @department.atten_rule %>
+  <strong>考勤规则:</strong>
+  <%= @department.attend_rule.description %>
 </p>
 
 <p>
-  <strong>Mgr code:</strong>
-  <%= @department.mgr_code %>
+  <strong>管理者:</strong>
+  <%= @department.leader_user.user_name %>
 </p>
 
-<p>
-  <strong>Admin:</strong>
-  <%= @department.admin %>
-</p>
-
-<%= link_to 'Edit', edit_department_path(@department) %> |
-<%= link_to 'Back', departments_path %>

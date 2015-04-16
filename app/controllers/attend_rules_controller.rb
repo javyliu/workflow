@@ -22,6 +22,9 @@ class AttendRulesController < ApplicationController
 
   # GET /attend_rules/1/edit
   def edit
+    drop_breadcrumb("考勤规则",attend_rules_path)
+    drop_page_title("规则编辑")
+    drop_breadcrumb
   end
 
   # POST /attend_rules

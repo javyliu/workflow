@@ -52,7 +52,7 @@ class Ability
 
 
     if user.role?("admin")
-      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
+      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo,Department]
       cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
       can :export,:all
       can :create,:all

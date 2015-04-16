@@ -9,7 +9,7 @@ Holiday.connection.execute("truncate holidays")
 Holiday.connection.execute("truncate report_titles")
 Holiday.connection.execute("truncate attend_rules")
 Holiday.connection.execute("truncate oa_configs")
-types = %w{病假 哺乳期晚到1小时 哺乳期早走1小时 产假/产检假 倒休 事假 漏打卡 带薪事假 带薪病假 年假 陪产假 婚假 丧假 外出 出差 特批 加班}
+types = %w{病假 哺乳期晚到1小时 哺乳期早走1小时 产假/产检假 倒休 事假 漏打卡 带薪事假 带薪病假 年假 陪产假 婚假 丧假 外出 出差 特批 加班 误餐及交通补助(仅限经理级)}
 Holiday.create(types.map{|item|{name: item}})
 titles =[
   ['c_line_num','行号',1],
@@ -53,12 +53,12 @@ titles =[
 ]
 ReportTitle.create(titles.map{|name,des,ord| {name: name,des: des,ord: ord}})
 rules = [
-  ['ab_point4_qiLe','AB分无倒休-奇乐',%w[1 2 3 4 5 6 8 9 10 11 12 13 14  16 17 19 20 21 22 23 24 25 26 27  29 30 31 32 33 34 35 36 37],0,30],
-  ['ab_point','AB分工作时间',%w[1 2 3 4 5 6  8 9   12 13 14  16 17 19 20 21 22 23 24 25 26 27  29 30 31 32 33 34 35 36 37],0,30],
-  ['flexible_working_time','弹性工作时间',%w[1 2 3 4 5  7 8 9   12   15   18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37],0,60],
-  ['platform','固定工作时间',%w[1 2 3 4 5  7 8 9   12   15   18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37],"9:01-18:00",60],
-  ['flexible_no_switch','弹性工作时间无倒休',%w[1 2 3 4 5   8 9   12   15   18 19 20 21 22 23 24 25 26 27  29 30 31 32 33 34 35 36 37],0,60]
-]
+ ['ab_point4_qiLe','AB分无倒休-奇乐',[1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,19,20,21,22,23,24,25,26,27,29,30,31,32,33,34,35,36,37],0,30],
+ ['ab_point','AB分工作时间',[1,2,3,4,5,6,8,9,12,13,14,16,17,19,20,21,22,23,24,25,26,27,29,30,31,32,33,34,35,36,37],0,30],
+ ['flexible_working_time','弹性工作时间',[1,2,3,4,5,7,8,9,12,15,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],0,60],
+ ['platform','固定工作时间',[1,2,3,4,5,7,8,9,12,15,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],"9:01-18:00",60],
+ ['flexible_no_switch','弹性工作时间无倒休',[1,2,3,4,5,8,9,12,15,18,19,20,21,22,23,24,25,26,27,29,30,31,32,33,34,35,36,37],0,60]
+ ]
 
 AttendRule.create(rules.map{|rule_name,des,title_ids,time_range,min_unit| {name: rule_name, description: des, title_ids: title_ids,time_range: time_range,min_unit: min_unit}})
 

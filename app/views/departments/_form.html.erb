@@ -1,37 +1,27 @@
+<fieldset>
+  <legend><span>部门编辑</span></legend>
+
 <%= form_for(@department) do |f| %>
-  <% if @department.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@department.errors.count, "error") %> prohibited this department from being saved:</h2>
+  <div class="field">
+    编号:
+    <strong><%= f.object.code %> </strong>
+  </div>
+  <div class="field">
+    名字:
+    <strong><%= f.object.name %> </strong>
+  </div>
+<div class="field">
+  管理者:
+    <strong> <%= f.object.leader_user.user_name %> </strong>
+  </div>
+  <div class="field">
+    <%= f.label :attend_rule_id,"考勤规则:" %>
+    <%= f.collection_select :attend_rule_id,AttendRule.all,:id,:description,prompt: '考勤规则' %>
+  </div>
 
-      <ul>
-      <% @department.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
 
-  <div class="field">
-    <%= f.label :code %><br>
-    <%= f.text_field :code %>
-  </div>
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :atten_rule %><br>
-    <%= f.text_field :atten_rule %>
-  </div>
-  <div class="field">
-    <%= f.label :mgr_code %><br>
-    <%= f.text_field :mgr_code %>
-  </div>
-  <div class="field">
-    <%= f.label :admin %><br>
-    <%= f.text_field :admin %>
-  </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "提交",data:{disable_with: '提交中...'},class: 'button medium' %>
   </div>
 <% end %>
+</fieldset>

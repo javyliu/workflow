@@ -3,10 +3,9 @@
   <td><%= department.code %></td>
   <td><%= department.name %></td>
   <td><%= department.attend_rule.try(:description) %></td>
-  <td><%= department.mgr_code %></td>
-  <td><%= department.admin %></td>
-  <td><%= link_to 'Show', department %></td>
-  <td><%= link_to 'Edit', edit_department_path(department) %></td>
+  <td><%= department.leader_user.user_name %></td>
+  <td><%= link_to '详情', department %></td>
+  <td><%= link_to '编辑', edit_department_path(department) %></td>
 </tr>
 <% end %>
-<tr><td colspan="7"><%= paginate(@departments,remote:true) %></td></tr>
+<tr><td colspan="6"><%= paginate(@departments,remote:true) %></td></tr>

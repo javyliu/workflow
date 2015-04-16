@@ -36,6 +36,7 @@ class Journal < ActiveRecord::Base
   #15,出差
   #16,特批
   #17,加班
+  #18,误餐及交通补助(仅限经理级)
   CheckType = [
     ['c_aff_later',1, '迟到','次','group_chi',false,nil,1],
     ['c_aff_leave',2,'早退','次','group_chi',false,nil,1],

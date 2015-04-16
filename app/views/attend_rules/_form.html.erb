@@ -1,29 +1,29 @@
 <%= form_for(@attend_rule) do |f| %>
-  <% if @attend_rule.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@attend_rule.errors.count, "error") %> prohibited this attend_rule from being saved:</h2>
-
-      <ul>
-      <% @attend_rule.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :description %><br>
+    <%= f.label :description,"描述" %>
     <%= f.text_field :description %>
   </div>
+<div class="field">
+    <%= f.label :time_range,"工作时间区间" %>
+    <%= f.text_field :time_range %>
+  </div>
+<div class="field">
+    <%= f.label :min_unit,"最小计时单位" %>
+    <%= f.text_field :min_unit %>
+  </div>
   <div class="field">
-    <%= f.label :title_ids %><br>
-    <%= f.text_field :title_ids %>
+    <%= f.label :title_ids,"显示列" %>
+    <ul class="small-block-grid-2 medium-block-grid-4 large-block-grid-8">
+    <% for col in ReportTitle.all %>
+    <li>
+      <%= check_box_tag "attend_rule[title_ids][#{col.id}]", col.id, @attend_rule.title_ids.include?(col.id), {:name => "attend_rule[title_ids][]"}%>
+      <%= label_tag "user_roles_#{col.id}", col.des%>
+    </li>
+    <% end %>
+  </ul>
+    <%= hidden_field_tag "attend_rule[title_ids][]", "" %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "提交",data:{disable_with: '提交中'},class: 'button medium' %>
   </div>
 <% end %>

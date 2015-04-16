@@ -1,6 +1,8 @@
-<h1>Editing Attend Rule</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @attend_rule %> |
-<%= link_to 'Back', attend_rules_path %>
+<fieldset>
+  <legend><span>说明</span></legend>
+  <p>时间区间：默认(0)为弹性工作时间,如：9:01-18:00</p>
+  <p>最小单位：最小时间计时单位，分钟(15的倍数),如工作室最少计时单位为半小时（30），后台部门为1小时（60）</p>
+</fieldset>

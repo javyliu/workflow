@@ -9,7 +9,7 @@ class ReportTitlesController < ApplicationController
     drop_breadcrumb("考勤规则管理",attend_rules_path)
     drop_page_title("#{@attend_rule.description}规则表头管理")
     drop_breadcrumb
-    @report_titles = ReportTitle.where(id: @attend_rule.title_ids)
+    @report_titles = ReportTitle.where(id: @attend_rule.title_ids).order("ord,id")
   end
 
   # GET /report_titles/1

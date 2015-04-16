@@ -26,7 +26,7 @@ class Holiday < ActiveRecord::Base
     case holiday_id
     when 2,3,7
       "次"
-    when 5,16,17
+    when 5,16,17,18
       "小时"
     else
       "天"

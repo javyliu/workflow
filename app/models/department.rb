@@ -3,6 +3,8 @@ class Department < ActiveRecord::Base
   has_many :users, foreign_key: :dept_code
   belongs_to :attend_rule
 
+  belongs_to :leader_user,foreign_key: :mgr_code,class_name: "User"
+
   after_save :delete_caches
 
   #[
@@ -13,7 +15,7 @@ class Department < ActiveRecord::Base
   #TODO: 所各组所可用的假期放到数据表attend_rules 中进行保存,
   #每一个规则所具有的假期，年度假期可使用列，及邮件展示时的显示列等
   #是否可以把holiday,check_types report_titles 给放到一张表中，用特殊标签来区别
-  GroupAB = [:group_ab,[1,2,3,4,6,7,8,9,10,11,12,13,14,15,16],[5,11,17],[8,12,22]] #%w{0102 0103} #工作室
+  GroupAB = [:group_ab,[1,2,3,4,6,7,8,9,10,11,12,13,14,15,16,18],[5,11,17],[8,12,22]] #%w{0102 0103} #工作室
   GroupNoSwitchTime = [:group_no_switch_time,[1,2,3,4,6,7,8,9,10,11,12,13,14,15,16,17],[5,11,17,8],[9,21,12,22]] #%w{0104 0105 0106} #市场及营销
   GroupSwitchTime =   [:group_switch_time,[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17],[5,11,17,12],[9,21,22]]#非工作室
 
