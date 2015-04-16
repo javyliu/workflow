@@ -25,6 +25,17 @@ class Ability
       #end
     end
 
+    if user.role?("manager")
+      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
+      can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
+      can :export,:all
+      can :show,Episode
+      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+      can :create,:all
+      cannot [:kaoqing,:confirm],:all
+      cannot :create,Approve
+    end
+
     if user.role?("department_manager")
       can [:list],[Checkinout,Episode,Journal],user_id: user.leader_data.try(:last)
       can :destroy,Episode,user_id: user.leader_data.try(:last)
@@ -39,16 +50,6 @@ class Ability
       #end
     end
 
-    if user.role?("manager")
-      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
-      can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
-      can :export,:all
-      can :show,Episode
-      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
-      can :create,:all
-      cannot [:kaoqing,:confirm],:all
-      cannot :create,Approve
-    end
 
     if user.role?("admin")
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
