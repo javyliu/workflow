@@ -18,7 +18,8 @@ module CharesDatabase
         u.dept_code=item.deptCode
         #2015-03-27 09:37 javy don't sys the mgrcode and department
         #u.mgr_code=item.mgrCode
-        u.title= item.title
+        #2015-04-17 15:05 javy don't sys the title
+        #u.title= item.title
         u.onboard_date= item.onboardDate
         u.regular_date= item.regularDate
         #有email的用户才会设置密码，否则不设

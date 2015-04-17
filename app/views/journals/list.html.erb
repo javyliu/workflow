@@ -16,7 +16,7 @@
             <label>部门:</label>
             <%= select :user, :dept_code, current_user.cache_dept.try(:depts),prompt: "选择部门" %>
           </div>
-          <div class="columns medium-2">
+          <div class="columns medium-1">
             <label>类别 :</label>
             <%= select :journal, :check_type, Journal::CheckType[0...-1].map{|item|[item.third,item.second]},prompt: "类别" %>
           </div>
@@ -28,7 +28,7 @@
             <label>结束日期:</label>
             <%= text_field_tag "journal[lt_update_date]","",class: 'datepicker',readonly: true  %>
           </div>
-          <div class="columns medium-2">
+          <div class="columns medium-3">
             <input type="submit" class="button small inline-button" text="搜索"/>
             <% if can?(:export,Journal) %>
               <%= link_to "导出数据", list_journals_path(format: :xls), class: "export_xls button small secondary"  %>

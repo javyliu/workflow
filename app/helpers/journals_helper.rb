@@ -11,11 +11,11 @@ module JournalsHelper
 
   end
 
-  def dis_episode(item,ck_type,link: true)
+  def dis_episode(item,ck_type,link: true,prompt_new: false)
     if ck_type[6].nil?
       ""
     else
-      item.episode_id ? (link ? link_to(ck_type[2],episode_url(item.episode_id)) : ck_type[2]) : "无假条"
+      item.episode_id ? (link ? link_to(ck_type[2],episode_url(item.episode_id)) : ck_type[2]) : (prompt_new ? link_to("提交申请",new_episode_path(ck_type[6])) : "无假条")
     end
   end
 

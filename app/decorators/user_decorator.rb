@@ -98,7 +98,7 @@ class UserDecorator < ApplicationDecorator
   #特批修正只是描述 2015-03-25 09:35 javy_liu
   #a分+b分+基础值
   def c_ab_point
-    (base_holiday_info.ab_point + year_journal(9) + year_journal(21)).to_f/10
+    (base_holiday_info.ab_point + year_journal(9) + year_journal(21) + year_journal(24)+ year_journal(25)).to_f/10
   end
 
   #TODO FIX if for the end_year_time

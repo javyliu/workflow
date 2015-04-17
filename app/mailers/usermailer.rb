@@ -67,8 +67,8 @@ class Usermailer < ApplicationMailer
 
 
     @leader_user = @leader_user.decorate
-    #id= 37的列为“其它“
-    @leader_user.report_titles = ReportTitle.where(id: (rule.title_ids + [38])).order("ord,id").find_all{|item| !item.name.in?(Journal.mail_dec_identities)}
+    #id= 40的列为“其它“
+    @leader_user.report_titles = ReportTitle.where(id: (rule.title_ids + [40])).order("ord,id").find_all{|item| !item.name.in?(Journal.mail_dec_identities)}
     @leader_user.uids = uids
 
     @task = Task.new("F001",leader_user_id,date: @date)

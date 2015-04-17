@@ -11,7 +11,10 @@ class JournalsController < ApplicationController
     drop_breadcrumb
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
-    @journals = @journals.where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page]).select("journals.*,checkin,checkout").joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id ")
+    @journals = @journals.where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page])
+    .select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
+    .joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id
+    left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ")
 
     respond_to do |format|
       format.html {  }
