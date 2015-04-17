@@ -104,7 +104,7 @@ class JournalsController < ApplicationController
 
     if _cktype && @journal.check_type != 10 #非特批
       _dval = @journal.dval_before_type_cast
-      @journal.dval = (_cktype[5] ? _dval.to_f : _dval.to_f.abs) * _cktype.last
+      @journal.dval = _dval.to_f.abs * _cktype.last
     end
 
     respond_to do |format|
@@ -154,7 +154,7 @@ class JournalsController < ApplicationController
         @journal.description = _value
       else
         @journal.description = "#{cktype.third}#{_value}#{cktype.fourth}"
-        @journal.dval = (cktype[5] ? _value.to_f : _value.to_f.abs) * cktype.last
+        @journal.dval = _value.to_f.abs * cktype.last
       end
 
       if @journal.save
