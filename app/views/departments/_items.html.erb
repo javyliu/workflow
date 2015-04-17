@@ -3,7 +3,7 @@
   <td><%= department.code %></td>
   <td><%= department.name %></td>
   <td><%= department.attend_rule.try(:description) %></td>
-  <td><%= department.leader_user.user_name %></td>
+  <td><%= department.leader_user.try(:user_name) %></td>
   <td><%= link_to '详情', department %></td>
   <td><%= link_to '编辑', edit_department_path(department) %></td>
 </tr>
