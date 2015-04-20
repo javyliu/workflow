@@ -4,5 +4,14 @@ class AttendRule < ActiveRecord::Base
 
   SpecRuleNames = %w{ab_point4_qiLe ab_point}
 
+  before_save :adjust_title_ids
+
+
+  private
+
+  def adjust_title_ids
+    self[:title_ids] = self.title_ids.keep_if{|item|item.present?}.map{|item| item.to_i}
+  end
+
 
 end

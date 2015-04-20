@@ -47,8 +47,9 @@ class AttendRulesController < ApplicationController
   # PATCH/PUT /attend_rules/1.json
   def update
     respond_to do |format|
-      if @attend_rule.update(attend_rule_params)
-        format.html { redirect_to @attend_rule, notice: 'Attend rule was successfully updated.' }
+      if @attend_rule.update(attend_rule_params.tap{|t|Rails.logger.info("-------#{t.inspect}")})
+        flash[:notice] = "操作成功"
+        format.html { redirect_to :back }
         format.json { render :show, status: :ok, location: @attend_rule }
       else
         format.html { render :edit }
@@ -75,6 +76,6 @@ class AttendRulesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def attend_rule_params
-      params.require(:attend_rule).permit(:name, :description, :title_ids)
+      params.require(:attend_rule).permit(:name, :description,:min_unit,:time_range, title_ids: [])
     end
 end
