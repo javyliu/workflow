@@ -11,7 +11,11 @@ class Ability
     end
     can [:index,:home],User,uid: user.id
     can [:index],Journal,user_id: user.id
-    can [:create,:update],Episode,user_id: user.id
+    can [:create],Episode,user_id: user.id
+    can [:update],Episode do |episode|
+      episode.user_id == user.id && episode.state.to_i == 0
+    end
+
     can [:change_pwd,:update,:show],User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
 
     if user.role?("kaoqin_viewer")
@@ -26,7 +30,7 @@ class Ability
     end
 
     if user.role?("manager")
-      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo]
+      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo,Department]
       can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
       can :export,:all
       can :show,Episode
