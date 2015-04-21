@@ -59,7 +59,7 @@ class Journal < ActiveRecord::Base
     ['c_aff_nursing_later',19,'哺乳期晚来1小时','次','group_chi',false,2,1],
     ['c_aff_nursing_leave',20,'哺乳期早走1小时','次','group_chi',false,3,1],
     ['c_aff_b_points',21,'B贡献分','小时','group_shi',false,nil,10],
-    ['c_aff_outing',23,'外出','天','group_tian',false,14,10],
+    ['c_aff_outing',23,'因公外出','天','group_tian',false,14,10],
     ['c_aff_spec_appr_holiday',24,'休假特批','小时','group_shi',false,16,-10],
     ['c_aff_spec_appr_later',25,'迟到早退特批','小时','group_shi',false,nil,-10],
     ['c_aff_others',22,'其它','','group_qi',false,nil,-1]
