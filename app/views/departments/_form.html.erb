@@ -12,7 +12,7 @@
   </div>
 <div class="field">
   管理者:
-    <strong> <%= f.object.leader_user.user_name %> </strong>
+    <strong> <%= f.object.leader_user.try(:user_name) %> </strong>
   </div>
   <div class="field">
     <%= f.label :attend_rule_id,"考勤规则:" %>
