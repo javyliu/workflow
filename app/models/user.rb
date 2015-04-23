@@ -105,7 +105,7 @@ class User < ActiveRecord::Base
     where (a.expire_date is NULL or a.expire_date > '#{Date.today.to_s}') and a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code;
                                        heredoc
                                       ).group_by(&:uid)
-        .map{|k,v| [k,v.first.attend_rule_id,v.inject([]){|uids,item|uids + item.user_ids.split(",")}]}
+        .map{|k,v| [k,v.first.attend_rule_id,v.inject([]){|uids,item|uids.push(*item.user_ids.split(","))}.tap{|t|t.delete(k)}]}
         _redis.set("leaders_data",leaders_ary)
         leaders_ary
       end
