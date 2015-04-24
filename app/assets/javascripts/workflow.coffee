@@ -63,4 +63,16 @@ $(->
   $(document).on("ajax:success","[data-remote][data-method=delete]",(e,data) ->
     $(this).closest($(this).data("destroy") || "tr").remove()
   )
+  #for new approve
+  $(document).on "click","#new_approve .button", (e)->
+    if $(this).hasClass("success")
+      $("#approve_state").val(1)
+    else
+      if $("#approve_des").val().length < 1
+        e.preventDefault()
+        alert("请在简要说明中填写驳回理由!")
+        return false
+
+      $("#approve_state").val(2)
+
 )

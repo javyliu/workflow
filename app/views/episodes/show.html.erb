@@ -70,19 +70,3 @@
 <% end %>
 <% end %>
 
-<% foot do %>
-  <script type="text/javascript" charset="utf-8">
-    $("form .button").click(function(e){
-        if($(this).hasClass("success")){
-            $("#approve_state").val(1);
-          }else{
-            if($("#approve_des").val().length < 1){
-              e.preventDefault();
-              alert("请在简要说明中填写驳回理由!");
-              return false;
-            }
-            $("#approve_state").val(2);
-        }
-    });
-  </script>
-<% end %>

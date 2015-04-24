@@ -32,6 +32,11 @@ class ApprovesController < ApplicationController
     unless current_user.pending_tasks.include?(@task.to_s)
       raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,@task.to_s)
     end
+
+    #防止页面脚本提交过快，state 无值的情况
+    if @approve.state.to_i == 0
+      @approve.state = params[:commit] == "通过" ? 1 : 2
+    end
     @episode = @approve.episode
     respond_to do |format|
       if @approve.save
