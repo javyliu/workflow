@@ -70,7 +70,7 @@ class JournalsController < ApplicationController
                            when 1
                              item.dval
                            else
-                             item.dval.to_f / ck_type.last
+                             item.dval.to_f.abs / ck_type.last
                            end
           _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
         end

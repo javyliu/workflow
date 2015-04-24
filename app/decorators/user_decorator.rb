@@ -12,7 +12,7 @@ class UserDecorator < ApplicationDecorator
       elsif cktype.last == 1
         _journal.dval
       else
-        _journal.dval.to_f / cktype.last
+        _journal.dval.to_f.abs / cktype.last
       end
     else
       nil
