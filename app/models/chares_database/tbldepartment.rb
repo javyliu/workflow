@@ -22,6 +22,7 @@ module CharesDatabase
 
     def self.sys_departments
       CharesDatabase::Tbldepartment.find_each do |item|
+        next if item.deptCode.end_with?("99")
         _dept = Department.find_or_initialize_by(code:item.deptCode)
         _dept.assign_attributes(name:item.deptName,mgr_code:item.mgrCode)
         _dept.save!
