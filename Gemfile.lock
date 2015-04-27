@@ -142,6 +142,8 @@ GEM
     pry-doc (0.6.0)
       pry (~> 0.9)
       yard (~> 0.8)
+    pry-rails (0.3.2)
+      pry (>= 0.9.10)
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
@@ -251,6 +253,7 @@ DEPENDENCIES
   passenger
   pry-byebug
   pry-doc
+  pry-rails
   rails (= 4.2.0)
   rest_in_place
   sass-rails (~> 5.0)
