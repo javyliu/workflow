@@ -66,7 +66,7 @@ class ReceiveEmailJob < ActiveJob::Base
   def handle_journal(message,leader_user_id,date)
     changed_user_names = []
     message.all_parts && message.all_parts.each do |part|
-      binding.pry
+      #binding.pry
       Rails.logger.info part.content_type.inspect
       Rails.logger.info part.charset
       next if part.content_type !~ /^text\/html/
