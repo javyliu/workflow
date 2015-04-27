@@ -175,7 +175,8 @@ class JournalsController < ApplicationController
     end
     respond_to do |format|
       if msg.blank?
-        format.html { redirect_to @journal, notice: 'Journal was successfully updated.' }
+        flash[:notice] = "操作成功！"
+        format.html { redirect_to list_journals_path }
         format.json do
           if @msg
             render json: @msg
