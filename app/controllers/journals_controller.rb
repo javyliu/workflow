@@ -94,6 +94,9 @@ class JournalsController < ApplicationController
 
   # GET /journals/1/edit
   def edit
+    drop_breadcrumb("我的考勤",home_users_path)
+    drop_page_title("修改异常考勤")
+    drop_breadcrumb
   end
 
   # POST /journals

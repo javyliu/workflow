@@ -1,6 +1,13 @@
-<h1>Editing Journal</h1>
-
-<%= render 'form' %>
-
-<%= link_to 'Show', @journal %> |
-<%= link_to 'Back', journals_path %>
+<div class="row">
+  <%= render 'users/right_nav' %>
+  <div class="columns medium-9 medium-pull-3">
+    <%= render 'form' %>
+    <fieldset>
+      <legend><span>说明</span></legend>
+      <ul>
+        <li>本功能用于管理员修改异常考勤</li>
+        <li>时长除次外 = 实际时长*10</li>
+      </ul>
+    </fieldset>
+  </div>
+</div>

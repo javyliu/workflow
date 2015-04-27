@@ -11,9 +11,10 @@
   <td><%= item.description %></td>
   <td><%= dis_episode(item,ck_type,link: true) %></td>
   <td><%= Episode::State.rassoc(item.state).try(:first) if item.state %></td>
+  <td><%= link_to("修改",edit_journal_path(item)) if can?(:update,Journal) %></td>
 </tr>
 <% end %>
 <tr>
     <td colspan=6><%= page_entries_info items %></td>
-  <td colspan=5><%= paginate items,remote: true %></td>
+  <td colspan=6><%= paginate items,remote: true %></td>
 </tr>

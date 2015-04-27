@@ -36,8 +36,10 @@ class Ability
       can :show,Episode
       cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
       can :create,:all
+      can :update,Journal
       cannot [:kaoqing,:confirm],:all
       cannot :create,Approve
+
     end
 
     if user.role?("department_manager")
@@ -62,6 +64,7 @@ class Ability
       can :create,:all
       can :confirm,:all
       can [:destroy,:list],:all
+      can :update,Journal
       #can :read,Checkinout,user_id: user.leader_data.try(:last)
     end
 
