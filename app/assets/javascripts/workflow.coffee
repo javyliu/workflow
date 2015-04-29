@@ -75,4 +75,11 @@ $(->
 
       $("#approve_state").val(2)
 
+  $(document).on "click",".confirm_button a[data-method=post]", (e)->
+    $("tr.need_update").each ->
+      if $.trim($("td.c_aff",this).text()).length < 1
+        e.preventDefault()
+        alert("白色背景行每行至少填写1项!")
+        return false
+
 )

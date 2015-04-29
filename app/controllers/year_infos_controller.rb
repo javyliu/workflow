@@ -24,7 +24,7 @@ class YearInfosController < ApplicationController
       end
 
       format.xls do
-        _select = "year,user_id,user_name,name dept_name,year_holiday,sick_leave,affair_leave,switch_leave,ab_point,null r_year_holiday,null r_sick_leave,null r_affair_leave,null r_switch_leave,null r_switch_leave,null r_ab_point"
+        _select = "year,user_id,user_name,name dept_name,year_holiday,sick_leave,affair_leave,switch_leave,ab_point,null r_year_holiday,null r_sick_leave,null r_affair_leave,null r_switch_leave,null r_ab_point"
         params.permit!
         con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
         _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash

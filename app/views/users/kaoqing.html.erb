@@ -47,7 +47,7 @@
       </thead>
       <tbody id="content" class="in_editor" >
       <%= current_user.wrap(@task,need_update: @need_update,rule: @rule) %>
-      <tr>
+      <tr class="confirm_button">
         <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
           <% if @need_update %>
             <% if params[:cmd] == 'update' %>
@@ -109,6 +109,6 @@
   $(".need_update td.c_aff").data("options","hover_delay: 0;").addClass("has-tip").attr("title","点击编辑，回车确认，ESC取消").attr("aria-haspopup",true).attr("data-tooltip",'true');
   $("a[data-reveal-ajax]").each(function(){
       $(this).attr("href",$(this).attr("href")+".js");
-      });
+  });
 
 </script>
