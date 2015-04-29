@@ -55,7 +55,7 @@ class YearInfosController < ApplicationController
             _attrs["r_sick_leave"] = (item.sick_leave - year_journal(item.user_id,17)).to_f/10
             _attrs["r_affair_leave"] = ( item.affair_leave - year_journal(item.user_id,11)).to_f/10
             _attrs["r_switch_leave"] =(item.switch_leave + year_journal(item.user_id,8) + year_journal(item.user_id,12)).to_f/10
-            _attrs["r_ab_point"] =  (item.ab_point + year_journal(item.user_id,9) + year_journal(item.user_id,21) + year_journal(24)+ year_journal(25)).to_f/10
+            _attrs["r_ab_point"] =  (item.ab_point + year_journal(item.user_id,9) + year_journal(item.user_id,21) + year_journal(item.user_id,24)+ year_journal(item.user_id,25)).to_f/10
           end
           _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
         end

@@ -82,7 +82,12 @@ class UsersController < ApplicationController
 
     _today = Date.today
     @need_update = current_user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
-    @hide_edit = @need_update || @date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && @date.day < 26)
+    _is_expired =  @date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && @date.day < 26)
+    if _is_expired
+      @task.remove(all: true)
+      flash.now[:alert] = '该日考勤已过期，如需修改请联系人事部门。'
+    end
+    @hide_edit = @need_update || _is_expired
     is_mine = @task.leader_user_id == current_user.id
     if (current_user.roles & ["department_manager","admin"]).blank? && !is_mine
       raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
