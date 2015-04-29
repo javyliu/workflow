@@ -8,6 +8,7 @@ module CharesDatabase
 
     def self.sys_users(need_change_pwd=true,path="/root/sh/mailpasswd.txt")
       pwds = Hash[*YAML.load_file(path).split(/:|\s+/)]
+      _date = Date.today
       self.find_each do |item|
         #User.create!(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title,onboard_date: item.onboardDate,regular_date: item.regularDate,password: '123123')
         u = User.find_or_initialize_by(uid: item.userId)
@@ -33,6 +34,11 @@ module CharesDatabase
           if u.password_digest.nil?
             u.password = '123123'
           end
+        end
+
+        if u.expire_date && u.expire_date < _date
+          Rails.logger.info { "-----------delete user :#{u.user_name}" }
+          u.delete and next
         end
 
         #u.password = u.email? ? (pwds[u.email[/.*(?=@)/,0]] || '123123') : '123123' #如果邮箱为空,或密码表为空，则设置密码为123123
