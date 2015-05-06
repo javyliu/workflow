@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require fastclick
 //= require foundation
 //= require turbolinks
 //= require rest_in_place
@@ -20,5 +21,10 @@
 // require_tree .
 Turbolinks.enableProgressBar();
 $(document).on("ready page:load",function(){
-  $(document).foundation();
+  $(document).foundation({
+    tooltip: {
+      selector: '.c_aff',
+      disable_for_touch: true
+    }
+  });
 });

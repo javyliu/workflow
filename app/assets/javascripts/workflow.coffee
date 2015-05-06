@@ -52,6 +52,41 @@ $(->
   )
 
 
+  #implement the rest place editor form
+  #window.RestInPlaceEditor.forms =
+  #  "input" :
+  #    activateForm : ->
+  #      value = $.trim(@elementHTML())
+  #      @$element.html("<form action='javascript:void(0)' style='display:inline;'>
+  #        <input type='text' class='rest-in-place-#{@attributeName}' placeholder='#{@placeholder}'>
+  #        </form>")
+  #      @$element.find('input').val(value)
+  #      @$element.find('input')[0].select()
+  #      @$element.find("form").submit =>
+  #        @update()
+  #        false
+  #      @$element.find("input").keyup (e) =>
+  #        @abort() if e.keyCode == ESC_KEY
+  #      @$element.find("input").blur => @abort()
+
+  #    getValue : ->
+  #      @$element.find("input").val()
+
+  #  "textarea" :
+  #    activateForm : ->
+  #      value = $.trim(@elementHTML())
+  #      @$element.html("""<form action='javascript:void(0)' style='display:inline;'>
+  #        <textarea class='rest-in-place-#{@attributeName}' placeholder='#{@placeholder}'></textarea>
+  #        </form>""")
+  #      @$element.find('textarea').val(value)
+  #      @$element.find('textarea')[0].select()
+  #      @$element.find("textarea").keyup (e) =>
+  #        @abort() if e.keyCode == ESC_KEY
+  #      @$element.find("textarea").blur => @update()
+
+  #    getValue : ->
+  #      @$element.find("textarea").val()
+  ##
   $(document).on "ready page:load ajax:success", (event)->
     $("tr.need_update td[class^=c_aff]").restInPlace()
     $("td.edit-in-place").restInPlace()
