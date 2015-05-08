@@ -227,7 +227,7 @@ class UserDecorator < ApplicationDecorator
         if diff_time <= 30
           ref_cmd.push("迟到")
           @later_time = diff_time
-          @a_point -= 0.5 #-(diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
+          #@a_point -= 0.5 #-(diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
           #@switch_hours -= 0.5
         elsif diff_time > 30 && diff_time <= 4*60
           ref_cmd.push("事假0.5天")
@@ -250,7 +250,7 @@ class UserDecorator < ApplicationDecorator
         end_diff_time = end_diff_time.abs
         if end_diff_time <= 30
           @leave_time = end_diff_time #
-          @a_point -= 0.5 #(end_diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
+          #@a_point -= 0.5 #(end_diff_time/attend_rule.min_unit.to_f).ceil.to_f/unit
           #@switch_hours -= 0.5
           ref_cmd.push("早退")
         elsif end_diff_time > 30 && end_diff_time <= 4*60
