@@ -104,7 +104,7 @@ class YearInfosController < ApplicationController
              end
 
 
-    User.where("email is not null and (expire_date is null or expire_date > ?)", Date.today.to_s).find_each do |item|
+    User.where("email is not null").find_each do |item|
 
       if _attrs[:year_holiday] #计算年假
         _total_years = (_calcute_date - item.onboard_date).fdiv(365)
