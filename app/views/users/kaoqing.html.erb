@@ -36,7 +36,7 @@
       <%= text_field_tag :date,'',class: "datepicker need_change_event",readonly: true,data: {url: kaoqing_users_path("F001:#{current_user.id}:")} %>
     </div>
 
-    <h5><%= @date.to_s %> (<%= I18n.t("date.day_names")[@date.wday] %>) 考勤确认</h5>
+    <h5><%= @date.to_s %> (<%= l(@date,format: '%A') %>) 考勤确认</h5>
     <table class="kaoqin">
       <thead>
         <tr>
