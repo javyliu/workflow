@@ -17,7 +17,8 @@ class YearInfosController < ApplicationController
         _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
         @year_infos = @year_infos.where(params[:date]) if params[:date] && params[:date][:year].present?
         @year_infos = @year_infos.where(user_id: _user_ids) if _user_ids
-        @year_infos = @year_infos.page(params[:page]).includes(:user)
+        #@year_infos = @year_infos.page(params[:page]).includes(:user)
+        @year_infos = @year_infos.select("year_infos.*,users.user_name").page(params[:page]).joins(:user)
 
         render partial: "items",object: @year_infos, content_type: Mime::HTML
 
