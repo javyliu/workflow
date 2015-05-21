@@ -9,7 +9,7 @@ class YearInfosController < ApplicationController
     @year_infos = @year_infos.order("year desc")
     respond_to do |format|
       format.html do
-        @year_infos = @year_infos.page(params[:page]).includes(:user)
+        @year_infos = @year_infos.select("year_infos.*,users.user_name").page(params[:page]).joins(:user)
       end
       format.js do
         params.permit!
