@@ -19,4 +19,8 @@ module JournalsHelper
     end
   end
 
+  def short_dept_name(dept_name)
+    dept_name.split('-').last
+  end
+
 end

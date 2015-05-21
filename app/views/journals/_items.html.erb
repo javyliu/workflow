@@ -1,9 +1,9 @@
 <% items.each do |item| %>
 <% ck_type = Journal::CheckType.rassoc(item.check_type) %>
 <tr>
-  <td><%= item.update_date %></td>
+  <td><%= item.update_date.strftime("%m/%d") %></td>
   <td><%= item.user_name %></td>
-  <td><%= item.dept_name %></td>
+  <td><%= short_dept_name(item.dept_name) %></td>
   <td><%= ck_type.third %></td>
   <td><%= dis_dval(item,ck_type) %></td>
   <td><%= item.checkin.try(:strftime,"%H:%M") %></td>
@@ -11,10 +11,12 @@
   <td><%= item.description %></td>
   <td><%= dis_episode(item,ck_type,link: true) %></td>
   <td><%= Episode::State.rassoc(item.state).try(:first) if item.state %></td>
+  <td><%= item.created_at.strftime('%m/%d %T') %></td>
+  <td><%= item.updated_at.strftime('%m/%d %T') %></td>
   <td><%= link_to("修改",edit_journal_path(item)) if can?(:update,Journal) %></td>
 </tr>
 <% end %>
 <tr>
-    <td colspan=6><%= page_entries_info items %></td>
-  <td colspan=6><%= paginate items,remote: true %></td>
+    <td colspan=7><%= page_entries_info items %></td>
+  <td colspan=7><%= paginate items,remote: true %></td>
 </tr>

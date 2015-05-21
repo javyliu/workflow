@@ -28,10 +28,14 @@
             <label>结束日期:</label>
             <%= text_field_tag "journal[lt_update_date]","",class: 'datepicker',readonly: true  %>
           </div>
-          <div class="columns medium-3">
-            <input type="submit" class="button small inline-button" text="搜索"/>
+          <div class="columns medium-1">
+            <label>是否修改:</label>
+            <%= check_box_tag "is_updated", 1 %>
+          </div>
+          <div class="columns medium-2">
+            <input type="submit" class="button tiny inline-button" text="搜索"/>
             <% if can?(:export,Journal) %>
-              <%= link_to "导出数据", list_journals_path(format: :xls), class: "export_xls button small secondary"  %>
+              <%= link_to "导出数据", list_journals_path(format: :xls), class: "export_xls button tiny secondary"  %>
             <% end %>
           </div>
         </div>
@@ -52,6 +56,8 @@
         <th>异常描述</th>
         <th>假单</th>
         <th>假单状态</th>
+        <th>确认时间</th>
+        <th>更新时间</th>
         <th></th>
         </tr>
       </thead>

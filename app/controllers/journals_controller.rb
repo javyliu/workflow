@@ -38,8 +38,9 @@ class JournalsController < ApplicationController
 
     @journals = @journals.where("check_type = 10 or dval <> 0").where(con_hash).where(ary_con).order("update_date desc")
     @journals = @journals.where(user_id: _uids) if _uids.present?
+    @journals = @journals.where('journals.updated_at <> journals.created_at') if params[:is_updated]
 
-    _select = "journals.id,update_date,checkin,checkout,journals.user_id,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
+    _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
 
     @journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id
                                                 inner join users on uid = journals.user_id
@@ -72,6 +73,8 @@ class JournalsController < ApplicationController
                            else
                              item.dval.to_f.abs / ck_type.last
                            end
+          _attrs["created_at"] = item.created_at.try(:strftime,"%D %T")
+          _attrs["updated_at"] = item.updated_at.try(:strftime,"%D %T")
           _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
         end
         #xsl_file
