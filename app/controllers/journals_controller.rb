@@ -30,15 +30,23 @@ class JournalsController < ApplicationController
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
 
+
+    @journals = @journals.where("check_type = 10 or dval <> 0").where(con_hash).where(ary_con).order("update_date desc")
+    if params[:is_updated]
+      Rails.logger.info  @journals.where_values.inspect
+      @journals.where_values.map do |item|
+        item.gsub!(/update_date/,'journals.updated_at') if String === item
+        item
+      end
+      @journals = @journals.where('journals.updated_at <> journals.created_at')
+    end
+
     _uids = nil
     if params[:user].present?
       con_hash1,like_con = construct_condition(:user,like_ary: [:user_name])
       _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
-
-    @journals = @journals.where("check_type = 10 or dval <> 0").where(con_hash).where(ary_con).order("update_date desc")
     @journals = @journals.where(user_id: _uids) if _uids.present?
-    @journals = @journals.where('journals.updated_at <> journals.created_at') if params[:is_updated]
 
     _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
 
