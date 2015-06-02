@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: episodes
+#
+#  id         :integer          not null, primary key
+#  user_id    :string(20)
+#  title      :string(20)
+#  total_time :string(20)
+#  holiday_id :integer
+#  start_date :datetime
+#  end_date   :datetime
+#  comment    :string(500)
+#  state      :integer          default("0")
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  ck_type    :integer
+#
+
 class Episode < ActiveRecord::Base
   belongs_to :holiday
   belongs_to :user

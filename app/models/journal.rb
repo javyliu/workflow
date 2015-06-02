@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: journals
+#
+#  id          :integer          not null, primary key
+#  user_id     :string(20)
+#  update_date :date
+#  check_type  :integer
+#  description :string(255)
+#  dval        :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class Journal < ActiveRecord::Base
   #年假，带薪病假，事假，用的是正值，其它是无符号值
   #迟到，早退，漏打卡按次计

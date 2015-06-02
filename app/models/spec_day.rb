@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: spec_days
+#
+#  id         :integer          not null, primary key
+#  sdate      :date
+#  is_workday :boolean
+#  comment    :string(40)
+#
+
 class SpecDay < ActiveRecord::Base
   after_save :delete_redis_cache
 

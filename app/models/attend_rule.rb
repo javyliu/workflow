@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: attend_rules
+#
+#  id          :integer          not null, primary key
+#  name        :string(30)
+#  description :string(40)
+#  title_ids   :string(255)
+#  time_range  :string(40)       default("0")
+#  min_unit    :integer          default("30")
+#  created_at  :datetime         default("2015-01-14 15:38:29"), not null
+#  updated_at  :datetime         default("2015-01-14 15:38:29"), not null
+#
+
 class AttendRule < ActiveRecord::Base
   serialize :title_ids, Array
   has_many :departments

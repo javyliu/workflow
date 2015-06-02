@@ -1,3 +1,25 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  uid                       :string(20)       default(""), not null, primary key
+#  user_name                 :string(20)       not null
+#  email                     :string(40)
+#  department                :string(255)
+#  title                     :string(255)
+#  expire_date               :date
+#  dept_code                 :string(20)
+#  mgr_code                  :string(20)
+#  password_digest           :string(255)
+#  role_group                :integer
+#  remember_token            :string(255)
+#  onboard_date              :date
+#  regular_date              :date
+#  remember_token_expires_at :datetime
+#  created_at                :datetime         default("2015-02-11 15:27:09"), not null
+#  updated_at                :datetime         default("2015-02-11 15:27:09"), not null
+#
+
 class User < ActiveRecord::Base
   self.primary_key = 'uid'
   belongs_to :dept, class_name: 'Department', foreign_key: :dept_code#,touch: true

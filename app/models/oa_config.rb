@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: oa_configs
+#
+#  id    :integer          not null, primary key
+#  key   :string(40)
+#  des   :string(40)
+#  value :string(255)
+#
+
 class OaConfig < ActiveRecord::Base
   after_save :reset_cached
 

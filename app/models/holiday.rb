@@ -1,3 +1,11 @@
+# == Schema Information
+#
+# Table name: holidays
+#
+#  id   :integer          not null, primary key
+#  name :string(255)
+#
+
 class Holiday < ActiveRecord::Base
   has_many :episodes
 

@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: checkinout
+#
+#  id         :integer          not null, primary key
+#  userid     :integer          not null
+#  checktime  :datetime         not null
+#  checktype  :string(5)        default(""), not null
+#  verifycode :integer          not null
+#  SN         :integer
+#  sensorid   :string(5)
+#  WorkCode   :string(20)
+#  Reserved   :string(20)
+#  sn_name    :string(40)
+#
+
 module CharesDatabase
   #class Tblcheckinout < ThirdTable
   class Checkinout < ExternalTable

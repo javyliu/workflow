@@ -73,6 +73,7 @@ gem 'rest_in_place'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   #gem 'byebug'
+  #gem 'annotate'
 
 	gem 'pry-rails'
   gem 'pry-byebug'

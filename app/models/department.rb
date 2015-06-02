@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: departments
+#
+#  code           :string(20)       default(""), not null, primary key
+#  name           :string(100)
+#  attend_rule_id :integer
+#  mgr_code       :string(20)
+#  admin          :string(20)
+#  created_at     :datetime         default("2015-01-09 10:27:40"), not null
+#  updated_at     :datetime         default("2015-01-09 10:27:40"), not null
+#
+
 class Department < ActiveRecord::Base
   self.primary_key = 'code'
   has_many :users, foreign_key: :dept_code
