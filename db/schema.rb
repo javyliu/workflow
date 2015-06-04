@@ -32,8 +32,8 @@ ActiveRecord::Schema.define(version: 20150602033944) do
     t.string   "title_ids",   limit: 255
     t.string   "time_range",  limit: 40,  default: "0"
     t.integer  "min_unit",    limit: 2,   default: 30
-    t.datetime "created_at",              default: '2015-01-14 15:38:29', null: false
-    t.datetime "updated_at",              default: '2015-01-14 15:38:29', null: false
+    t.datetime "created_at",              default: '2015-03-09 14:55:03', null: false
+    t.datetime "updated_at",              default: '2015-03-09 14:55:03', null: false
   end
 
   create_table "checkinouts", force: :cascade do |t|
@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(version: 20150602033944) do
     t.integer  "attend_rule_id", limit: 2
     t.string   "mgr_code",       limit: 20
     t.string   "admin",          limit: 20
-    t.datetime "created_at",                 default: '2015-01-09 10:27:40', null: false
-    t.datetime "updated_at",                 default: '2015-01-09 10:27:40', null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "departments", ["attend_rule_id"], name: "index_departments_on_attend_rule_id", using: :btree
@@ -88,8 +88,8 @@ ActiveRecord::Schema.define(version: 20150602033944) do
     t.integer  "check_type",  limit: 4
     t.string   "description", limit: 255
     t.integer  "dval",        limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "journals", ["user_id"], name: "index_journals_on_user_id", using: :btree
@@ -112,8 +112,28 @@ ActiveRecord::Schema.define(version: 20150602033944) do
     t.string  "comment",    limit: 40
   end
 
+  create_table "tbldepartment", primary_key: "deptCode", force: :cascade do |t|
+    t.string "deptName",   limit: 100, null: false
+    t.string "attenRules", limit: 255
+    t.string "mgrCode",    limit: 20
+    t.string "admin",      limit: 20
+  end
+
+  create_table "tblemployee", primary_key: "userId", force: :cascade do |t|
+    t.string  "name",        limit: 20,  null: false
+    t.string  "email",       limit: 40
+    t.string  "department",  limit: 500
+    t.integer "title",       limit: 4
+    t.string  "attenRules",  limit: 255
+    t.date    "expireDate"
+    t.string  "deptCode",    limit: 20
+    t.string  "mgrCode",     limit: 20
+    t.date    "onboardDate"
+    t.date    "regularDate"
+  end
+
   create_table "users", primary_key: "uid", force: :cascade do |t|
-    t.string   "user_name",                 limit: 20,                                  null: false
+    t.string   "user_name",                 limit: 20,  null: false
     t.string   "email",                     limit: 40
     t.string   "department",                limit: 255
     t.string   "title",                     limit: 255
@@ -126,8 +146,8 @@ ActiveRecord::Schema.define(version: 20150602033944) do
     t.date     "onboard_date"
     t.date     "regular_date"
     t.datetime "remember_token_expires_at"
-    t.datetime "created_at",                            default: '2015-02-11 15:27:09', null: false
-    t.datetime "updated_at",                            default: '2015-02-11 15:27:09', null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
   add_index "users", ["dept_code"], name: "index_users_on_dept_code", using: :btree
@@ -142,8 +162,8 @@ ActiveRecord::Schema.define(version: 20150602033944) do
     t.integer  "affair_leave", limit: 4,  default: 0
     t.integer  "switch_leave", limit: 4,  default: 0
     t.integer  "ab_point",     limit: 8,  default: 0
-    t.datetime "created_at",              default: '2015-01-09 22:02:50', null: false
-    t.datetime "updated_at",              default: '2015-01-09 22:02:50', null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
   end
 
   add_index "year_infos", ["user_id"], name: "index_year_infos_on_user_id", using: :btree
