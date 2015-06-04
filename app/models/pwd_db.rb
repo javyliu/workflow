@@ -123,7 +123,7 @@ module PwdDb
       res = `#{_set_sql}`
 
       #去除颜色值
-      res.gsub(/\e\[\d*m[ ]?/,'')
+      res.gsub(/\e\[\d*m[ ]?/,'').split($/)
 
     end
   end
@@ -160,7 +160,13 @@ module PwdDb
         msgs.push([item.first,PwdDb.fetch("http://#{item.second}#{_path}")])
       end
 
-      msgs
+      msgs.map do |item,msg|
+        if msg.empty? #该接口只返回状态，不返回数据，即body为空
+          "#{item}账号操作成功！"
+        else
+          "#{item}账号操作失败！原因：#{msg}"
+        end
+      end
     end
 
 
