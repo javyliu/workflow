@@ -45,6 +45,10 @@ Rails.application.routes.draw do
       get "kaoqin/:task(/:cmd)" => :kaoqing,as: :kaoqing
       get :home
     end
+    member do
+      put :unify_delete
+      put :unify_reset
+    end
   end
 
   resources :departments,except: [:destroy,:new,:create]

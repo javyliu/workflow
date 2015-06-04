@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   #for login
   has_secure_password # validations: false
 
-  ROLES = %w[admin manager department_manager kaoqin_viewer badman]
+  ROLES = %w[admin manager department_manager kaoqin_viewer pwd_manager badman]
 
   class << self
     attr_accessor :query_date
@@ -108,8 +108,8 @@ class User < ActiveRecord::Base
     roles.map { |e| I18n.t(e) }
   end
 
-  def role?(role)
-    roles.include? role.to_s
+  def role?(*role)
+    role.any? {|item| item.to_s.in? roles}
   end
 
   def self.cached_leaders
@@ -231,6 +231,21 @@ class User < ActiveRecord::Base
       self.find_by_sql("select mgr_code uid,GROUP_CONCAT(name,' ',code) depts from departments  GROUP BY mgr_code ").map { |e| e.depts = e.depts.split(",").map { |item| item.split($\) };e}
     end
   end
+
+  #统一更改用户密码
+  # cvs, svn, 考勤系统, redmine, 日报系统, GM工具, 数据平台, UTS, ServerManager
+  # 在更新密码的时候调用
+  def unify_update(delete=false,pwd: nil)
+    msgs = []
+    PwdDb.constants.each do |c|
+      if (cons = PwdDb.const_get(c)).respond_to?(:user_update)
+        _pwd =  pwd || self.password
+        msgs.push cons.send(:user_update,self.email_en_name,delete ? {delete: true} : {pwd: _pwd })
+      end
+    end
+    msgs
+  end
+
 
   private
 

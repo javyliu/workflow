@@ -9,14 +9,17 @@ class Ability
     can :destroy,[Episode] do |episode|
       episode.user_id == user.id && episode.state.to_i == 0
     end
-    can [:index,:home],User,uid: user.id
+    #can [:index,:home],User,uid: user.id
+    can [:update,:change_pwd,:home],User,uid: user.id
+    cannot :edit,User
     can [:index],Journal,user_id: user.id
     can [:create],Episode,user_id: user.id
     can [:update],Episode do |episode|
       episode.user_id == user.id && episode.state.to_i == 0
     end
 
-    can [:change_pwd,:update,:show],User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+    #2015-06-03 11:18 所有用户都可以更改考勤系统密码，除固定密码用户外，密码会被定期修改
+    can [:change_pwd,:update,:show]#,User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
 
     if user.role?("kaoqin_viewer")
       can [:list],[Checkinout,Episode,Journal]
@@ -30,16 +33,25 @@ class Ability
     end
 
     if user.role?("manager")
-      can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo,Department]
+      can :manage,[SpecDay,OaConfig,AttendRule,ReportTitle,YearInfo,Department]
+      can [:read,:create,:update,:change_pwd],User
       can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
       can :export,:all
       can :show,Episode
-      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+      #cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+      #用于显示管理功能菜单
+      can :display,User
       can :create,:all
       can :update,Journal
       cannot [:kaoqing,:confirm],:all
       cannot :create,Approve
 
+    end
+    #密码管理员
+    if user.role?("pwd_manager")
+      can [:read,:update,:change_pwd,:unify_reset,:unify_delete],User
+      can :display,User
+      cannot :edit,User
     end
 
     if user.role?("department_manager")
@@ -57,9 +69,10 @@ class Ability
     end
 
 
+
     if user.role?("admin")
       can :manage,[SpecDay,OaConfig,AttendRule,User,ReportTitle,YearInfo,Department]
-      cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
+      #cannot :change_pwd,User unless user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
       can :export,:all
       can :create,:all
       can :confirm,:all

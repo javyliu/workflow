@@ -11,9 +11,29 @@
     <%= f.password_field :password_confirmation %>
   </div>
   <div class="actions">
-    <%= f.submit "提交",class: "button" %>
+    <%= f.submit "修改",class: "button" %>
+    <%= f.submit "统一修改",class: "button" %>
   </div>
 <% end %>
 
 
+<fieldset>
+  <legend><span>操作说明：</span></legend>
 
+  <dl>
+    <dt>点击修改只会修改考勤系统的密码。</dt>
+    <dt>统一修改则会统一修改以下系统密码：</dt>
+    <dd>
+    cvs,
+    svn,
+    考勤系统,
+    redmine,
+    日报系统,
+    GM工具,
+    数据平台,
+    UTS,
+    ServerManager
+    </dd>
+  </dl>
+
+</fieldset>

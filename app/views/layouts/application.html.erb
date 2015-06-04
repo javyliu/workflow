@@ -48,23 +48,27 @@
             <li class="<%= cur_page?('journals','list') ? 'active' : '' %>"><%= link_to "部门异常考勤", list_journals_path %></li>
           </ul>
           <% end %>
-          <% if can?(:create,:all) %>
           </li>
+          <% if can?(:display,User) %>
           <li class="has-dropdown"> <a href="#">管理功能</a>
           <ul class="dropdown">
+            <% if can? :create,:all %>
             <li class="<%= cur_page?('spec_days') ? 'active' : '' %>"><%= link_to "节假日管理", spec_days_path %></li>
             <li class="<%= cur_page?('year_infos') ? 'active' : '' %>"><%= link_to "基础假期管理", year_infos_path %></li>
             <li class="<%= cur_page?('oa_configs') ? 'active' : '' %>"><%= link_to "系统配置", oa_configs_path %></li>
             <li class="<%= cur_page?('attend_rules') ? 'active' : '' %>"><%= link_to "考勤规则管理", attend_rules_path %></li>
-            <li class="<%= cur_page?('users','index') ? 'active' : '' %>"><%= link_to "用户管理", users_path %></li>
             <li class="<%= cur_page?('checkinouts','new','create') ? 'active' : '' %>"><%= link_to "同步打卡数据", new_checkinout_path %></li>
             <li class="<%= cur_page?('journals','new','create') ? 'active' : '' %>"><%= link_to "新增异常考勤", new_journal_path %></li>
             <li class="<%= cur_page?('departments') ? 'active' : '' %>"><%= link_to "部门管理", departments_path %></li>
+            <% end %>
+            <% if can? :read,User %>
+              <li class="<%= cur_page?('users','index') ? 'active' : '' %>"><%= link_to "用户管理", users_path %></li>
+            <% end %>
           </ul>
           </li>
           <% end %>
           <% if can?(:change_pwd,User) %>
-          <li class="<%= cur_page?('users','change_pwd') ? 'active' : '' %>"><%= link_to "更改密码", change_pwd_users_path %></li>
+            <li class="<%= cur_page?('users','change_pwd') ? 'active' : '' %>"><%= link_to "更改密码", change_pwd_users_path %></li>
           <% end %>
           <% end %>
         </ul>

@@ -8,9 +8,26 @@
     <td><%= user.expire_date %></td>
     <td><%= user.mgr_code %></td>
     <td><%= user.roles_cn.join(",") %></td>
-    <td><%= link_to '详情', user %> <%= link_to '编辑', edit_user_path(user) %></td>
+    <td class="actions"><%= link_to '详情', user %>
+      <%= link_to '编辑', edit_user_path(user) if can?(:edit,User) %>
+      <%= link_to('重置密码', unify_reset_user_path(user),data: {remote: true,method: :put,replace_with:'#modal_content',confirm: '系统将重置所有系统密码，确定执行该操作么？'}) if can?(:unify_reset,User) %>
+      <%= link_to('删除账号', unify_delete_user_path(user),data: {remote: true,method: :put,replace_with:'#modal_content',confirm: '将删除该用户账号(除考勤系统外)，确定执行该操作么？'}) if can?(:unify_delete,User) %>
+    </td>
   </tr>
 <% end %>
 <tr>
   <td colspan="9"><%= paginate(items,remote:true) %></td>
 </tr>
+<div id="modal_window" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+  <p id="modal_content">loading...</p>
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
+
+<% foot do %>
+<script type="text/javascript" charset="utf-8">
+$("[data-remote]").on("ajax:replaced",function(){
+   $("#modal_window").foundation('reveal','open');
+    })
+</script>
+
+<% end %>

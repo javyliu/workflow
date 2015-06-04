@@ -22,6 +22,7 @@ zh-CN:
   manager: 管理员
   department_manager: 部门管理员
   kaoqin_viewer: 考勤查看员
+  pwd_manager: 密码管理员
   badman: Badman
   unauthorized:
     default: "无权访问"

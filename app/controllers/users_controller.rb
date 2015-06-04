@@ -132,11 +132,11 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params)
+    #@user = User.new(user_params)
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
+        format.html { redirect_to @user, notice: '操作成功!' }
         format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new }
@@ -148,9 +148,16 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
+
     respond_to do |format|
       if @user.update(user_params)
-        format.html { redirect_to (can?(:manage,User) ? @user : home_users_path), notice: "操作成功！"}
+        msg = "操作成功！"
+        #统一修改密码
+        if params[:commit] == '统一修改'
+          msg = @user.unify_update
+          #msg = '操作已提交，请等待密码修改结果！'
+        end
+        format.html { redirect_to (can?(:manage,User) ? @user : home_users_path),notice: msg }
         format.json { render :show, status: :ok, location: @user }
       else
         flash.now[:alert] = @user.errors.full_messages
@@ -160,6 +167,30 @@ class UsersController < ApplicationController
     end
   end
 
+  #重置密码
+  #post
+  def unify_reset
+    @user.password = SecureRandom.urlsafe_base64(8)
+    if @user.save
+      msgs = @user.unify_update
+    else
+      msgs = @user.errors.full_messages.join(" ")
+    end
+
+    respond_to do |format|
+      format.js { render text: msgs,content_type: Mime::HTML }
+    end
+
+  end
+
+  #删除账号
+  #delete
+  def unify_delete
+    msgs = @user.unify_update(true)
+    respond_to do |format|
+      format.js { render text: msgs,content_type: Mime::HTML }
+    end
+  end
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
