@@ -30,8 +30,13 @@ module PwdDb
       Rails.logger.info("pwd_log: #{_set_sql}")
       begin
         #ActiveRecord::Base.establish_connection(:redmine).connection.execute(_set_sql)
-        PwdDb::ExternalTable.connect(:redmine).execute(_set_sql)
-        "Redmine系统#{uname}账号操作成功!"
+        con = PwdDb::ExternalTable.connect(:redmine)
+        if con.execute("select count(1) from users where login = '#{uname}'").to_a.flatten.first > 0
+          con.execute(_set_sql)
+          "Redmine系统#{uname}账号操作成功!"
+        else
+          "Redmine系统#{uname}账号操作失败! 原因：无该账号"
+        end
       rescue
         Rails.logger.info $!
         "Redmine系统#{uname}账号操作失败!"
@@ -57,8 +62,13 @@ module PwdDb
       _set_sql = "update user set #{PwdDb.gen_set_sql(cols)} where loginname='#{uname}'"
       Rails.logger.info("pwd_log: #{_set_sql}")
       begin
-        PwdDb::ExternalTable.connect(:dailyreport).execute(_set_sql)
-        "日报系统#{uname}账号操作成功!"
+        con = PwdDb::ExternalTable.connect(:dailyreport)
+        if con.execute("select count(1) from user where loginname = '#{uname}'").to_a.flatten.first > 0
+          con.execute(_set_sql)
+          "日报系统#{uname}账号操作成功!"
+        else
+          "日报系统#{uname}账号操作失败! 原因：无该账号"
+        end
       rescue
         Rails.logger.info $!
         "日报系统#{uname}账号操作失败!"
@@ -89,8 +99,13 @@ module PwdDb
       Rails.logger.info("pwd_log: #{_set_sql}")
       if _set_sql
         begin
-          PwdDb::ExternalTable.connect(:pipgm).execute(_set_sql)
-          "GM系统#{uname}账号操作成功!"
+          con = PwdDb::ExternalTable.connect(:pipgm)
+          if con.execute("select count(1) from tbl_admin where name = '#{uname}'").to_a.flatten.first > 0
+            con.execute(_set_sql)
+            "GM系统#{uname}账号操作成功!"
+          else
+            "GM系统#{uname}账号操作失败! 原因：无该账号"
+          end
         rescue
           Rails.logger.info $!
           "GM系统#{uname}账号操作失败!"
