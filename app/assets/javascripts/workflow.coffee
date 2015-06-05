@@ -1,3 +1,14 @@
+windom.wrap_msgs = (con)->
+  new_con = []
+  cls = 'succ'
+  _reg = /失败|not/
+  for item in $(con).html.split("<br>")
+    do (item) ->
+      if _reg.test(item)
+        cls = 'err'
+      new_con.push "<span class='#{cls}'>#{item}</span>"
+  $(con).html(new_con.join("<br>"))
+
 $(->
 
   $.extend to_js_url: (url)->

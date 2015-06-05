@@ -162,9 +162,9 @@ module PwdDb
 
       msgs.map do |item,msg|
         if msg.empty? #该接口只返回状态，不返回数据，即body为空
-          "#{item}账号操作成功！"
+          "#{item}系统#{uname}账号操作成功！"
         else
-          "#{item}账号操作失败！原因：#{msg}"
+          "#{item}系统#{uname}账号操作失败！原因：#{msg}"
         end
       end
     end

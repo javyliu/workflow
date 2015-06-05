@@ -154,7 +154,7 @@ class UsersController < ApplicationController
         msg = "操作成功！"
         #统一修改密码
         if params[:commit] == '统一修改'
-          msg = @user.unify_update
+          msg = @user.unify_update.flatten.join("<br>")
           #msg = '操作已提交，请等待密码修改结果！'
         end
         format.html { redirect_to (can?(:manage,User) ? @user : home_users_path),notice: msg }
@@ -172,7 +172,7 @@ class UsersController < ApplicationController
   def unify_reset
     @user.password = SecureRandom.urlsafe_base64(8)
     if @user.save
-      msgs = @user.unify_update
+      msgs = @user.unify_update.flatten.join("<br>")
     else
       msgs = @user.errors.full_messages.join(" ")
     end

@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/javyliu/javy_tool.git
-  revision: 26d4646c5d53b3c858a1df704213038f7cd91192
+  revision: 3fed3baffe2219b47b8c82bb5d5d0f694125ac98
   specs:
-    javy_tool (0.1.0)
+    javy_tool (0.1.1)
 
 GEM
   remote: http://ruby.taobao.org/
