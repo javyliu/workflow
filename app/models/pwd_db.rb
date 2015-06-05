@@ -145,11 +145,11 @@ module PwdDb
         _sysname = item[/\s([.\d]+\w+)/,1]
         _msg = case item
                when /successful/
-                 "#{_sysname}系统操作成功！"
+                 "#{_sysname}系统#{uname}账号操作成功！"
                when /not/
-                 "#{_sysname}系统操作失败！ 无此账号"
+                 "#{_sysname}系统#{uname}账号操作失败！ 无此账号"
                else
-                 "#{_sysname}系统操作失败！系统错误"
+                 "#{_sysname}系统#{uname}账号操作失败！系统错误"
                end
         msgs.push(_msg)
       end
