@@ -152,11 +152,13 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         msg = "操作成功！"
+        @user.remember_token = nil
+        @user.remember_token_expires_at = nil
         #统一修改密码
         if params[:commit] == '统一修改'
           msg = @user.unify_update.flatten.join("<br>")
           #msg = '操作已提交，请等待密码修改结果！'
-          Usermailer.unify_update(@user.id,"密码更改通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被修改为 #{@user.password}").deliver_later
+          Usermailer.unify_update(@user.id,"密码更改通知","您于 #{Time.now.strftime("%F %T")} 修改公司账号密码为 #{@user.password}").deliver_later
         end
         format.html { redirect_to (can?(:manage,User) ? @user : home_users_path),notice: msg }
         format.json { render :show, status: :ok, location: @user }
@@ -172,6 +174,8 @@ class UsersController < ApplicationController
   #post
   def unify_reset
     @user.password = SecureRandom.urlsafe_base64(8)
+    @user.remember_token = nil
+    @user.remember_token_expires_at = nil
     if @user.save
       msgs = @user.unify_update.flatten.join("<br>")
       Usermailer.unify_update(@user.id,"密码重置通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被重置为 #{@user.password}").deliver_later

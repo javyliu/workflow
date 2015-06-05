@@ -34,7 +34,7 @@ class Ability
 
     if user.role?("manager")
       can :manage,[SpecDay,OaConfig,AttendRule,ReportTitle,YearInfo,Department]
-      can [:read,:create,:update,:change_pwd],User
+      can [:read,:create,:edit,:update,:change_pwd],User
       can :list,[Checkinout,Episode,Journal]#,user_id: user.leader_data.try(:last)
       can :export,:all
       can :show,Episode
