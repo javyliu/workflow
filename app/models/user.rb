@@ -216,7 +216,8 @@ class User < ActiveRecord::Base
     #end
     #@cache_dept
 
-    @cache_dept ||= if 11 & self.role_group > 0#self.("admin") || self.role?("manager")
+    #27 表示该用户为 admin(1),manager(2),kaoqing_viewer(8),pwd_manager(16) 中至少其一
+    @cache_dept ||= if 27 & self.role_group > 0#self.("admin") || self.role?("manager")
                       OpenStruct.new({uid: self.id,depts: Department.cache_all_depts})
                     else
                       self.class.cache_departments.detect { |e| e.uid == self.id }
