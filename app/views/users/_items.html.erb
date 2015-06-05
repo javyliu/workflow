@@ -25,7 +25,7 @@
 
 <% foot do %>
 <script type="text/javascript" charset="utf-8">
-$(document).on("ajax:before",".action a[data-remote]",function(){
+$(document).on("ajax:beforeSend",".action a[data-remote]",function(){
   $("#modal_window").foundation("reveal",'open',{close_on_background_click:false})
 });
 $(document).on("ajax:replaced", ".actions a[data-remote]",function(){
