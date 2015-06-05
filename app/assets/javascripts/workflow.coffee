@@ -1,13 +1,12 @@
-windom.wrap_msgs = (con)->
+window.wrap_msgs = ($con)->
+  return  if $con.length < 1
   new_con = []
-  cls = 'succ'
   _reg = /失败|not/
-  for item in $(con).html.split("<br>")
+  for item in $con.html().split("<br>")
     do (item) ->
-      if _reg.test(item)
-        cls = 'err'
+      cls = if _reg.test(item) then 'err' else 'succ'
       new_con.push "<span class='#{cls}'>#{item}</span>"
-  $(con).html(new_con.join("<br>"))
+  $con.html(new_con.join("<br>"))
 
 $(->
 

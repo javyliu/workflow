@@ -110,4 +110,13 @@ class Usermailer < ApplicationMailer
     full_mailname = @leader_user.email_name
     mail(to: full_mailname,subject: "考勤确认错误{#{date}}")#,body: "no body",content_type: "text/html")
   end
+
+  #更改密码邮件
+  def unify_update(user_id,subject,content)
+    @user = User.find(user_id)
+    full_mailname = @user.email_name
+    @content = content
+    mail(to: full_mailname,subject: subject, from: '"密码管理员" <mis@pipgame.com>')#,body: "no body",content_type: "text/html")
+
+  end
 end

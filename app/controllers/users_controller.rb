@@ -156,6 +156,7 @@ class UsersController < ApplicationController
         if params[:commit] == '统一修改'
           msg = @user.unify_update.flatten.join("<br>")
           #msg = '操作已提交，请等待密码修改结果！'
+          Usermailer.unify_update(@user.id,"密码更改通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被修改为 #{@user.password}").deliver_later
         end
         format.html { redirect_to (can?(:manage,User) ? @user : home_users_path),notice: msg }
         format.json { render :show, status: :ok, location: @user }
@@ -173,6 +174,7 @@ class UsersController < ApplicationController
     @user.password = SecureRandom.urlsafe_base64(8)
     if @user.save
       msgs = @user.unify_update.flatten.join("<br>")
+      Usermailer.unify_update(@user.id,"密码重置通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被重置为 #{@user.password}").deliver_later
     else
       msgs = @user.errors.full_messages.join(" ")
     end
@@ -186,7 +188,7 @@ class UsersController < ApplicationController
   #删除账号
   #delete
   def unify_delete
-    msgs = @user.unify_update(true)
+    msgs = @user.unify_update(true).flatten.join("<br>")
     respond_to do |format|
       format.js { render text: msgs,content_type: Mime::HTML }
     end

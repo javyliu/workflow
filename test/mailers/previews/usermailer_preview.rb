@@ -1,6 +1,11 @@
 # Preview all emails at http://localhost:3000/rails/mailers/usermailer
 class UsermailerPreview < ActionMailer::Preview
 
+  def unify_update
+    #Rails.logger.info(request)
+    Usermailer.unify_update("1416","密码重置通知", "您的公司账号密码于#{Time.now.to_s(:F)}被重置为 12123")
+  end
+
   def info_msg
     #Rails.logger.info(request)
     Usermailer.info_msg("1416","申请删除通知", "您的哺乳期晚到1小时  次申请已被 刘泉美 删除。")

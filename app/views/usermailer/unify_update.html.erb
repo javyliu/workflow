@@ -1,0 +1,11 @@
+<h4>Dear <%= @user.user_name %>:</h4>
+<p class="">
+  <%= @content.html_safe %>
+</p>
+<p>可点击 <%= link_to "更改密码", change_pwd_users_url %> 进行更改</p>
+
+<fieldset>
+  <legend><h4>公司账号密码包括以下系统</h4></legend>
+  <span>cvs, svn, 考勤系统, redmine, 日报系统, GM工具, 数据平台, UTS, ServerManager</span>
+</fieldset>
+
