@@ -147,7 +147,7 @@ module PwdDb
                when /successful/
                  "#{_sysname}系统操作成功！"
                when /not/
-                 "#{_sysname}系统操作失败！账号不存在"
+                 "#{_sysname}系统操作失败！ 无此账号"
                else
                  "#{_sysname}系统操作失败！系统错误"
                end
