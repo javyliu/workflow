@@ -25,9 +25,10 @@
 
 <% foot do %>
 <script type="text/javascript" charset="utf-8">
-$("[data-remote]").on("ajax:replaced",function(){
+$(document).on("ajax:replaced", ".actions a[data-remote]",function(){
+   window.wrap_msgs($("#modal_content"));
    $("#modal_window").foundation('reveal','open');
-    })
+})
 </script>
 
 <% end %>
