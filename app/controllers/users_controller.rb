@@ -163,7 +163,7 @@ class UsersController < ApplicationController
         format.html { redirect_to (can?(:manage,User) ? @user : home_users_path),notice: msg }
         format.json { render :show, status: :ok, location: @user }
       else
-        flash.now[:alert] = @user.errors.full_messages
+        flash.now[:alert] = @user.errors.full_messages.join("<br>")
         format.html { render can?(:change_pwd,User) ? :change_pwd : :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
