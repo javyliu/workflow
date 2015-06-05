@@ -19,16 +19,18 @@
   <td colspan="9"><%= paginate(items,remote:true) %></td>
 </tr>
 <div id="modal_window" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-  <p id="modal_content">loading...</p>
+  <p id="modal_content">操作进行中，请稍候...</p>
   <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
 
 <% foot do %>
 <script type="text/javascript" charset="utf-8">
+$(document).on("ajax:before",".action a[data-remote]",function(){
+  $("#modal_window").foundation("reveal",'open',{close_on_background_click:false})
+});
 $(document).on("ajax:replaced", ".actions a[data-remote]",function(){
-   window.wrap_msgs($("#modal_content"));
-   $("#modal_window").foundation('reveal','open');
-})
+  window.wrap_msgs($("#modal_content"));
+});
 </script>
 
 <% end %>
