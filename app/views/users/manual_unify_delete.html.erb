@@ -1,0 +1,42 @@
+<%= form_tag(unify_delete_users_path,method: :delete) do  %>
+  <div class="field">
+    <%= label_tag :name, "用户名" %>
+    <%= text_field_tag :name %>
+  </div>
+  <div class="field">
+    <%= label_tag :name_confirmation, "用户名确认" %>
+    <%= text_field_tag :name_confirmation %>
+  </div>
+  <div class="actions">
+    <%= submit_tag "统一删除",class: "button",data: {disable_with: '操作中，请稍候',confirm: '确认要删除该用户么？'} %>
+  </div>
+<% end %>
+
+
+<fieldset>
+  <legend><span>操作说明：</span></legend>
+
+  <dl>
+    <dt>统一删除将会删除以下系统账号：</dt>
+    <dd>
+    cvs,
+    svn,
+    redmine,
+    日报系统,
+    GM工具,
+    数据平台,
+    UTS,
+    ServerManager
+    </dd>
+  </dl>
+
+</fieldset>
+<% foot do %>
+<script type="text/javascript" charset="utf-8">
+  $(function(){
+      window.wrap_msgs($(".notice"));
+      });
+
+</script>
+
+<% end %>

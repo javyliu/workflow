@@ -49,7 +49,7 @@ class Ability
     end
     #密码管理员
     if user.role?("pwd_manager")
-      can [:read,:update,:change_pwd,:unify_reset,:unify_delete],User
+      can [:read,:update,:change_pwd,:unify_reset,:unify_delete,:manual_unify_delete],User
       can :display,User
       cannot :edit,User
     end

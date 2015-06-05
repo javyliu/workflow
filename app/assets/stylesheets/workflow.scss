@@ -16,7 +16,9 @@ html.turbolinks-progress-bar::before {
   label{vertical-align:middle!important;}
   span{color:#888;}
 }
+.bg_blue{background-color: #0D1552;}
 .red{color:red;}
+
 .green{color:green;}
 .alert-box{margin-top:1em;}
 .breadcrumbs{margin-top:1em;}
@@ -73,3 +75,5 @@ html.turbolinks-progress-bar::before {
 .kaoqin{
   th{vertical-align:bottom;}
 }
+
+#modal_content{color:white;}

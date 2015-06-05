@@ -13,7 +13,7 @@ module PwdDb
   #PwdDb::RedmineUser.user_update(name,delete: true)
   class RedmineUser
     #self.table_name = 'users'
-    #用于更新或删除redmine用户的密码或删除该用户 status=3 时标记为删除
+    #用于更新或删除redmine用户的密码或删除此用户 status=3 时标记为删除
     def self.user_update(uname,cols={})
       _pwd = cols.delete(:pwd)
       _delete = cols.delete(:delete)
@@ -35,11 +35,11 @@ module PwdDb
           con.execute(_set_sql)
           "Redmine系统#{uname}账号操作成功!"
         else
-          "Redmine系统#{uname}账号操作失败! 原因：无该账号"
+          "Redmine系统#{uname}账号操作失败! 无此账号"
         end
       rescue
         Rails.logger.info $!
-        "Redmine系统#{uname}账号操作失败!"
+        "Redmine系统#{uname}账号操作失败! 系统错误"
       end
     end
 
@@ -67,11 +67,11 @@ module PwdDb
           con.execute(_set_sql)
           "日报系统#{uname}账号操作成功!"
         else
-          "日报系统#{uname}账号操作失败! 原因：无该账号"
+          "日报系统#{uname}账号操作失败! 无此账号"
         end
       rescue
         Rails.logger.info $!
-        "日报系统#{uname}账号操作失败!"
+        "日报系统#{uname}账号操作失败!系统错误"
       end
 
     end
@@ -104,11 +104,11 @@ module PwdDb
             con.execute(_set_sql)
             "GM系统#{uname}账号操作成功!"
           else
-            "GM系统#{uname}账号操作失败! 原因：无该账号"
+            "GM系统#{uname}账号操作失败! 无此账号"
           end
         rescue
           Rails.logger.info $!
-          "GM系统#{uname}账号操作失败!"
+          "GM系统#{uname}账号操作失败!系统错误"
         end
       else
         "GM系统操作失败，请传入正确参数"
@@ -137,13 +137,39 @@ module PwdDb
       #"\e[32m 0.3CVS user qmliu passwd was changed successful \e[m\n\e[32m 0.3SVN user qmliu passwd was changed successful \e[m\n\e[31m 0.4CVS user qmliu is not exists \e[m\n"
       res = `#{_set_sql}`
 
-      #去除颜色值
-      res.gsub(/\e\[\d*m[ ]?/,'').split($/)
+      msgs = []
+      #去除颜色值gsub(/\e\[\d*m[ ]?/,'')
+      #统一提示
+      Rails.logger.info "svn/cvs:#{res.inspect}"
+      res.split($/).each do |item|
+        _sysname = item[/\s([.\d]+\w+)/,1]
+        _msg = case item
+               when /successful/
+                 "#{_sysname}系统操作成功！"
+               when /not/
+                 "#{_sysname}系统操作失败！账号不存在"
+               else
+                 "#{_sysname}系统操作失败！系统错误"
+               end
+        msgs.push(_msg)
+      end
 
+      msgs
     end
   end
 
   #uts
+  #正常
+  #HTTP 200
+  #0 操作成功
+  #
+  #没有账户
+  #HTTP 200
+  #1 无此账号
+  #
+  #操作错误
+  #HTTP 500
+  #
   class UtsUser
     ApiPass = "SxgJE#LJsP"
     ServerList = [
@@ -163,11 +189,11 @@ module PwdDb
       _params = {apipass: ApiPass,username: uname}
 
       _path = if _pwd
-                   _params[:password] = _pwd
-                   "gmmodifypassword?#{_params.to_query}"
-                 else
-                   "gmdeleteaccount?#{_params.to_query}"
-                 end
+                _params[:password] = _pwd
+                "gmmodifypassword?#{_params.to_query}"
+              else
+                "gmdeleteaccount?#{_params.to_query}"
+              end
 
       msgs = []
 
@@ -176,10 +202,16 @@ module PwdDb
       end
 
       msgs.map do |item,msg|
-        if msg.empty? #该接口只返回状态，不返回数据，即body为空
-          "#{item}系统#{uname}账号操作成功！"
+        Rails.logger.info msg.inspect
+        if msg.kind_of?(Array)
+          msg = msg.try(:first).split(" ")
+          if msg.try(:first) == "0" #此接口只返回状态，不返回数据，即body为空
+            "#{item}系统#{uname}账号操作成功！"
+          else
+            "#{item}系统#{uname}账号操作失败！#{msg.try(:last)}"
+          end
         else
-          "#{item}系统#{uname}账号操作失败！原因：#{msg}"
+           "#{item}系统#{uname}账号操作失败！#{msg}"
         end
       end
     end
@@ -207,14 +239,14 @@ module PwdDb
                  $!
                end
 
-    puts response.content_type
+    #puts response.content_type
 
     case response
     when Net::HTTPSuccess
       if response.content_type == 'application/json'
         JSON.parse(response.body).symbolize_keys
       else
-        response.body.split($/)
+        response.body.force_encoding("utf-8").split($/)
       end
     when Net::HTTPRedirection
       location = response['location']

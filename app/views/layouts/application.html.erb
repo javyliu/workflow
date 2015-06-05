@@ -64,6 +64,9 @@
             <% if can? :read,User %>
               <li class="<%= cur_page?('users','index') ? 'active' : '' %>"><%= link_to "用户管理", users_path %></li>
             <% end %>
+            <% if can? :manual_unify_delete,User %>
+              <li class="<%= cur_page?('users','manual_unify_delete') ? 'active' : '' %>"><%= link_to "统一删除用户", manual_unify_delete_users_path %></li>
+            <% end %>
           </ul>
           </li>
           <% end %>

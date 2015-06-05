@@ -44,6 +44,8 @@ Rails.application.routes.draw do
       post "confirm/:task" => :confirm, as: :confirm
       get "kaoqin/:task(/:cmd)" => :kaoqing,as: :kaoqing
       get :home
+      get :manual_unify_delete
+      delete :unify_delete
     end
     member do
       put :unify_delete

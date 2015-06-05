@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   #before_action :set_user, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
-  skip_load_resource only: [:home,:confirm,:kaoqing,:change_pwd]
+  skip_load_resource only: [:home,:confirm,:kaoqing,:change_pwd,:manual_unify_delete,:unify_update]
 
 
   #c_holiday_year
@@ -170,6 +170,14 @@ class UsersController < ApplicationController
     end
   end
 
+  #更改密码，只允许固定密码用户更改密码
+  #用于管理员手动统一清除账号
+  def manual_unify_delete
+    drop_breadcrumb("用户管理",users_path)
+    drop_page_title("统一删除账号")
+    drop_breadcrumb
+  end
+
   #重置密码
   #post
   def unify_reset
@@ -190,10 +198,21 @@ class UsersController < ApplicationController
   end
 
   #删除账号
+  #put
   #delete
   def unify_delete
-    msgs = @user.unify_update(true).flatten.join("<br>")
+    msgs = if params[:_method] == "delete"
+             if params[:name] != params[:name_confirmation]
+               "用户名输入不一致！"
+             else
+               current_user.unify_update(true,name: params[:name]).flatten.join("<br>")
+             end
+           else
+             @user = User.find(params[:id])
+             @user.unify_update(true).flatten.join("<br>")
+           end
     respond_to do |format|
+      format.html { redirect_to manual_unify_delete_users_path,notice: msgs }
       format.js { render text: msgs,content_type: Mime::HTML }
     end
   end

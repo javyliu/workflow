@@ -236,12 +236,13 @@ class User < ActiveRecord::Base
   #统一更改用户密码
   # cvs, svn, 考勤系统, redmine, 日报系统, GM工具, 数据平台, UTS, ServerManager
   # 在更新密码的时候调用
-  def unify_update(delete=false,pwd: nil)
+  def unify_update(delete=false,pwd: nil,name: nil)
     msgs = []
     PwdDb.constants.each do |c|
       if (cons = PwdDb.const_get(c)).respond_to?(:user_update)
-        _pwd =  pwd || self.password
-        msgs.push cons.send(:user_update,self.email_en_name,delete ? {delete: true} : {pwd: _pwd })
+        pwd ||= self.password
+        name ||= self.email_en_name
+        msgs.push cons.send(:user_update,name, delete ? {delete: true} : {pwd: pwd })
       end
     end
     msgs
