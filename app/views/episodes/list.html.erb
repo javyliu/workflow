@@ -34,9 +34,10 @@
         <%= text_field :episode, :end_date,class: "datetimepicker",readonly: true %>
       </div>
       <div class="columns medium-2">
-        <input type="submit" class="button small inline-button" text="搜索"/>
+        <label>&nbsp;</label>
+        <input type="submit" class="button tiny" text="搜索"/>
         <% if can?(:export,Episode) %>
-          <%= link_to "导出数据", list_episodes_path(format: :xls), class: "export_xls button small secondary"  %>
+          <%= link_to "导出数据", list_episodes_path(format: :xls), class: "export_xls button tiny secondary"  %>
         <% end %>
       </div>
     </div>

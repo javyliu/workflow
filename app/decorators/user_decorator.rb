@@ -195,6 +195,7 @@ class UserDecorator < ApplicationDecorator
       else
         ref_cmd.push("忘打卡")
       end
+      episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
       return
     end
 

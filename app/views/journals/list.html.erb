@@ -33,7 +33,8 @@
             <%= check_box_tag "is_updated", 1 %>
           </div>
           <div class="columns medium-2">
-            <input type="submit" class="button tiny inline-button" text="搜索"/>
+            <label>&nbsp;</label>
+            <input type="submit" class="button tiny" text="搜索"/>
             <% if can?(:export,Journal) %>
               <%= link_to "导出数据", list_journals_path(format: :xls), class: "export_xls button tiny secondary"  %>
             <% end %>

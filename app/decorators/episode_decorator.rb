@@ -2,10 +2,10 @@ class EpisodeDecorator < ApplicationDecorator
   delegate_all
 
   def start_date
-    object.start_date.try(:strftime,"%Y-%m-%d %H:%M:%S")
+    object.start_date.try(:strftime,"%y-%m-%d %H:%M:%S")
   end
   def end_date
-    object.end_date.try(:strftime,"%Y-%m-%d %H:%M:%S")
+    object.end_date.try(:strftime,"%y-%m-%d %H:%M:%S")
   end
 
   def state
