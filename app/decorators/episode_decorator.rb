@@ -11,6 +11,14 @@ class EpisodeDecorator < ApplicationDecorator
   def state
     Episode::State.rassoc(object.state.to_i).first
   end
+
+  def user_name
+    object.user.try(:user_name)
+  end
+
+  def dept_name
+    object.user.try(:dept).try(:name)
+  end
   # Define presentation-specific methods here. Helpers are accessed through
   # `helpers` (aka `h`). You can override attributes, for example:
   #
