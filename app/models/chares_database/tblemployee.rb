@@ -29,6 +29,8 @@ module CharesDatabase
           unless StaticPwdUsers.include?(_uname)
             if u.new_record? || need_change_pwd
               u.password = pwds[_uname]
+              u.remember_token_expires_at = nil
+              u.remember_token            = nil
             end
           end
           if u.password_digest.nil?
