@@ -9,37 +9,6 @@ module PwdDb
 
   end
 
-  #社区管理后台用户
-  class WebUser
-    def self.user_update(uname,cols={})
-      _pwd = cols.delete(:pwd)
-      _delete = cols.delete(:delete)
-      return '参数错误' unless _pwd || _delete
-      if _pwd
-        cols[:password_digest] = BCrypt::Password.create(uname)
-      end
-
-      cols[:delete_flag] = 1 if _delete
-      _set_sql = "update pipgame_user_info set #{PwdDb.gen_set_sql(cols)} where user_name='#{uname}'"
-
-      Rails.logger.info("pwd_log: #{_set_sql}")
-      begin
-        #ActiveRecord::Base.establish_connection(:redmine).connection.execute(_set_sql)
-        con = PwdDb::ExternalTable.connect(:web_manager)
-        if con.execute("select count(1) from pipgame_user_info where user_name = '#{uname}'").to_a.flatten.first > 0
-          con.execute(_set_sql)
-          "社区后台管理系统#{uname}账号操作成功!"
-        else
-          "社区后台管理系统#{uname}账号操作失败! 无此账号"
-        end
-      rescue
-        Rails.logger.info $!
-        "社区后台管理系统#{uname}账号操作失败! 系统错误"
-      end
-
-    end
-
-  end
   #Redmine
   #PwdDb::RedmineUser.user_update(name,pwd: '12345')
   #PwdDb::RedmineUser.user_update(name,delete: true)
@@ -251,6 +220,37 @@ module PwdDb
 
   end
 
+  #社区管理后台用户
+  class WebUser
+    def self.user_update(uname,cols={})
+      _pwd = cols.delete(:pwd)
+      _delete = cols.delete(:delete)
+      return '参数错误' unless _pwd || _delete
+      if _pwd
+        cols[:password_digest] = BCrypt::Password.create(_pwd)
+      end
+
+      cols[:delete_flag] = 1 if _delete
+      _set_sql = "update pipgame_user_info set #{PwdDb.gen_set_sql(cols)} where user_name='#{uname}'"
+
+      Rails.logger.info("pwd_log: #{_set_sql}")
+      begin
+        #ActiveRecord::Base.establish_connection(:redmine).connection.execute(_set_sql)
+        con = PwdDb::ExternalTable.connect(:web_manager)
+        if con.execute("select count(1) from pipgame_user_info where user_name = '#{uname}'").to_a.flatten.first > 0
+          con.execute(_set_sql)
+          "社区后台管理系统#{uname}账号操作成功!"
+        else
+          "社区后台管理系统#{uname}账号操作失败! 无此账号"
+        end
+      rescue
+        Rails.logger.info $!
+        "社区后台管理系统#{uname}账号操作失败! 系统错误"
+      end
+
+    end
+
+  end
 
   module_function
   def gen_set_sql(cols)
