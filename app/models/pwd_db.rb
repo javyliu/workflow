@@ -1,4 +1,5 @@
 module PwdDb
+  NoUserReg = /无此账号$/
 
   class ExternalTable < ActiveRecord::Base
     self.abstract_class = true

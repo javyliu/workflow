@@ -151,12 +151,12 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.update(user_params)
-        msg = "操作成功！"
+        msg = "账号#{@user.email_en_name}考勤系统操作成功！"
         @user.remember_token = nil
         @user.remember_token_expires_at = nil
         #统一修改密码
         if params[:commit] == '统一修改'
-          msg = @user.unify_update.flatten.join("<br>")
+          msg = @user.unify_update.flatten.delete_if{|item| PwdDb::NoUserReg =~ item}.join("<br>")
           #msg = '操作已提交，请等待密码修改结果！'
           Usermailer.unify_update(@user.id,"密码更改通知","您于 #{Time.now.strftime("%F %T")} 修改公司账号密码为 #{@user.password}").deliver_later
         end
@@ -185,7 +185,7 @@ class UsersController < ApplicationController
     @user.remember_token = nil
     @user.remember_token_expires_at = nil
     if @user.save
-      msgs = @user.unify_update.flatten.join("<br>")
+      msgs = @user.unify_update.flatten.delete_if{|item| PwdDb::NoUserReg =~ item}.join("<br>")
       Usermailer.unify_update(@user.id,"密码重置通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被重置为 #{@user.password}").deliver_later
     else
       msgs = @user.errors.full_messages.join(" ")

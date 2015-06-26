@@ -149,7 +149,7 @@ class EpisodesController < ApplicationController
         drop_page_title("假期申请")
         drop_breadcrumb("我的申请",episodes_path)
         drop_breadcrumb
-        flash.now[:alert] = @episode.errors.full_messages
+        flash.now[:alert] = @episode.errors.full_messages.join("\n")
         format.html { render :new }
         format.json { render json: @episode.errors, status: :unprocessable_entity }
       end
