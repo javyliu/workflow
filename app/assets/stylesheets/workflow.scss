@@ -77,3 +77,7 @@ html.turbolinks-progress-bar::before {
 }
 
 #modal_content{color:white;}
+.notice,#modal_content{
+  span{padding-left:2em;}
+  h6{color: #fff;}
+}

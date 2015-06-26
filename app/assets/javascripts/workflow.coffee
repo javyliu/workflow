@@ -6,9 +6,7 @@ window.wrap_msgs = ($con)->
     do (item) ->
       cls = if _reg.test(item) then 'err' else 'succ'
       new_con.push "<span class='#{cls}'>#{item}</span>"
-  new_con.unshift()
-  new_con.push("<p>账号密码修改结果如下：</p>")
-  $con.html("<h6>账号密码修改结果如下：</h6>#{new_con.join('<br>')}<p>账号密码修改结果如下：</p>")
+  $con.html("<h6>账号密码修改结果如下：</h6>#{new_con.join('<br>')}<p class='text-right'> <small>如有问题请联系MIS部</small></p>")
 
 $(->
 
