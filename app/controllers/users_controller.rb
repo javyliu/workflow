@@ -151,7 +151,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.update(user_params)
-        msg = "账号[#{@user.email_en_name}]考勤系统操作成功！"
+        msg = "账号#{@user.email_en_name}考勤系统操作成功！"
         @user.remember_token = nil
         @user.remember_token_expires_at = nil
         #统一修改密码

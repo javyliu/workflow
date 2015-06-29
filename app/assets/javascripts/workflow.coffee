@@ -10,7 +10,10 @@ window.wrap_msgs = ($con)->
       cls = if _reg.test(item) then 'err' else 'succ'
       new_con.push "<span class='#{cls}'>#{item.replace(_reg_uname,"")}</span>"
   uname =  if uname? then uname[1] else ""
-  $con.html("<h6>账号#{uname}密码修改结果如下：</h6>#{new_con.join('<br>')}<p style='padding-left:5em;'> <small>如有问题请联系MIS部</small></p>")
+  if uname == ""
+    $con.html(new_con.join('<br>'))
+  else
+    $con.html("<h6>账号#{uname}密码修改结果如下：</h6>#{new_con.join('<br>')}<p style='padding-left:5em;'> <small>如有问题请联系MIS部</small></p>")
 
 $(->
 
