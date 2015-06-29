@@ -35,13 +35,13 @@ module PwdDb
         con = PwdDb::ExternalTable.connect(:redmine)
         if con.execute("select count(1) from users where login = '#{uname}'").to_a.flatten.first > 0
           con.execute(_set_sql)
-          "Redmine系统#{uname}账号操作成功!"
+          "Redmine系统[#{uname}]操作成功!"
         else
-          "Redmine系统#{uname}账号操作失败! 无此账号"
+          "Redmine系统[#{uname}]操作失败! 无此账号"
         end
       rescue
         Rails.logger.info $!
-        "Redmine系统#{uname}账号操作失败! 系统错误"
+        "Redmine系统[#{uname}]操作失败! 系统错误"
       end
     end
 
@@ -67,13 +67,13 @@ module PwdDb
         con = PwdDb::ExternalTable.connect(:dailyreport)
         if con.execute("select count(1) from user where loginname = '#{uname}'").to_a.flatten.first > 0
           con.execute(_set_sql)
-          "日报系统#{uname}账号操作成功!"
+          "日报系统[#{uname}]操作成功!"
         else
-          "日报系统#{uname}账号操作失败! 无此账号"
+          "日报系统[#{uname}]操作失败! 无此账号"
         end
       rescue
         Rails.logger.info $!
-        "日报系统#{uname}账号操作失败!系统错误"
+        "日报系统[#{uname}]操作失败!系统错误"
       end
 
     end
@@ -104,13 +104,13 @@ module PwdDb
           con = PwdDb::ExternalTable.connect(:pipgm)
           if con.execute("select count(1) from tbl_admin where name = '#{uname}'").to_a.flatten.first > 0
             con.execute(_set_sql)
-            "GM系统#{uname}账号操作成功!"
+            "GM系统[#{uname}]操作成功!"
           else
-            "GM系统#{uname}账号操作失败! 无此账号"
+            "GM系统[#{uname}]操作失败! 无此账号"
           end
         rescue
           Rails.logger.info $!
-          "GM系统#{uname}账号操作失败!系统错误"
+          "GM系统[#{uname}]操作失败!系统错误"
         end
       else
         "GM系统操作失败，请传入正确参数"
@@ -147,11 +147,11 @@ module PwdDb
         _sysname = item[/\s([.\d]+\w+)/,1]
         _msg = case item
                when /successful/
-                 "#{_sysname}系统#{uname}账号操作成功！"
+                 "#{_sysname}系统[#{uname}]操作成功！"
                when /not/
-                 "#{_sysname}系统#{uname}账号操作失败！ 无此账号"
+                 "#{_sysname}系统[#{uname}]操作失败！ 无此账号"
                else
-                 "#{_sysname}系统#{uname}账号操作失败！系统错误"
+                 "#{_sysname}系统[#{uname}]操作失败！系统错误"
                end
         msgs.push(_msg)
       end
@@ -208,12 +208,12 @@ module PwdDb
         if msg.kind_of?(Array)
           msg = msg.try(:first).split(" ")
           if msg.try(:first) == "0" #此接口只返回状态，不返回数据，即body为空
-            "#{item}系统#{uname}账号操作成功！"
+            "#{item}系统[#{uname}]操作成功！"
           else
-            "#{item}系统#{uname}账号操作失败！#{msg.try(:last)}"
+            "#{item}系统[#{uname}]操作失败！#{msg.try(:last)}"
           end
         else
-           "#{item}系统#{uname}账号操作失败！#{msg}"
+           "#{item}系统[#{uname}]操作失败！#{msg}"
         end
       end
     end
@@ -240,13 +240,13 @@ module PwdDb
         con = PwdDb::ExternalTable.connect(:web_manager)
         if con.execute("select count(1) from pipgame_user_info where user_name = '#{uname}'").to_a.flatten.first > 0
           con.execute(_set_sql)
-          "社区后台管理系统#{uname}账号操作成功!"
+          "社区后台管理系统[#{uname}]操作成功!"
         else
-          "社区后台管理系统#{uname}账号操作失败! 无此账号"
+          "社区后台管理系统[#{uname}]操作失败! 无此账号"
         end
       rescue
         Rails.logger.info $!
-        "社区后台管理系统#{uname}账号操作失败! 系统错误"
+        "社区后台管理系统[#{uname}]操作失败! 系统错误"
       end
 
     end
