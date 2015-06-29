@@ -6,10 +6,10 @@ window.wrap_msgs = ($con)->
   _reg_uname = /\[(.+)\]/
   for item,i in $con.html().split("<br>")
     do (item,i) ->
-      uname = item.match(_reg_uname)[1] if i==0
+      uname = item.match(_reg_uname) if i==0
       cls = if _reg.test(item) then 'err' else 'succ'
       new_con.push "<span class='#{cls}'>#{item.replace(_reg_uname,"")}</span>"
-  uname = '' if uname is undefined
+  uname =  if uname? then uname[1] else ""
   $con.html("<h6>账号#{uname}密码修改结果如下：</h6>#{new_con.join('<br>')}<p style='padding-left:5em;'> <small>如有问题请联系MIS部</small></p>")
 
 $(->
