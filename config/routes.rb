@@ -53,7 +53,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :departments,except: [:destroy,:new,:create]
+  resources :departments,except: [:new,:create]
 
   resources :spec_days
 

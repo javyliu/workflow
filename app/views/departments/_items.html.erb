@@ -5,7 +5,9 @@
   <td><%= department.attend_rule.try(:description) %></td>
   <td><%= department.leader_user.try(:user_name) %></td>
   <td><%= link_to '详情', department %></td>
-  <td><%= link_to '编辑', edit_department_path(department) %></td>
+  <td><%= link_to '编辑', edit_department_path(department) %>
+      <%= link_to('删除', department_path(department),data: {remote: true,method: :put,replace_with:'#modal_content',confirm: '确定删除该部门么？'}) if can?(:delete,Department) %>
+  </td>
 </tr>
 <% end %>
 <tr><td colspan="6"><%= paginate(@departments,remote:true) %></td></tr>
