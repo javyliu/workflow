@@ -23,7 +23,7 @@ every 1.day,at: '5am' do
   job "SysKaoqingDataJob"
 end
 #同步用户密码
-every 1.day,at: '9:05' do
+every 1.day,at: '7:05' do
   job "SysUserJob"
 end
 
