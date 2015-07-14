@@ -37,7 +37,7 @@ module Workflow
     config.action_mailer.default_url_options = { host: 'kq.press5.cn'}
     #config.action_mailer.logger = nil
     config.action_mailer.smtp_settings = {
-      address:              '114.251.179.140',
+      address:              'mails.pipgame.com',
       port:                 25,
       domain:               'pipgame.com',
       user_name:            'y',

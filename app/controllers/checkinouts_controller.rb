@@ -67,7 +67,7 @@ class CheckinoutsController < ApplicationController
 
     respond_to do |format|
       if params[:from].present? && params[:to].present?
-        SysKaoqingDataJob.perform_later(from: params[:from],to: params[:to])
+        SysKaoqingDataJob.perform_later(from: params[:from],to: params[:to],unames: params[:uname])
         format.html { redirect_to new_checkinout_path , notice: "#{params[:from]}至#{params[:to]} 的考勤同步任务创建完成,稍后完成同步!" }
         format.json { render :show, status: :created, location: @checkinout }
       else

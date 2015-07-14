@@ -5,13 +5,17 @@
       <legend><span>数据同步</span></legend>
       <%= form_for(@checkinout) do |f| %>
       <div class="row">
-        <div class="columns medium-6">
+        <div class="columns medium-4">
           <%= f.label "开始时间" %>
           <%= text_field_tag "from","",class: "datepicker",readonly:true,type: :date,required: true %>
         </div>
-        <div class="columns medium-6">
+        <div class="columns medium-4">
           <%= f.label "结束时间" %>
           <%= text_field_tag "to","",class: "datepicker",readonly:true,type: :date ,required: true%>
+        </div>
+        <div class="columns medium-4">
+          <%= f.label "名字" %>
+          <%= text_field_tag "uname",""%>
         </div>
       </div>
       <div class="row">
@@ -28,6 +32,7 @@
       <ul>
         <li>用于同步打卡记录到考勤系统</li>
         <li>开始时间与结束时间应不同，如同步2015-04-01的数据，开始时间选择2015-04-01,结束时间应选择2015-04-02</li>
+        <li>名字：用于具体员工的数据同步,如有多个，用英文逗号分隔</li>
         <li>提交成功后，根据时间范围不同，数据同步约在一分钟之内完成。</li>
       </ul>
     </fieldset>

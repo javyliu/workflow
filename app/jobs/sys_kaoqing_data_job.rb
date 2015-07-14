@@ -10,6 +10,6 @@ class SysKaoqingDataJob < ActiveJob::Base
     #binding.pry
     opts = args.extract_options!
     Rails.logger.info("JOB #{Time.now.to_s(:db)} #{opts.inspect}")
-    CharesDatabase::Checkinout.sys_data(opts[:from],opts[:to])
+    CharesDatabase::Checkinout.sys_data(opts[:from],opts[:to],opts[:unames])
   end
 end

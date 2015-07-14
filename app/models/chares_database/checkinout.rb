@@ -21,14 +21,20 @@ module CharesDatabase
     self.table_name = 'checkinout'
 
     #2015-04-02 13:30 javy_liu upgrade to multi days
-    def self.sys_data(from,to )
+    def self.sys_data(from,to,unames = nil )
       from = Date.yesterday unless from
       to = Date.today unless to
 
-      email_checks = self.find_by_sql(["select b.email,group_concat(checktime) check_times,date(checktime) rec_date from checkinout a
-                                       inner join userinfo b on a.userid=b.userid  where a.checktime > ? and a.checktime < ? group by a.userid,rec_date",from,to])
+      user_id_emails = User.not_expired.where('email is not null').where(unames.blank? ? nil : ["user_name in (?)",unames.split(",")]).pluck(:uid,:email)
 
-      user_id_emails = User.not_expired.pluck(:uid,:email)
+      sql = if unames.blank?
+              ["select b.email,group_concat(checktime) check_times,date(checktime) rec_date from checkinout a inner join userinfo b on a.userid=b.userid where a.checktime > ? and a.checktime < ? group by a.userid,rec_date",from,to]
+            else
+              ["select b.email,group_concat(checktime) check_times,date(checktime) rec_date from checkinout a inner join userinfo b on a.userid=b.userid where b.email in (?) and a.checktime > ? and a.checktime < ? group by a.userid,rec_date",user_id_emails.transpose.last,from,to]
+            end
+
+      email_checks = self.find_by_sql(sql)
+
       email_checks.each do |item|
         next if item.email.blank?
         ck_times = item.check_times.split(',')
