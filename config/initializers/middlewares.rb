@@ -9,7 +9,7 @@ Rails.application.config.middleware.tap do |config|
     config.delete 'Rack::ETag'    # HTTP客户端缓存才会使用
     config.delete 'ActionDispatch::BestStandardsSupport' # 设置X-UA-Compatible, 在nginx上设置
     #config.middleware.insert_after("Rack::Runtime",'ResponseTimer')
-    #config.middleware.use "ResponseTimer"
+    #config.insert_before 0,"ResponseTimer"
     #swap is replace and not switch
     #config.middleware.swap("ResponseTimer",::Rack::Head)
 
