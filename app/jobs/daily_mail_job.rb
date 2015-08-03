@@ -16,7 +16,7 @@ class DailyMailJob < ActiveJob::Base
 
     opts = args.extract_options!
 
-    yesterday = Date.yesterday
+    yesterday = args[0] || Date.yesterday
     leaders = User.leaders_by_date(yesterday)
     #用于测试
     if opts[:leader_user_id]
