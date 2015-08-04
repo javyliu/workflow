@@ -40,3 +40,16 @@
   </div>
 </div>
 
+<% foot do %>
+<script type="text/javascript" charset="utf-8">
+$("form#new_checkinout").submit(function(){
+    $("form input[required='required']").each(function(){
+      if($(this).val() == ""){
+        alert("请输入开始及结束日期！")
+        return false;
+      }
+      });
+    })
+</script>
+
+<% end %>

@@ -56,3 +56,19 @@
   <p>2、年假、特批、带薪事假、带薪病假的天数，请与人力资源部或部门确认后填写。</p>
   <p>3、特批/倒休最小请假单位1小时，其余假期最小请假单位0.5天。</p>
 </fieldset>
+
+<% foot do %>
+<script type="text/javascript" charset="utf-8">
+  $("form#new_episode").submit(function(){
+      if($(".unit").text() == "天" ){
+       var total_time = parseFloat($("#episode_total_time").val());
+       if (total_time != NaN && (total_time % 0.5) != 0) {
+         alert("假期最小单位为0.5天")
+         return false;
+       }
+      }
+      })
+
+</script>
+
+<% end %>
