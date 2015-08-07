@@ -5,7 +5,7 @@
     <%= f.text_field :update_date,class: "datepicker",readonly:true %>
   </div>
   <div class="columns medium-6">
-    <%= f.label :user_id,"用户ID" %>
+    <%= f.label :user_id,"用户" %>
     <%= f.select :user_id,current_user.decorate.managed_user_list %>
   </div>
 </div>
