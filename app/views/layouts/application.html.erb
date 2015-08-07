@@ -46,6 +46,9 @@
             <li class="<%= cur_page?('checkinouts','list') ? 'active' : '' %>"><%= link_to "部门签到记录", list_checkinouts_path %></li>
             <li class="<%= cur_page?('episodes','list') ? 'active' : '' %>"><%= link_to "部门申请", list_episodes_path %></li>
             <li class="<%= cur_page?('journals','list') ? 'active' : '' %>"><%= link_to "部门异常考勤", list_journals_path %></li>
+            <% if can? :create, Journal %>
+              <li class="<%= cur_page?('journals','new','create') ? 'active' : '' %>"><%= link_to "新增异常考勤", new_journal_path %></li>
+            <% end %>
           </ul>
           <% end %>
           </li>
@@ -58,7 +61,6 @@
             <li class="<%= cur_page?('oa_configs') ? 'active' : '' %>"><%= link_to "系统配置", oa_configs_path %></li>
             <li class="<%= cur_page?('attend_rules') ? 'active' : '' %>"><%= link_to "考勤规则管理", attend_rules_path %></li>
             <li class="<%= cur_page?('checkinouts','new','create') ? 'active' : '' %>"><%= link_to "同步打卡数据", new_checkinout_path %></li>
-            <li class="<%= cur_page?('journals','new','create') ? 'active' : '' %>"><%= link_to "新增异常考勤", new_journal_path %></li>
             <li class="<%= cur_page?('departments') ? 'active' : '' %>"><%= link_to "部门管理", departments_path %></li>
             <% end %>
             <% if can? :read,User %>

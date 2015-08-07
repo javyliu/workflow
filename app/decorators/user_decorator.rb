@@ -364,6 +364,16 @@ class UserDecorator < ApplicationDecorator
   end
 
   #======================================================
+  def managed_user_list
+    u_ids = object.leader_data.try(:last)
+    if u_ids
+      User.where(uid: u_ids).pluck(:user_name,:uid)
+    elsif object.role?("manager")
+      User.all.pluck(:user_name,:uid)
+    else
+      []
+    end
+  end
 
   private
   def base_holiday_info

@@ -60,6 +60,7 @@ class Ability
       can :show,Episode
       can :confirm,:all
       can :create,Approve
+      can :create,Journal, user_id: user.leader_data.try(:last)
       can :export,[Journal,Episode],user_id:  user.leader_data.try(:last)
       can :update,Journal
       can [:kaoqing,:confirm],User
