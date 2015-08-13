@@ -30,7 +30,7 @@
   <%= @leader_user.wrap(@task,users: @users,need_update: false) %>
 </table>
 
-请直接回复本邮件，并在背景白色的单元格中填写确认的数值后，点击发送。<br>
+请直接回复本邮件，并在背景白色的单元格中填写确认的数值后，点击发送。如灰色背景行中仍有异常考勤，请 <%= link_to "手动添加", new_journal_url() %><br>
 <span class="red">
 （白色背景行每行至少填写1项，否则系统视为未处理，仍会重复发送邮件）
 </span>

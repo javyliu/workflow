@@ -243,7 +243,7 @@ DEPENDENCIES
   dalli
   draper
   foundation-rails
-  guard-livereload
+  guard-livereload (~> 2.4)
   javy_tool!
   jbuilder (~> 2.0)
   jquery-rails
