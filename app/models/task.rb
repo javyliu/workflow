@@ -13,7 +13,7 @@ class Task
   #不同类型的确认单对应的邮件方法
   CfmType= [
     ["考勤确认单","F001","kaoqing_users_path"],
-    ["请假确认单","F002","episode_path"],
+    ["申请确认单","F002","episode_path"],
     ["加班确认单","F003","episode_path"],
     ["出差确认单","F004","episode_path"]
   ]
