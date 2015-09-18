@@ -57,7 +57,8 @@ class UsersController < ApplicationController
     _date = Date.parse(@task.date)
     _today = Date.today
     #小于上月25号的考勤不能再作修改,27号以后不能再修改本月考勤
-    if _date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && _date.day < 26)
+    limit_day = OaConfig.setting(:limit_day_of_month).to_i
+    if _date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && _date.day < limit_day)
       raise CanCan::AccessDenied.new("该日考勤已过了确认时间",kaoqing_users_path("dept") ,params[:task])
     end
 
@@ -81,8 +82,9 @@ class UsersController < ApplicationController
     end
 
     _today = Date.today
+    limit_day = OaConfig.setting(:limit_day_of_month).to_i
     @need_update = current_user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
-    _is_expired =  @date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && @date.day < 26)
+    _is_expired =  @date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && @date.day < limit_day)
     if _is_expired
       @task.remove(all: true)
       flash.now[:alert] = '该日考勤已过期，如需修改请联系人事部门。'

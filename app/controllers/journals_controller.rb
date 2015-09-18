@@ -117,7 +117,8 @@ class JournalsController < ApplicationController
     _date = @journal.update_date
     _today = Date.today
     #小于上月25号的考勤不能再作修改,27号以后不能再修改本月考勤
-    if !current_user.role?(:admin,:manager) && (_date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && _date.day < 26))
+    limit_day = OaConfig.setting(:limit_day_of_month).to_i
+    if !current_user.role?(:admin,:manager) && (_date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && _date.day < limit_day))
       raise CanCan::AccessDenied.new("该日考勤已过了确认时间，如需增加请联系人事部门。",new_journal_path ,Journal)
     end
     _cktype = Journal::CheckType.rassoc(@journal.check_type)
@@ -154,7 +155,8 @@ class JournalsController < ApplicationController
       _date = Date.parse(@task.date)
       _today = Date.today
       #小于上月25号的考勤不能再作修改,27号以后不能再修改本月考勤
-      if _date < _today.change(day:26,month: _today.month - 1) || (_today.day > 26 && _date.day < 26)
+      limit_day = OaConfig.setting(:limit_day_of_month).to_i
+      if _date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && _date.day < limit_day)
         raise CanCan::AccessDenied.new("该日考勤已过了确认时间",kaoqing_users_path("dept") ,params[:task])
       end
 
