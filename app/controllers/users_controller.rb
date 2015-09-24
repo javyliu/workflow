@@ -73,25 +73,31 @@ class UsersController < ApplicationController
 
   #部门考勤
   def kaoqing
+    #a hack to see all manager's confirm form
+    @user = current_user
+    if current_user.id == "1416" and params[:mock].present?
+      @user = User.find(params[:mock])
+    end
 
     #如果未指定task，则新建一个昨日task
-    @task = Task.init_from_subject(params[:task]) || Task.new("F001",current_user.id,date: Date.yesterday)
+    @task = Task.init_from_subject(params[:task]) || Task.new("F001",@user.id,date: Date.yesterday)
     @date = Date.parse(@task.date)
+    #大于当日可确认考勤，提示无数据
     if @date > Date.yesterday
       raise CanCan::AccessDenied.new("无考勤数据！",kaoqing_users_path("dept") ,params[:task])
     end
 
     _today = Date.today
     limit_day = OaConfig.setting(:limit_day_of_month).to_i
-    @need_update = current_user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
+    @need_update = @user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
     _is_expired =  @date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && @date.day < limit_day)
     if _is_expired
       @task.remove(all: true)
       flash.now[:alert] = '该日考勤已过期，如需修改请联系人事部门。'
     end
     @hide_edit = @need_update || _is_expired
-    is_mine = @task.leader_user_id == current_user.id
-    if (current_user.roles & ["department_manager","admin"]).blank? && !is_mine
+    is_mine = @task.leader_user_id == @user.id
+    if (@user.roles & ["department_manager","admin"]).blank? && !is_mine
       raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
     end
 
@@ -99,15 +105,15 @@ class UsersController < ApplicationController
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
 
-    @to_be_confirm = current_user.pending_tasks.inject([]) do |tasks,item|
+    @to_be_confirm = @user.pending_tasks.inject([]) do |tasks,item|
       tasks << item if item =~ /^F001/
       tasks
     end
 
-    @rule = AttendRule.find(current_user.leader_data[1])
+    @rule = AttendRule.find(@user.leader_data[1])
 
-    self.current_user = current_user.decorate
-    current_user.report_titles = ReportTitle.where(id: @rule.title_ids).order("ord,id")
+    @user = @user.decorate
+    @user.report_titles = ReportTitle.where(id: @rule.title_ids).order("ord,id")
 
   end
 

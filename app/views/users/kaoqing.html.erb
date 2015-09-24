@@ -10,7 +10,7 @@
           </div>
           <div class="columns medium-3">
             <label>部门:</label>
-            <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
+            <%= select :user, :dept_code, @user.cache_dept.depts,prompt: "选择部门" %>
           </div>
           <div class="columns medium-3">
             <label>日期:</label>
@@ -33,22 +33,22 @@
       <% end %>
       <% end %>
       <h4>已确认考勤 <small>点击选择日期</small></h4>
-      <%= text_field_tag :date,'',class: "datepicker need_change_event",readonly: true,data: {url: kaoqing_users_path("F001:#{current_user.id}:")} %>
+      <%= text_field_tag :date,'',class: "datepicker need_change_event",readonly: true,data: {url: kaoqing_users_path("F001:#{@user.id}:")} %>
     </div>
 
     <h5><%= @date.to_s %> (<%= l(@date,format: '%A') %>) 考勤确认</h5>
     <table class="kaoqin">
       <thead>
         <tr>
-          <% current_user.report_titles.each do |item| %>
+          <% @user.report_titles.each do |item| %>
           <th><%= item.des.gsub(/.{2}/,'\0<br>').html_safe %></th>
           <% end %>
         </tr>
       </thead>
       <tbody id="content" class="in_editor" >
-      <%= current_user.wrap(@task,need_update: @need_update,rule: @rule) %>
+      <%= @user.wrap(@task,need_update: @need_update,rule: @rule) %>
       <tr class="confirm_button">
-        <td colspan="<%= current_user.report_titles.length %>" class="text-right" >
+        <td colspan="<%= @user.report_titles.length %>" class="text-right" >
           <% if @need_update %>
             <% if params[:cmd] == 'update' %>
             <span class="red">点击完成本次编辑</span>
