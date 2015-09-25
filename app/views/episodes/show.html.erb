@@ -10,12 +10,12 @@
 </p>
 <p>
 <strong>开始时间:</strong>
-<%= @episode.start_date.strftime("%Y-%m-%d %H:%M:%S") %>
+<%= @episode.start_date.strftime("%y-%m-%d %H:%M:%S") %>
 </p>
 
 <p>
 <strong>结束时间:</strong>
-<%= @episode.end_date.strftime("%Y-%m-%d %H:%M:%S") %>
+<%= @episode.end_date.strftime("%y-%m-%d %H:%M:%S") %>
 </p>
 <p>
 <strong>申请时长:</strong>
@@ -28,7 +28,7 @@
 
 <p>
 <strong>申请时间:</strong>
-<%= @episode.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+<%= @episode.created_at.strftime("%y-%m-%d %H:%M:%S") %>
 </p>
 
 <p>
@@ -50,7 +50,7 @@
       <td><%= item.user_name %></td>
       <td><%= item.des %></td>
       <td><%= Episode::State.rassoc(item.state).first %></td>
-      <td><%= item.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+      <td><%= item.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
     </tr>
     <% end %>
   </table>

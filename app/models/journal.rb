@@ -29,7 +29,7 @@ class Journal < ActiveRecord::Base
   #3：计数单位
   #4：标头css类
   #5：是否允许负数
-  #6：与holiday 的id 对应值
+  #6：与holiday 的id 对应值,用于判断某异常考勤是否需要假单
   #7：数据库存储对应倍数，（小时及天须乘以10存储)
 
   #holiday
@@ -76,8 +76,11 @@ class Journal < ActiveRecord::Base
     ['c_aff_outing',23,'因公外出','天','group_tian',false,14,10],
     ['c_aff_spec_appr_holiday',24,'休假特批','小时','group_shi',false,16,-10],
     ['c_aff_spec_appr_later',25,'迟到早退特批','小时','group_shi',false,nil,-10],
-    ['c_aff_others',22,'其它','','group_qi',false,nil,-1]
+    ['c_aff_others',22,'其它','','group_qi',false,nil,-1]#,
+    #['c_aff_others',26,'误餐及交通补助(仅限经理级)','小时','group_shi',false,18,10]
   ]
+
+  #TODO: 把cktype与holiday统一起来放到holiday表中，更新现在的ck_type
 
   #2015-04-02 10:18 无用代码
   #UserCheckTypeIds = %w[5 8 9 11 12 17 21]

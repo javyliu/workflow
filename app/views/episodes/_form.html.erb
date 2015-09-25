@@ -1,34 +1,51 @@
 <%= render partial: 'remain_holiday',object: current_user.decorate %>
-<%= form_for(@episode) do |f| %>
-<div class="row">
-  <div class="columns medium-4">
-    <%= f.label :holiday_id,'类别' %>
-    <%= f.hidden_field :holiday_id %>
-    <input type="text" value="<%= @episode.holiday.try(:name) %>" readonly=true>
+<%= form_for(@episode,html:{id: "episode_form"}) do |f| %>
+
+<fieldset>
+  <legend><span>申请日期</span></legend>
+  <% (@episode.children.presence || [@episode]).each do |item| %>
+  <div class="row" id="parent_episode">
+    <div class="columns small-6 medium-3">
+      <%= f.label '类别' %>
+      <%= select_tag "holiday_id[]",options_for_select(Holiday.dept_holiday(current_user.dept_group[1]).map{|item|[item.name,item.id]}),{prompt: '请选择假期',class: 'holiday_select',required: true} %>
+    </div>
+    <div class="columns small-6 medium-3">
+      <div class="row collapse">
+        <%= f.label "时长" %>
+        <div class="columns small-9">
+          <%= text_field_tag "total_time[]",item.total_time,required: true,pattern: "[.0-9]+",class: 'child_total' %>
+        </div>
+        <div class="columns small-3">
+          <span class="postfix child_unit"><%= Holiday.unit(item.holiday_id) %></span>
+        </div>
+      </div>
+    </div>
+    <div class="columns medium-3">
+      <%= f.label "开始时间" %>
+      <%= text_field_tag "start_date[]",item.start_date.strftime("%F %T"),class: "datetimepicker",readonly: true ,required: true%>
+    </div>
+    <div class="columns medium-3 datetime">
+      <%= f.label "结束时间" %>
+      <%= text_field_tag "end_date[]",item.end_date.strftime("%F %T"),class: "datetimepicker",readonly: true ,required: true%>
+    </div>
 
   </div>
-  <div class="columns medium-4">
+  <% end %>
+  <div class="child_episodes"></div>
+  <%= link_to "连续假期", "#",class: 'button tiny alert',id:'more_episode' %>
+</fieldset>
+<div class="row">
+  <div class="columns medium-4 hide-for-small-only">
     <label for="">部门</label>
     <input type="text" value="<%= current_user.dept.name %>" readonly=true>
   </div>
-  <div class="columns medium-4">
+  <div class="columns small-6 medium-4">
     <%= f.label :title,'职位' %>
     <%= f.select :title,Episode::Title,prompt: true %>
   </div>
-</div>
-
-<div class="row">
-  <div class="columns medium-4">
-    <%= f.label :start_date,"开始时间" %>
-    <%= f.text_field :start_date,class: "datetimepicker",readonly: true ,required: true%>
-  </div>
-  <div class="columns medium-4 datetime">
-    <%= f.label :end_date,"结束时间" %>
-    <%= f.text_field :end_date,class: "datetimepicker",readonly: true ,required: true%>
-  </div>
-  <div class="columns medium-4">
+  <div class="columns small-6 medium-4">
     <div class="row collapse">
-      <%= f.label :total_time,"申请时长" %>
+      <%= f.label :total_time,"申请总时长" %>
       <div class="columns small-9">
         <%= f.text_field :total_time,required: true,pattern: "[.0-9]+" %>
       </div>

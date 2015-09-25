@@ -5,7 +5,7 @@ class UserDecorator < ApplicationDecorator
     if object.journals.present?
       cktype = Journal::CheckType.assoc(med.to_s)
       #return nil if object.journal.check_type != cktype.second
-      _journal = object.journals.detect { |e| e.check_type == cktype.second }
+      _journal = object.journals.detect { |e| e.check_type == cktype[1] }
       return nil unless _journal
       if cktype.last == 0
         _journal.description
@@ -325,12 +325,12 @@ class UserDecorator < ApplicationDecorator
   #返回当前用户年度假期所需列
   def check_types
     return @check_types if @check_types
-    _cktype_ids = object.dept_group.third.dup
+    _cktype_ids = object.dept_group[2].dup
     if object.dept_group.first == :group_switch_time && object.title.to_i < 400 #倒休部门经理及以上无倒休
       _cktype_ids.delete(12)
       _cktype_ids.push(8)
     end
-    @check_types = Journal::CheckType.select{|item| item.second.in?(_cktype_ids)}
+    @check_types = Journal::CheckType.select{|item| item[1].in?(_cktype_ids)}
   end
 
   #UserCheckTypeIds = %w[5 8 9 11 12 17 21]

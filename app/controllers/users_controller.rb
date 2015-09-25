@@ -41,7 +41,7 @@ class UsersController < ApplicationController
     drop_breadcrumb
     @to_be_confirms = current_user.group_pending_tasks
     #@user = current_user.decorate
-    @my_journals = current_user.journals.where("update_date >= ? and check_type = 10 or dval != 0",2.months.ago.to_date).order("update_date desc,id desc").page(params[:page])
+    @my_journals = current_user.journals.where("update_date >= ? and (check_type = 10 or dval != 0)",2.months.ago.to_date).order("update_date desc,id desc").page(params[:page])
     .select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
     .joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id
     left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ")

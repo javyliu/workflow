@@ -48,6 +48,10 @@ $(->
   $(document).on 'ready page:load', ->
     $('.has-dropdown').removeClass("active")
     $('ul.dropdown li.active').closest("li.has-dropdown").addClass("active")
+    #for episode new
+    $('#episode_form').on "change",".holiday_select", ->
+      console.log($(this).val())
+
 
   $(document).on 'ready page:load', -> $('.datetimepicker').datetimepicker({ format:'Y-m-d H:i', inline:false, lang:'zh' })
   $(document).on 'ready page:load', -> $('.datepicker').datetimepicker({timepicker:false, format:'Y-m-d', inline:false, lang:'zh' })

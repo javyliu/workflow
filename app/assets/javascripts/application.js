@@ -17,6 +17,7 @@
 //= require turbolinks
 //= require rest_in_place
 //= require jquery.datetimepicker
+//= require journals
 //= require workflow
 // require_tree .
 Turbolinks.enableProgressBar();

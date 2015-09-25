@@ -1,0 +1,2 @@
+this.check_type = <%=Journal::CheckType.map{|item| [item[6],item[3]]}.reject{|item| item[0].nil?}.to_json  %>
+

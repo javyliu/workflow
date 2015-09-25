@@ -28,6 +28,17 @@ class Episode < ActiveRecord::Base
   validates :title, presence: true
   validates :total_time, presence: true
 
+  has_many :children, class_name: 'Episode',foreign_key: :parent_id,dependent: :delete_all
+
+  #belongs_to :parent,class_name: 'Episode',foreign_key: :parent_id
+
+  #get the parent episode
+  #if no parent return self
+  def parent
+    self.parent_id == 0 ? self : Episode.find_by_id(self.parent_id)
+  end
+
+
   State = [["未审批",0],["通过",1],["未通过",2],["审核中",3]]
   Title = [["员工",501],["主管",402],["经理",302],["总监",202],["副总",101]]
 
