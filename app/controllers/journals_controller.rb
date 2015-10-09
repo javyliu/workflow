@@ -45,8 +45,8 @@ class JournalsController < ApplicationController
     if params[:user].present?
       con_hash1,like_con = construct_condition(:user,like_ary: [:user_name])
       _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
+      @journals = @journals.where(user_id: _uids)
     end
-    @journals = @journals.where(user_id: _uids) if _uids.present?
 
     _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
 
