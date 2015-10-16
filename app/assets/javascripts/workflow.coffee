@@ -50,7 +50,42 @@ $(->
     $('ul.dropdown li.active').closest("li.has-dropdown").addClass("active")
     #for episode new
     $('#episode_form').on "change",".holiday_select", ->
-      console.log($(this).val())
+      unit = window.check_type[this.value]
+      $(this).closest(".row").find(".child_unit").html(unit).end().find(".child_total").data("unit",unit)
+
+    $("#episode_form").on("click",'.delete',(e)->
+      e.preventDefault()
+      $(this).closest(".row").find(".is_delete").val(1).end().hide()
+      $(".child_total:visible").trigger("blur")
+    )
+
+    $("#episode_form").on("blur",'.child_total',(e)->
+      #console.log($(this))
+      _sum = 0
+      unit =  $(this).data("unit")
+      if $(".child_total:visible").length < 2
+        _sum = $(this).val()
+        $(".unit").text(unit)
+      else
+        $(".unit").text("天")
+        $(".child_total:visible").each ->
+          unit =  $(this).data("unit")
+          if unit == "天"
+            _sum += parseFloat($(this).val())
+          else if unit == "小时"
+            _sum += parseInt($(this).val())/8
+
+      $("#total_time").val(_sum)
+
+    )
+
+    $("#more_episode").click (e)->
+      e.preventDefault()
+      _row = $("#parent_episode").clone()
+      _row.find(".child_total").val("").end().find("div:last").append("<input class='is_delete' type='hidden' value='false' name='episode[_destroy]'><a href='#' class='delete button tiny inline-button'>删除</a>")
+      _row.html(_row.html().replace(/episode\[(.*)\]/g,"episode[children_attributes]["+$.now()+"][$1]"))
+      $(".child_episodes").append(_row.find(".datetimepicker").datetimepicker({ format:'Y-m-d H:i', inline:false, lang:'zh' }).end())
+      $(".child_total:visible:last").trigger("blur")
 
 
   $(document).on 'ready page:load', -> $('.datetimepicker').datetimepicker({ format:'Y-m-d H:i', inline:false, lang:'zh' })

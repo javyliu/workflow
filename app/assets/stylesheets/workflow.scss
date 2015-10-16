@@ -6,6 +6,7 @@ html.turbolinks-progress-bar::before {
   height: 5px !important;
 }
 
+.w100{width: 100%;}
 .row table{width:100%;}
 
 .bg_grey{background:#eee;}
@@ -28,7 +29,7 @@ html.turbolinks-progress-bar::before {
 
 .inline-button{
   margin-bottom:0;
-  margin-top:1.2em;
+  margin-top:1.8em;
 
 }
 .mt1em{margin-top:1.8em!important;}
@@ -81,3 +82,5 @@ html.turbolinks-progress-bar::before {
   span{padding-left:2em;}
   h6{color: #fff;}
 }
+
+.child_episodes > .row{border-top:dotted 1px #ccc;}

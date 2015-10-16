@@ -30,6 +30,8 @@ class Episode < ActiveRecord::Base
 
   has_many :children, class_name: 'Episode',foreign_key: :parent_id,dependent: :delete_all
 
+  accepts_nested_attributes_for :children,:allow_destroy => true, :reject_if => :all_blank
+
   #belongs_to :parent,class_name: 'Episode',foreign_key: :parent_id
 
   #get the parent episode

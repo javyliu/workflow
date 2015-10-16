@@ -3,35 +3,13 @@
 
 <fieldset>
   <legend><span>申请日期</span></legend>
-  <% (@episode.children.presence || [@episode]).each do |item| %>
-  <div class="row" id="parent_episode">
-    <div class="columns small-6 medium-3">
-      <%= f.label '类别' %>
-      <%= select_tag "holiday_id[]",options_for_select(Holiday.dept_holiday(current_user.dept_group[1]).map{|item|[item.name,item.id]}),{prompt: '请选择假期',class: 'holiday_select',required: true} %>
-    </div>
-    <div class="columns small-6 medium-3">
-      <div class="row collapse">
-        <%= f.label "时长" %>
-        <div class="columns small-9">
-          <%= text_field_tag "total_time[]",item.total_time,required: true,pattern: "[.0-9]+",class: 'child_total' %>
-        </div>
-        <div class="columns small-3">
-          <span class="postfix child_unit"><%= Holiday.unit(item.holiday_id) %></span>
-        </div>
-      </div>
-    </div>
-    <div class="columns medium-3">
-      <%= f.label "开始时间" %>
-      <%= text_field_tag "start_date[]",item.start_date.strftime("%F %T"),class: "datetimepicker",readonly: true ,required: true%>
-    </div>
-    <div class="columns medium-3 datetime">
-      <%= f.label "结束时间" %>
-      <%= text_field_tag "end_date[]",item.end_date.strftime("%F %T"),class: "datetimepicker",readonly: true ,required: true%>
-    </div>
+    <%= render "child_form",f: f %>
 
+  <div class="child_episodes">
+    <%= f.fields_for :children do |item_f| %>
+      <%= render "child_form",f: item_f %>
+    <% end %>
   </div>
-  <% end %>
-  <div class="child_episodes"></div>
   <%= link_to "连续假期", "#",class: 'button tiny alert',id:'more_episode' %>
 </fieldset>
 <div class="row">
@@ -47,10 +25,10 @@
     <div class="row collapse">
       <%= f.label :total_time,"申请总时长" %>
       <div class="columns small-9">
-        <%= f.text_field :total_time,required: true,pattern: "[.0-9]+" %>
+        <%= f.text_field :total_time,required: true,pattern: "[.0-9]+", id: "total_time" %>
       </div>
       <div class="columns small-3">
-        <span class="postfix unit"><%= @episode.holiday.unit %></span>
+        <span class="postfix unit"><%= @episode.holiday || "天" %></span>
       </div>
     </div>
   </div>
@@ -76,15 +54,20 @@
 
 <% foot do %>
 <script type="text/javascript" charset="utf-8">
-  $("form#new_episode").submit(function(){
-      if($(".unit").text() == "天" ){
-       var total_time = parseFloat($("#episode_total_time").val());
-       if (total_time != NaN && (total_time % 0.5) != 0) {
-         alert("假期最小单位为0.5天")
-         return false;
-       }
-      }
-      })
+  $("form#episode_form").on("submit.rails",function(e){
+      var child_total;
+      $(".child_total").each(function(){
+        if($(this).data("unit") == "天" ){
+         child_total = parseFloat($(this).val());
+         if (child_total != NaN && (child_total % 0.5) != 0) {
+           alert("假期最小单位为0.5天")
+           e.result = false;
+           return;
+         }
+        }
+        });
+       return e.result;
+      });
 
 </script>
 

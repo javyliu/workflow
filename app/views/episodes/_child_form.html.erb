@@ -1,0 +1,31 @@
+<div class="row" id="parent_episode">
+  <div class="columns small-6 medium-3">
+    <%= f.label '类别' %>
+     <%= f.select :holiday_id,options_for_select(Holiday.dept_holiday(current_user.dept_group[1]).map{|item|[item.name,item.id]}),{prompt: '请选择假期'},class: 'holiday_select',required: true %>
+  </div>
+  <div class="columns small-6 medium-2">
+    <div class="row collapse">
+      <%= f.label "时长" %>
+      <div class="columns small-9">
+        <%= f.text_field :total_time,required: true,pattern: "[.0-9]+",class: 'child_total',data: {unit: Holiday.unit(f.object.try(:holiday_id) || 1) } %>
+      </div>
+      <div class="columns small-3">
+        <span class="postfix child_unit"><%= Holiday.unit(f.object.try(:holiday_id) || 1) %></span>
+      </div>
+    </div>
+  </div>
+  <div class="columns medium-3">
+    <%= f.label "开始时间" %>
+    <%= f.text_field :start_date,class: "datetimepicker",readonly: true ,required: true,value: "#{f.object.start_date.try(:strftime,'%F %H:%M')}" %>
+  </div>
+  <div class="columns medium-3 datetime">
+    <%= f.label "结束时间" %>
+    <%= f.text_field :end_date,class: "datetimepicker",readonly: true ,required: true, value: "#{f.object.end_date.try(:strftime,'%F %H:%M')}"  %>
+  </div>
+  <div class="columns medium-1">
+    <% if f.object.parent_id? %>
+      <%= f.hidden_field :_destroy, class: 'is_delete' %>
+      <a href='#' class='delete button tiny inline-button'>删除</a>
+    <% end %>
+  </div>
+</div>

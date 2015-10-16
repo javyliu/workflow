@@ -1,6 +1,6 @@
-<div class="panel  callout radius">
-  <h5><span>年度剩余假期</span></h5>
-  <table>
+<fieldset>
+  <legend><span>年度剩余假期</span></legend>
+  <table class="w100">
     <tr>
       <% remain_holiday.check_types.each do |item| %>
       <th><%= item.third %></th>
@@ -12,4 +12,4 @@
       <% end %>
     </tr>
   </table>
-</div>
+</fieldset>
