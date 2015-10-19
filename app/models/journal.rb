@@ -24,7 +24,7 @@ class Journal < ActiveRecord::Base
   #has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
   #数组说明
   #0：标识
-  #1:数据库对应字id
+  #1: 数据库对应字id
   #2：中文描述
   #3：计数单位
   #4：标头css类

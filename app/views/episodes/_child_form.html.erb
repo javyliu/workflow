@@ -1,7 +1,7 @@
 <div class="row" id="parent_episode">
   <div class="columns small-6 medium-3">
     <%= f.label '类别' %>
-     <%= f.select :holiday_id,options_for_select(Holiday.dept_holiday(current_user.dept_group[1]).map{|item|[item.name,item.id]}),{prompt: '请选择假期'},class: 'holiday_select',required: true %>
+     <%= f.select :holiday_id,Holiday.dept_holiday(current_user.dept_group[1]).map{|item|[item.name,item.id]},{prompt: '请选择假期'},class: 'holiday_select',required: true %>
   </div>
   <div class="columns small-6 medium-2">
     <div class="row collapse">

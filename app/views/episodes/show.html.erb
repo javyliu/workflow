@@ -1,72 +1,69 @@
 <%= render partial: 'episodes/remain_holiday',object: @episode.user.decorate %>
-<p>
-<strong>名字:</strong>
-<%= @episode.user.user_name %>
-</p>
-
-<p>
-<strong>假别:</strong>
-<%= @episode.holiday.name %>
-</p>
-<p>
-<strong>开始时间:</strong>
-<%= @episode.start_date.strftime("%y-%m-%d %H:%M:%S") %>
-</p>
-
-<p>
-<strong>结束时间:</strong>
-<%= @episode.end_date.strftime("%y-%m-%d %H:%M:%S") %>
-</p>
-<p>
-<strong>申请时长:</strong>
-<%= @episode.total_time %> <%= @episode.holiday.unit %>
-</p>
-<p>
-<strong>申请事由:</strong>
-<%= @episode.comment %>
-</p>
-
-<p>
-<strong>申请时间:</strong>
-<%= @episode.created_at.strftime("%y-%m-%d %H:%M:%S") %>
-</p>
-
-<p>
-<strong>审核状态:</strong>
-<%= Episode::State.rassoc(@episode.state).first %>
-</p>
-<% if @approves.present? %>
-<div>
-  <strong>审核人员:</strong>
-  <table>
+<fieldset>
+  <legend><span><%= @episode.user.user_name %>的申请单</span></legend>
+  <table class='w100'>
     <tr>
-      <th>审核人</th>
-      <th>简要说明</th>
-      <th>审核状态</th>
-      <th>审核时间</th>
+      <th>假别</th>
+      <th>申请时长</th>
+      <th>开始时间</th>
+      <th>结束时间</th>
     </tr>
-    <% @approves.each do |item| %>
+    <% ([@episode] + @episode.children.includes(:holiday)).each do |episode| %>
     <tr>
-      <td><%= item.user_name %></td>
-      <td><%= item.des %></td>
-      <td><%= Episode::State.rassoc(item.state).first %></td>
-      <td><%= item.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
+      <td><%= episode.holiday.name %></td>
+      <td><%= episode.total_time %> <%= Holiday.unit(episode.holiday_id) %></td>
+      <td><%= episode.start_date.strftime("%y-%m-%d %H:%M:%S") %></td>
+      <td><%= episode.end_date.strftime("%y-%m-%d %H:%M:%S") %></td>
     </tr>
     <% end %>
+    <tr>
+      <td colspan=4>
+      <strong>申请事由:</strong>
+        <%= @episode.comment %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=4><strong>申请时间:</strong>
+      <%= @episode.created_at.strftime("%y-%m-%d %H:%M:%S") %>
+      <strong>审核状态:</strong>
+      <%= Episode::State.rassoc(@episode.state).first %> </td>
+    </tr>
   </table>
-</div>
-<% end %>
-<% if @approve %>
-<%= form_for @approve do |f| %>
-<div class="field">
-  <%= f.label :des,"简要说明" %><br>
-  <%= f.hidden_field :episode_id %>
-  <%= hidden_field_tag :task,@task %>
-  <%= f.hidden_field :state %>
-  <%= f.text_area :des %>
-</div>
-<%= f.submit '通过', class: "button success" %>
-<%= f.submit '驳回',class: "button" %>
-<% end %>
-<% end %>
+  <% if @approves.present? %>
+  <div>
+    <strong>审核人员:</strong>
+    <table class="w100">
+      <tr>
+        <th>审核人</th>
+        <th>简要说明</th>
+        <th>审核状态</th>
+        <th>审核时间</th>
+      </tr>
+      <% @approves.each do |item| %>
+      <tr>
+        <td><%= item.user_name %></td>
+        <td><%= item.des %></td>
+        <td><%= Episode::State.rassoc(item.state).first %></td>
+        <td><%= item.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+  <% end %>
+  <% if @approve %>
+  <%= form_for @approve do |f| %>
+  <div class="field">
+    <%= f.label :des,"简要说明" %><br>
+    <%= f.hidden_field :episode_id %>
+    <%= hidden_field_tag :task,@task %>
+    <%= f.hidden_field :state %>
+    <%= f.text_area :des %>
+  </div>
+  <%= f.submit '通过', class: "button success" %>
+  <%= f.submit '驳回',class: "button" %>
+  <% end %>
+  <% end %>
+
+</fieldset>
+
 

@@ -8,7 +8,7 @@ class EpisodesController < ApplicationController
     drop_page_title("我的申请")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.order("id desc").page(params[:page]).includes(:holiday).decorate
+    @episodes = @episodes.where(parent_id: 0).order("id desc").page(params[:page]).includes(:holiday).decorate
   end
 
   def list
@@ -19,7 +19,7 @@ class EpisodesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @episodes = @episodes.page(params[:page]).includes(:holiday,user:[:dept]).decorate
+        @episodes = @episodes.where(parent_id: 0).page(params[:page]).includes(:holiday,user:[:dept]).decorate
       end
       format.js do
         params.permit!
@@ -31,7 +31,7 @@ class EpisodesController < ApplicationController
         con_hash1,array_con = construct_condition(:episode,gt: [:start_date],lt: [:end_date])
 
         #Rails.logger.info array_con.inspect
-
+        @episodes = @episodes.where(parent_id: 0)
         @episodes = @episodes.where(user_id: _user_ids) if _user_ids
         @episodes = @episodes.page(params[:page]).where(con_hash1).where(array_con).includes(:holiday,user:[:dept]).decorate
 
@@ -117,6 +117,7 @@ class EpisodesController < ApplicationController
     #@episode.end_date = Time.now.end_of_day.strftime("%Y-%m-%d %H:%M")
     #@episode.holiday = @holiday
     @episode.title = current_user.title
+    @episode.holiday_id = params[:holiday_id]
     #@episode.children = [Episode.new]
   end
 
@@ -134,11 +135,10 @@ class EpisodesController < ApplicationController
     #@episode = Episode.new(episode_params)
     @episode.user_id = current_user.id
 
-    @episode.ck_type = Journal::CheckType.detect{|item|item[6] == @episode.holiday_id}.try(:second)
+    #@episode.ck_type = Journal::CheckType.detect{|item|item[6] == @episode.holiday_id}.try(:second)
 
     @episode.children.each do |item|
       item.title = @episode.title
-      item.ck_type = Journal::CheckType.detect{|it|it[6] == item.holiday_id}.try(:second)
       item.comment = @episode.comment
       item.user_id = current_user.id
     end
@@ -168,15 +168,15 @@ class EpisodesController < ApplicationController
 
   # PATCH/PUT /episodes/1
   # PATCH/PUT /episodes/1.json
+  # 正常不应该有更改假单的权限，应该是删除后重新更新，因为如果用户更新了假期的话会出现问题
   def update
+    @episode.assign_attributes(episode_params)
     @episode.children.each do |item|
-      item.ck_type = Journal::CheckType.detect{|it|it[6] == item.holiday_id}.try(:second)
       item.title = @episode.title
       item.comment = @episode.comment
-      item.user_id = current_user.id
     end
     respond_to do |format|
-      if @episode.update(episode_params)
+      if @episode.save
         format.html { redirect_to @episode, notice: 'Episode was successfully updated.' }
         format.json { render :show, status: :ok, location: @episode }
       else

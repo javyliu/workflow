@@ -43,32 +43,35 @@ class ApprovesController < ApplicationController
         #当前任务完成,删除提醒任务
         @task.update(:state,Task::Completed)
         @task.remove(all: true)
-        @episode.state = 3 #更新为审批中
+        state = 3
 
         #只做经理，总监，副总确认
         #非驳回请求，如果请假天数大于3天，需要总监再次确认，如果大于等于5天，要求副总进行确认
-        if @episode.total_time.to_i > 3 && @episode.holiday.unit == "天" && @approve.state != 2
+
+        if @episode.sum_total_day > 3 && @approve.state != 2
           leader_user = current_user.leader_user
           #如果请假天数大于5天
           if current_user.title.to_i > 300  #确认人员为经理,则要求总监再作确认
             _task = Task.create(@task.type,leader_user.id,leader_user_id: leader_user.id,date: @task.date,mid: @task.mid)
             Usermailer.episode_approve(_task.task_name).deliver_later
           elsif current_user.title.to_i > 200 #确认人员为总监,且请假天数大于等于5天，则给副总发送确认邮件
-            if  @episode.total_time.to_i >= 5
+            if  @episode.sum_total_day >= 5
               _task = Task.create(@task.type,leader_user.id,leader_user_id: leader_user.id,date: @task.date,mid: @task.mid)
               Usermailer.episode_approve(_task.task_name).deliver_later
             else
-              @episode.state = @approve.state
+              state = @approve.state
             end
           else #副总
-            @episode.state = @approve.state
+            state = @approve.state
           end
         else #小于三天的假期直接更新状态为审核状态
-          @episode.state = @approve.state
+          state = @approve.state
         end
 
         #更新假单状态
+        @episode.state = state #更新为审批中
         @episode.save!
+        @episode.children.update_all(state: state)
         #返回假单显页面
         format.html { redirect_to episode_path(@task), notice: '审核成功.' }
         format.json { render :show, status: :created, location: @approve }

@@ -78,6 +78,8 @@ $(->
       $("#total_time").val(_sum)
 
     )
+    #页面加载成功后触发
+    $("#episode_form .child_total:visible:last").trigger("blur")
 
     $("#more_episode").click (e)->
       e.preventDefault()

@@ -1,16 +1,16 @@
 <%= render partial: 'remain_holiday',object: current_user.decorate %>
-<%= form_for(@episode,html:{id: "episode_form"}) do |f| %>
+<%= form_for(@episode,html:{id: "episode_form"}) do |builder| %>
 
 <fieldset>
   <legend><span>申请日期</span></legend>
-    <%= render "child_form",f: f %>
+    <%= render "child_form",f: builder %>
 
   <div class="child_episodes">
-    <%= f.fields_for :children do |item_f| %>
+    <%= builder.fields_for :children do |item_f| %>
       <%= render "child_form",f: item_f %>
     <% end %>
   </div>
-  <%= link_to "连续假期", "#",class: 'button tiny alert',id:'more_episode' %>
+  <%= link_to "连续假期", "#",class: 'button tiny alert',id:'more_episode' %> <small>连续非同类别申请时使用</small>
 </fieldset>
 <div class="row">
   <div class="columns medium-4 hide-for-small-only">
@@ -18,30 +18,30 @@
     <input type="text" value="<%= current_user.dept.name %>" readonly=true>
   </div>
   <div class="columns small-6 medium-4">
-    <%= f.label :title,'职位' %>
-    <%= f.select :title,Episode::Title,prompt: true %>
+    <%= builder.label :title,'职位' %>
+    <%= builder.select :title,Episode::Title,prompt: true %>
   </div>
   <div class="columns small-6 medium-4">
     <div class="row collapse">
-      <%= f.label :total_time,"申请总时长" %>
+      <%= builder.label :total_time,"申请总时长" %>
       <div class="columns small-9">
-        <%= f.text_field :total_time,required: true,pattern: "[.0-9]+", id: "total_time" %>
+        <%= text_field_tag :sum_total_time,"",pattern: "[.0-9]+",readonly: true, id: "total_time" %>
       </div>
       <div class="columns small-3">
-        <span class="postfix unit"><%= @episode.holiday || "天" %></span>
+        <span class="postfix unit"><%= Holiday.unit(builder.object.try(:holiday_id) || 1) %></span>
       </div>
     </div>
   </div>
 </div>
 <div class="row">
   <div class="columns medium-12">
-    <%= f.label :comment,"申请事由" %>
-    <%= f.text_area :comment,required: true %>
+    <%= builder.label :comment,"申请事由" %>
+    <%= builder.text_area :comment,required: true %>
   </div>
 </div>
 <div class="row">
   <div class="columns">
-    <%= f.submit "提交",class: "button",data: {disable_with: "提交中,请稍候..."} %>
+    <%= builder.submit "提交",class: "button",data: {disable_with: "提交中,请稍候..."} %>
   </div>
 </div>
 <% end %>
