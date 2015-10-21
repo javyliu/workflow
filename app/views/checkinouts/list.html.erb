@@ -15,7 +15,7 @@
           </div>
           <div class="columns medium-2">
             <label>部门:</label>
-            <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
+            <%= select :user, :dept_code,cache_dept,prompt: "选择部门" %>
           </div>
           <div class="columns medium-2">
             <label>开始日期:</label>
@@ -26,7 +26,7 @@
             <%= text_field_tag "checkinout[lt_rec_date]","",class: 'datepicker',readonly: true  %>
           </div>
           <div class="columns medium-2">
-            <input type="submit" class="button small inline-button" text="搜索"/>
+            <input type="submit" class="button tiny inline-button" text="搜索"/>
           </div>
         </div>
       </form>

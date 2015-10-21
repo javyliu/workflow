@@ -1,4 +1,23 @@
+<div id="search" class="panel">
+  <form data-remote="true"  action="#" data-replace-with="#content">
+    <div class="row">
 
+      <div class="columns medium-4">
+        <label>部门名称:</label>
+        <%= select :department, :code, cache_dept,prompt: "选择部门" %>
+      </div>
+      <div class="columns medium-4">
+        <label>考勤规则:</label>
+        <%= select :department, :attend_rule_id, AttendRule.list.each{|item| item.slice!(2)},prompt: "选择部门" %>
+      </div>
+
+      <div class="columns medium-4">
+        <input type="submit" class="button tiny inline-button" text="搜索"/>
+      </div>
+    </div>
+  </form>
+  <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+</div>
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">

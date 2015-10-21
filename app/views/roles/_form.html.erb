@@ -1,0 +1,47 @@
+<%= form_for(@role) do |f| %>
+
+<div class="row">
+  <div class='columns medium-6'>
+    <label>角色名</label>
+    <%= f.text_field :display_name %>
+  </div>
+
+  <div class='columns medium-6'>
+    <label>识别名</label>
+    <%= f.text_field :name %>
+  </div>
+
+</div>
+
+<div class="resources">
+  <h4>可管理资源</h4>
+  <% Resource.each_group do |group| %>
+  <h5><%= t(group,scope: :groups) %> <a href='#' >全选</a></h5>
+  <ul class="small-block-grid-2 medium-block-grid-4">
+    <% Resource.each_resources_by(group) do |res| %>
+    <li><label> <%= check_box_tag "role_resource_names[]",res.name,f.object.resource_names.include?(res.name) %><%= res.human_name %> </label></li>
+    <% end %>
+  </ul>
+  <% end %>
+  <%= hidden_field_tag "role_resource_names[]",nil %>
+</div>
+
+  <p>
+  <%= f.submit '提 交',data:{disable_with: '提交中...'},class: 'button' %>
+  </p>
+<% end %>
+
+<% foot do %>
+<script type="text/javascript" charset="utf-8">
+
+$(function(){
+  $(".resources h5 a").click(function(e){
+      e.preventDefault();
+      var ck_state = !!$(this).data("ck");
+      $(this).parent().next("ul").find("input[type=checkbox]").prop("checked",!ck_state);
+      $(this).text(ck_state ? "全选" : "取消全选").data("ck",!ck_state);
+    });
+})
+
+</script>
+<% end %>

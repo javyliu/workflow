@@ -1,0 +1,42 @@
+<div id="search" class="panel">
+  <form data-remote="true" action="#" id="toggle_table" data-replace-with='#content'>
+    <div class="row">
+      <div class="columns medium-4">
+        <label>角色名称:</label>
+        <%= text_field :role, :display_name %>
+      </div>
+      <div class="columns medium-4">
+        <label>识别名:</label>
+        <%= text_field :role, :name %>
+      </div>
+      <div class="columns medium-4">
+        <input type="submit" text="提交" class="button tiny inline-button"/>
+      </div>
+    </div>
+  </form>
+  <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>角色名称</th>
+      <th>识别名</th>
+      <th colspan=3></th>
+    </tr>
+  </thead>
+
+  <tbody id="content">
+    <%= render :partial => 'items',:object => @roles %>
+  </tbody>
+</table>
+
+
+<%= link_to '新建角色', new_role_path,class: 'button' %>
+
+<fieldset>
+  <legend><span>操作说明</span></legend>
+  <ul>
+    <li>用于管理角色权限，一个用户可拥有多个角色</li>
+  </ul>
+</fieldset>

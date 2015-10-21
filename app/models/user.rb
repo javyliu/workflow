@@ -21,6 +21,8 @@
 #
 
 class User < ActiveRecord::Base
+  #default_scope -> {where("uid > '1000'")}
+  role_making role_cname: 'Role'
   self.primary_key = 'uid'
   belongs_to :dept, class_name: 'Department', foreign_key: :dept_code#,touch: true
   has_many :checkinouts
@@ -41,7 +43,7 @@ class User < ActiveRecord::Base
 
   #2015-04-29 11:26 javy_liu delete all expired user when sys user
   #scope :not_expired, -> { where("expire_date is NULL or expire_date > '#{Date.today.to_s}'") }
-  scope :not_expired, -> {nil}
+  scope :not_expired, -> {where("uid > '1000'")}
 
   before_save  -> {self.mgr_code=nil if self.mgr_code.blank? }
   before_save :delete_caches,if: -> {(['expire_date','dept_code','mgr_code','title'] & self.changed).present?}
@@ -50,7 +52,7 @@ class User < ActiveRecord::Base
   #for login
   has_secure_password # validations: false
 
-  ROLES = %w[admin manager department_manager kaoqin_viewer pwd_manager badman]
+  #ROLES = %w[admin manager department_manager kaoqin_viewer pwd_manager badman]
 
   class << self
     attr_accessor :query_date
@@ -83,34 +85,34 @@ class User < ActiveRecord::Base
     end
   end
 
-  def roles=(*_roles)
-    self[:role_group] = (_roles.flatten(1) & ROLES).map{ |r| 2**ROLES.index(r)}.sum
-  end
+  #def roles=(*_roles)
+  #  self[:role_group] = (_roles.flatten(1) & ROLES).map{ |r| 2**ROLES.index(r)}.sum
+  #end
 
-  def roles
-    @roles ||= ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
-  end
+  #def roles
+  #  @roles ||= ROLES.reject { |r| ((self.role_group || 0) & 2**ROLES.index(r)).zero? }
+  #end
 
   def email_en_name
     @email_en_name ||= self.email[/.*(?=@)/,0]
   end
 
   #当前用户角色可管理的角色列表
-  def managed_roles
-    @managed_roles ||= if (_index = ROLES.inject([]) { |sum,r| sum << ROLES.index(r) if ((self.role_group || 0) & 2**ROLES.index(r))>0;sum }.min).nil?
-                         []
-                       else
-                         ROLES.reject {|r| ROLES.index(r) < _index }
-                       end
-  end
+  #def managed_roles
+  #  @managed_roles ||= if (_index = ROLES.inject([]) { |sum,r| sum << ROLES.index(r) if ((self.role_group || 0) & 2**ROLES.index(r))>0;sum }.min).nil?
+  #                       []
+  #                     else
+  #                       ROLES.reject {|r| ROLES.index(r) < _index }
+  #                     end
+  #end
 
-  def roles_cn
-    roles.map { |e| I18n.t(e) }
-  end
+  #def roles_cn
+  #  roles.map { |e| I18n.t(e) }
+  #end
 
-  def role?(*role)
-    role.any? {|item| item.to_s.in? roles}
-  end
+  #def role?(*role)
+  #  role.any? {|item| item.to_s.in? roles}
+  #end
 
   def self.cached_leaders
     #return leaders with rule and user_ids like following
@@ -208,30 +210,43 @@ class User < ActiveRecord::Base
     @check_types ||= Journal::CheckType.find_all{|item| !item[1].in?(self.dept_group[3])}
   end
 
-  #当前用户可管理的部门列表
-  def cache_dept
-    #@cache_dept ||= self.class.cache_departments.detect { |e| e.uid == self.id }
-    #if self.role?("admin") || self.role?("manager")
-    #  @cache_dept.depts = Department.cache_all_depts
-    #end
-    #@cache_dept
 
-    #27 表示该用户为 admin(1),manager(2),kaoqing_viewer(8),pwd_manager(16) 中至少其一
-    @cache_dept ||= if 27 & self.role_group > 0#self.("admin") || self.role?("manager")
-                      OpenStruct.new({uid: self.id,depts: Department.cache_all_depts})
-                    else
-                      self.class.cache_departments.detect { |e| e.uid == self.id }
-                    end
+
+  #ability: current_ability
+  #include_mine: weather include self's department
+  #
+  def role_depts(ability,include_mine: true)
+    @self_depts ||= User.cache_default_departments.assoc(self.uid).try(:[],1) || []
+    @managed_depts ||= ability.model_adapter(Resource::DepartmentList,:view).conditions.inject([]){|sum,item| sum.push(item[:code])}.compact
+    include_mine ? @self_depts + @managed_depts : @managed_depts
+  end
+
+  #列出在使用中的部门
+  #用户可管理部门可直接中角色资源中得到
+  def self.cache_departments
+    Rails.cache.fetch(:departments) do
+      _depts = Department.pluck(:name,:code,:attend_rule_id)
+      _used_depts = User.pluck(:dept_code).uniq
+
+      _depts.delete_if{|it| !_used_depts.include?(it[1])}
+      _depts.map do |it|
+        #因为不再有部门领导的部门了，所以可以去掉99的逻辑
+        #it[0] = "#{_depts.rassoc(it[1][0...-2])[0]}#{it[0]}" if it[1].end_with?("99")
+        #Rails.logger.debug{it.inspect}
+        it[2] = AttendRule.list.rassoc(it[2]).try(:[],0) || "无考勤规则部门"
+        it
+      end
+    end
 
   end
 
   #根据管理者id进行分组的部门列表
-  #{"depts"=>[["掌上飞讯", "01"], ["部门领导", "010599"], ["顾问组", "04"], ["掌上明珠", "02"], ["部门领导", "010399"], ["公司高管", "0201"], ["公司高管", "0101"], ["2014前离职", "03"]], "uid"=>"1002"}
-  def self.cache_departments
-    Rails.cache.fetch(:departments) do
-      self.find_by_sql("select mgr_code uid,GROUP_CONCAT(name,' ',code) depts from departments  GROUP BY mgr_code ").map { |e| e.depts = e.depts.split(",").map { |item| item.split($\) };e}
+  def self.cache_default_departments
+    Rails.cache.fetch(:default_departments) do
+      self.find_by_sql("select mgr_code uid,GROUP_CONCAT(code) depts from departments GROUP BY mgr_code").inject([]){|sum,item|sum.push([item.uid,item.depts.split(",")]);sum }
     end
   end
+
 
   #统一更改用户密码
   # cvs, svn, 考勤系统, redmine, 日报系统, GM工具, 数据平台, UTS, ServerManager

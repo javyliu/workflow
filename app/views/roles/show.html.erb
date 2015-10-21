@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="columns medium-6">
+    <b>角色名:</b>
+    <%=h @role.display_name %>
+  </div>
+  <div class="columns medium-6">
+    <b>识别名:</b>
+    <%=h @role.name %>
+  </div>
+</div>
+
+<fieldset>
+  <legend><span>可管理资源:</span></legend>
+  <% @role.resources.group_by(&:group).each do |group,resources| %>
+  <h5><%= t(group,scope: :groups) %> </h5>
+  <ul class="medium-block-grid-4 resource">
+    <% resources.each do |res| %>
+    <li><label><%= res.human_name %></label></li>
+    <% end %>
+  </ul>
+  <% end %>
+</fieldset>
+<%= link_to '编辑', edit_role_path(@role), class: 'button small'  if can?(:manage,Role)%>

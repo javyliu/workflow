@@ -21,9 +21,15 @@ class AttendRule < ActiveRecord::Base
   before_save :adjust_title_ids
 
 
+  def self.list
+    @list ||= self.pluck(:description,:id,:name)
+  end
+
+
   private
 
   def adjust_title_ids
+    self.class.instance_variable_set(:@list, nil)
     self[:title_ids] = self.title_ids.keep_if{|item|item.present?}.map{|item| item.to_i}
   end
 

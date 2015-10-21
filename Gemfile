@@ -70,6 +70,9 @@ gem 'kaminari'
 #inline editor
 gem 'rest_in_place'
 
+#for role_making
+gem 'role_making',path: '../gems/role_making'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   #gem 'byebug'

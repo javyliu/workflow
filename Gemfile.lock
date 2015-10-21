@@ -4,6 +4,12 @@ GIT
   specs:
     javy_tool (0.1.1)
 
+PATH
+  remote: ../gems/role_making
+  specs:
+    role_making (0.0.3)
+      cancancan (~> 1.10, >= 1.10.1)
+
 GEM
   remote: http://ruby.taobao.org/
   specs:
@@ -256,6 +262,7 @@ DEPENDENCIES
   pry-rails
   rails (= 4.2.0)
   rest_in_place
+  role_making!
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   sidekiq

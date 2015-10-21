@@ -84,3 +84,10 @@ html.turbolinks-progress-bar::before {
 }
 
 .child_episodes > .row{border-top:dotted 1px #ccc;}
+
+.resources{
+  input[type=checkbox]{
+    margin: 0 0 0.1rem 0;
+    vertical-align: middle;
+  }
+}

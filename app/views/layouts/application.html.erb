@@ -42,7 +42,9 @@
           <% if can?(:list,Journal) %>
           <li class="has-dropdown"> <a href="#">部门管理</a>
           <ul class="dropdown">
+            <% if can?(:kaoqing,User) %>
             <li class="<%= cur_page?('users','kaoqing') ? 'active' : '' %>"><%= link_to "部门考勤", kaoqing_users_path("dept") %></li>
+            <% end %>
             <li class="<%= cur_page?('checkinouts','list') ? 'active' : '' %>"><%= link_to "部门签到记录", list_checkinouts_path %></li>
             <li class="<%= cur_page?('episodes','list') ? 'active' : '' %>"><%= link_to "部门申请", list_episodes_path %></li>
             <li class="<%= cur_page?('journals','list') ? 'active' : '' %>"><%= link_to "部门异常考勤", list_journals_path %></li>
@@ -55,16 +57,17 @@
           <% if can?(:display,User) %>
           <li class="has-dropdown"> <a href="#">管理功能</a>
           <ul class="dropdown">
-            <% if can? :create,:all %>
             <li class="<%= cur_page?('spec_days') ? 'active' : '' %>"><%= link_to "节假日管理", spec_days_path %></li>
             <li class="<%= cur_page?('year_infos') ? 'active' : '' %>"><%= link_to "基础假期管理", year_infos_path %></li>
             <li class="<%= cur_page?('oa_configs') ? 'active' : '' %>"><%= link_to "系统配置", oa_configs_path %></li>
             <li class="<%= cur_page?('attend_rules') ? 'active' : '' %>"><%= link_to "考勤规则管理", attend_rules_path %></li>
             <li class="<%= cur_page?('checkinouts','new','create') ? 'active' : '' %>"><%= link_to "同步打卡数据", new_checkinout_path %></li>
             <li class="<%= cur_page?('departments') ? 'active' : '' %>"><%= link_to "部门管理", departments_path %></li>
+            <% if can? :read,Role %>
+            <li class="<%= cur_page?('roles') ? 'active' : '' %>"><%= link_to "角色管理", roles_path %></li>
             <% end %>
             <% if can? :read,User %>
-              <li class="<%= cur_page?('users','index') ? 'active' : '' %>"><%= link_to "用户管理", users_path %></li>
+              <li class="<%= cur_page?('users','index','edit') ? 'active' : '' %>"><%= link_to "用户管理", users_path %></li>
             <% end %>
             <% if can? :manual_unify_delete,User %>
               <li class="<%= cur_page?('users','manual_unify_delete') ? 'active' : '' %>"><%= link_to "统一删除用户", manual_unify_delete_users_path %></li>

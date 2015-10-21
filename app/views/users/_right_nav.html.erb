@@ -11,12 +11,17 @@
       <% if current_user %>
       <% if can?(:list,Journal) %>
         <li class="divider"></li>
+        <% if can?(:kaoqing,User) %>
         <li><%= link_to_unless_current "部门考勤", kaoqing_users_path("dept")  %></li>
+        <% end %>
         <li><%= link_to_unless_current "部门申请", list_episodes_path  %></li>
         <li><%= link_to_unless_current "部门签到记录", list_checkinouts_path  %></li>
         <li><%= link_to_unless_current "部门异常考勤", list_journals_path  %></li>
+        <% if can? :create, Journal %>
+        <li><%= link_to_unless_current "新增异常考勤", new_journal_path %></li>
+        <% end %>
       <% end %>
-      <% if can?(:create,:all) %>
+      <% if can?(:display,User) %>
         <li class="divider"></li>
         <li><%= link_to_unless_current "节假日管理", spec_days_path %></li>
         <li><%= link_to_unless_current "基础假期管理", year_infos_path %></li>
@@ -24,8 +29,10 @@
         <li><%= link_to_unless_current "考勤规则管理", attend_rules_path %></li>
         <li><%= link_to_unless_current "用户管理", users_path %></li>
         <li><%= link_to_unless_current "同步打卡数据", new_checkinout_path %></li>
-        <li><%= link_to_unless_current "新增异常考勤", new_journal_path %></li>
         <li><%= link_to_unless_current "部门管理", departments_path %></li>
+        <% if can? :read,Role %>
+        <li><%= link_to_unless_current "角色管理", roles_path %></li>
+        <% end %>
       <% end %>
       <% end %>
     </ul>

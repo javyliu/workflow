@@ -1,0 +1,20 @@
+<% items.each do |role| %>
+  <tr>
+    <td><%= role.id %></td>
+    <td><%=h role.display_name %></td>
+    <td><%=h role.name %></td>
+    <td><%= link_to '详情', role %></td>
+    <td><%= link_to '编辑', edit_role_path(role) if can?(:manage,Role) %></td>
+    <td><%= link_to '删除', role, :data => {:confirm => 'Are you sure?',remote: true,type: :json}, :method => :delete if can?(:manage,Role) %></td>
+  </tr>
+<% end %>
+<tr>
+  <td colspan="6">
+    <%= paginate items,remote: true %>
+  </td>
+</tr>
+
+<script type="text/javascript" charset="utf-8">
+  $(".pagination a").attr("data-replace-with","#content");
+</script>
+

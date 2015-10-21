@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150924010030) do
+ActiveRecord::Schema.define(version: 20151019063253) do
 
   create_table "approves", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -107,6 +107,32 @@ ActiveRecord::Schema.define(version: 20150924010030) do
     t.string  "des",  limit: 20
     t.integer "ord",  limit: 2
   end
+
+  create_table "role_resources", force: :cascade do |t|
+    t.integer  "role_id",       limit: 4
+    t.string   "resource_name", limit: 50
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "role_resources", ["resource_name"], name: "index_role_resources_on_resource_name", using: :btree
+  add_index "role_resources", ["role_id"], name: "index_role_resources_on_role_id", using: :btree
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "name",         limit: 20
+    t.string   "display_name", limit: 30
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
+
+  create_table "roles_users", id: false, force: :cascade do |t|
+    t.integer "user_id", limit: 4, null: false
+    t.integer "role_id", limit: 4, null: false
+  end
+
+  add_index "roles_users", ["role_id", "user_id"], name: "index_roles_users_on_role_id_and_user_id", unique: true, using: :btree
 
   create_table "spec_days", force: :cascade do |t|
     t.date    "sdate"

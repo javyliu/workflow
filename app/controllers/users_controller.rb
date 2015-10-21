@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     drop_page_title("用户管理")
     drop_breadcrumb
     @users = @users.not_expired.where(con_hash).where(like_hash) if con_hash || like_hash
-    @users = @users.not_expired.page(params[:page]).includes(:dept)
+    @users = @users.not_expired.page(params[:page]).includes(:dept,:roles)
     #@user = current_user.decorate
     respond_to do |format|
       format.html {  }
@@ -41,7 +41,7 @@ class UsersController < ApplicationController
     drop_breadcrumb
     @to_be_confirms = current_user.group_pending_tasks
     #@user = current_user.decorate
-    @my_journals = current_user.journals.where("update_date >= ? and (check_type = 10 or dval != 0)",2.months.ago.to_date).order("update_date desc,id desc").page(params[:page])
+    @my_journals = current_user.journals.where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(1).per(10)
     .select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
     .joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id
     left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ")
@@ -97,7 +97,8 @@ class UsersController < ApplicationController
     end
     @hide_edit = @need_update || _is_expired
     is_mine = @task.leader_user_id == @user.id
-    if (@user.roles & ["department_manager","admin"]).blank? && !is_mine
+    #if (@user.roles & ["department_manager","admin"]).blank? && !is_mine
+    if !is_mine
       raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,params[:task])
     end
 
@@ -243,7 +244,7 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       #params.require(:user).permit(:uid, :user_name, :email, :department, :title, :expire_date, :dept_code, :mgr_code, :password_digest, :role_group, :remember_token, :remember_token_expires_at)
-      params.require(:user).permit(:uid, :password,:mgr_code,:title,:password_confirmation,roles: [] )
+      params.require(:user).permit(:uid, :password,:mgr_code,:title,:password_confirmation,role_ids: [] )
     end
 
 end

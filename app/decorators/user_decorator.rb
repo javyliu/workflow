@@ -364,15 +364,19 @@ class UserDecorator < ApplicationDecorator
   end
 
   #======================================================
-  def managed_user_list
+  def managed_user_list(ability)
+    arr_users = if depts = object.role_depts(ability,include_mine: false).presence
+      User.where(dept_code: depts).pluck(:user_name,:uid)
+    end || []
     u_ids = object.leader_data.try(:last)
-    if u_ids
-      User.where(uid: u_ids).pluck(:user_name,:uid)
-    elsif object.role?("manager")
-      User.all.pluck(:user_name,:uid)
-    else
-      []
-    end
+    manage_users = if u_ids
+                     User.where(uid: u_ids).pluck(:user_name,:uid)
+                   elsif object.has_role?("admin")
+                     User.not_expired.pluck(:user_name,:uid)
+                   else
+                     []
+                   end
+    (arr_users+manage_users).uniq.sort_by{|it| it[0]}
   end
 
   private

@@ -17,6 +17,11 @@ class EpisodesController < ApplicationController
     drop_breadcrumb
     @episodes = @episodes.order("id desc")
 
+    if depts = current_user.role_depts(current_ability,include_mine: false).presence
+      #Rails.logger.debug {depts.inspect}
+      @episodes = @episodes.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@episodes.where_values_hash["user_id"])))
+    end
+
     respond_to do |format|
       format.html do
         @episodes = @episodes.where(parent_id: 0).page(params[:page]).includes(:holiday,user:[:dept]).decorate
@@ -87,6 +92,7 @@ class EpisodesController < ApplicationController
         raise CanCan::AccessDenied.new("该申请不存在！",list_episodes_path )
       end
     end
+    authorize!(:show,@episode)
     @approves = @episode.approves.to_a
     #Rails.logger.info @approves.inspect
     #如果当前用户有审批任务

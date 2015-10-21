@@ -1,7 +1,7 @@
 class JournalsController < ApplicationController
   #before_action :set_journal, only: [:show, :edit, :destroy]
   load_and_authorize_resource# param_method: :journal_params
-  skip_load_resource only: [:new,:create]
+  skip_load_resource only: [:new,:create,:update]
 
   # GET /journals
   # GET /journals.json
@@ -11,7 +11,7 @@ class JournalsController < ApplicationController
     drop_breadcrumb
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
-    @journals = @journals.where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page])
+    @journals = @journals.where(user_id: current_user.id).where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page])
     .select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
     .joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id
     left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ")
@@ -26,6 +26,11 @@ class JournalsController < ApplicationController
     drop_breadcrumb("我的考勤",home_users_path)
     drop_page_title("部门审批记录")
     drop_breadcrumb
+
+    if depts = current_user.role_depts(current_ability,include_mine: false).presence
+      #Rails.logger.debug {depts.inspect}
+      @journals = @journals.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@journals.where_values_hash["user_id"])))
+    end
 
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
@@ -118,7 +123,7 @@ class JournalsController < ApplicationController
     _today = Date.today
     #小于上月25号的考勤不能再作修改,27号以后不能再修改本月考勤
     limit_day = OaConfig.setting(:limit_day_of_month).to_i
-    if !current_user.role?(:admin,:manager) && (_date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && _date.day < limit_day))
+    if !can?(:create,@journal) && (_date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && _date.day < limit_day))
       raise CanCan::AccessDenied.new("该日考勤已过了确认时间，如需增加请联系人事部门。",new_journal_path ,Journal)
     end
     _cktype = Journal::CheckType.rassoc(@journal.check_type)
@@ -170,6 +175,7 @@ class JournalsController < ApplicationController
       cktype = Journal::CheckType.assoc(_key)
       raise "类型不存在 #{_key}" unless cktype
       @journal = Journal.find_or_initialize_by(user_id: params[:user_id],update_date: params[:date],check_type: cktype.second)
+      authorize!(:update,@journal)
       @journal.dval = 0
 
       if @journal.check_type == 10
@@ -184,8 +190,9 @@ class JournalsController < ApplicationController
       else
         msg = @journal.errors
       end
-    elsif params[:id]
+    elsif params[:id] #管理员编辑
       set_journal
+      authorize!(:update,@journal)
       unless @journal.update(journal_params)
         msg = @journal.errors
       end
@@ -194,8 +201,7 @@ class JournalsController < ApplicationController
     end
     respond_to do |format|
       if msg.blank?
-        flash[:notice] = "操作成功！"
-        format.html { redirect_to list_journals_path }
+        format.html { redirect_to list_journals_path,notice: "操作成功！" }
         format.json do
           if @msg
             render json: @msg

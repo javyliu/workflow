@@ -1,29 +1,29 @@
 <div id="search" class="panel">
-      <form data-remote="true"  action="#" data-replace-with="#content">
-        <div class="row">
-          <div class="columns medium-2">
-            <label>用户id:</label>
-            <%= text_field :user, :uid, placeholder: "用户id" %>
-          </div>
-          <div class="columns medium-3">
-            <label>姓名:</label>
-            <%= text_field :user,:user_name %>
-          </div>
-          <div class="columns medium-2">
-            <label>部门:</label>
-            <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
-          </div>
-          <div class="columns medium-3">
-            <label>邮箱:</label>
-            <%= text_field :user,:email %>
-          </div>
-          <div class="columns medium-2">
-            <input type="submit" class="button small inline-button" text="搜索"/>
-          </div>
-        </div>
-      </form>
-      <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+  <form data-remote="true"  action="#" data-replace-with="#content">
+    <div class="row">
+      <div class="columns medium-2">
+        <label>用户id:</label>
+        <%= text_field :user, :uid, placeholder: "用户id" %>
+      </div>
+      <div class="columns medium-3">
+        <label>姓名:</label>
+        <%= text_field :user,:user_name %>
+      </div>
+      <div class="columns medium-2">
+        <label>部门:</label>
+        <%= select :user, :dept_code, cache_dept,prompt: "选择部门" %>
+      </div>
+      <div class="columns medium-3">
+        <label>邮箱:</label>
+        <%= text_field :user,:email %>
+      </div>
+      <div class="columns medium-2">
+        <input type="submit" class="button tiny inline-button" text="搜索"/>
+      </div>
     </div>
+  </form>
+  <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+</div>
 <table>
   <thead>
     <tr>

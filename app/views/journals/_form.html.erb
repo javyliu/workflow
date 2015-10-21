@@ -6,7 +6,7 @@
   </div>
   <div class="columns medium-6">
     <%= f.label :user_id,"用户" %>
-    <%= f.select :user_id,current_user.decorate.managed_user_list %>
+    <%= f.select :user_id,current_user.decorate.managed_user_list(current_ability) %>
   </div>
 </div>
 <div class="row">

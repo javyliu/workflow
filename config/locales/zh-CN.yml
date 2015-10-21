@@ -18,6 +18,37 @@
 #
 # To learn more, please read the Rails Internationalization guide
 zh-CN:
+  groups:
+    kaoqing: '考勤'
+    manager: '管理'
+    department: '部门'
+    change_pwd: '密码更改'
+  actions:
+    index: '列表'
+    modify: '修改'
+    read: "查看"
+    show: '查看详细'
+    edit: "编辑"
+    new: "新建"
+    update: "更新"
+    create: "添加"
+    destroy: "删除"
+    manage: "管理"
+    list: "列表"
+    handle: "处理"
+    display: "显示"
+    audit: "授权"
+    upload: "上传文件"
+    export: '导出'
+    kaoqing: '审批'
+    confirm: '确认'
+    manual_unify_delete: '手动统一删除'
+    unify_delete: '统一删除'
+    unify_reset: '统一重置'
+    view: '查看'
+  other_actions:
+    create: '同步'
+
   admin: 系统管理员
   manager: 管理员
   department_manager: 部门管理员
@@ -233,7 +264,31 @@ zh-CN:
     pm: 下午
   activerecord:
     models:
-      episode: '假单'
+      approve: "审批"
+      attend_rule: "考勤规则"
+      checkinout: "签到"
+      department: "部门"
+      episode: "申请"
+      external_table: ""
+      holiday: "假期"
+      journal: "异常考勤"
+      oa_config: "系统设置"
+      pwd_db: "密码管理"
+      report_title: "考勤表头"
+      role: "角色"
+      role_resource: "角色资源"
+      spec_day: "节假日"
+      task: "任务"
+      user: "员工"
+      pwd_user: '密码'
+      year_info: "基础假期"
+      menu: '管理功能菜单'
+      department_kaoqing: '部门考勤'
+      department_checkinout: '部门签到'
+      department_episode: '部门申请'
+      department_journal: '部门异常考勤'
+      mine_checkinout: '签到记录'
+      user_checkinout: '打卡数据'
     attributes:
       episode:
         total_time: '申请时长'

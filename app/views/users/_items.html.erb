@@ -7,7 +7,7 @@
     <td><%= user.title %></td>
     <td><%= user.expire_date %></td>
     <td><%= user.mgr_code %></td>
-    <td><%= user.roles_cn.join(",") %></td>
+    <td><%= user.roles_name.join(",") %></td>
     <td class="actions"><%= link_to '详情', user %>
       <%= link_to '编辑', edit_user_path(user) if can?(:edit,User) %>
       <%= link_to('重置密码', unify_reset_user_path(user),data: {remote: true,method: :put,replace_with:'#modal_content',confirm: '系统将重置所有系统密码，确定执行该操作么？'}) if can?(:unify_reset,User) %>

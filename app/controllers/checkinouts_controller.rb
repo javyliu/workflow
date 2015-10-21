@@ -25,10 +25,18 @@ class CheckinoutsController < ApplicationController
     drop_page_title("部门签到记录")
     drop_breadcrumb
 
+    if depts = current_user.role_depts(current_ability,include_mine: false).presence
+      #Rails.logger.debug {depts.inspect}
+      @checkinouts = @checkinouts.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@checkinouts.where_values_hash["user_id"])))
+    end
+
     params.permit!
     con_hash,ary_con = construct_condition(:checkinout,gt:[:rec_date],lt:[:rec_date])
 
+
     _uids = nil
+    #当前用户可管理的默认部门用户
+    #_where(dept_code: current_user.role_depts(current_ability))
     if params[:user].present?
       con_hash1,like_con = construct_condition(:user,like_ary: [:user_name])
       _uids = User.not_expired.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con

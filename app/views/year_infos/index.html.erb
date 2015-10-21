@@ -22,16 +22,16 @@
           </div>
           <div class="columns medium-2">
             <label>部门:</label>
-            <%= select :user, :dept_code, current_user.cache_dept.depts,prompt: "选择部门" %>
+            <%= select :user, :dept_code, cache_dept ,prompt: "选择部门" %>
           </div>
           <div class="columns medium-2">
             <label>邮箱:</label>
             <%= text_field :user,:email %>
           </div>
           <div class="columns medium-3">
-            <input type="submit" class="button small inline-button" text="搜索"/>
+            <input type="submit" class="button tiny inline-button" text="搜索"/>
           <% if can?(:export,YearInfo) %>
-            <%= link_to "导出数据", year_infos_path(format: :xls), class: "export_xls button small secondary"  %>
+            <%= link_to "导出数据", year_infos_path(format: :xls), class: "export_xls button tiny secondary"  %>
           <% end %>
           </div>
         </div>

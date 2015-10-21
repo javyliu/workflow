@@ -13,7 +13,7 @@
   <td><%= Episode::State.rassoc(item.state).try(:first) if item.state %></td>
   <td><%= item.created_at.strftime('%m/%d %T') %></td>
   <td><%= item.updated_at.strftime('%m/%d %T') %></td>
-  <td><%= link_to("修改",edit_journal_path(item)) if can?(:update,Journal) %></td>
+  <td><%= link_to("修改",edit_journal_path(item)) if can?(:modify,Journal) %></td>
 </tr>
 <% end %>
 <tr>
