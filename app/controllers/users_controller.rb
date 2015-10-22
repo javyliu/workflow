@@ -130,7 +130,7 @@ class UsersController < ApplicationController
     drop_breadcrumb
   end
 
-  #更改密码，只允许固定密码用户更改密码
+  #更改密码
   def change_pwd
     @user = current_user
     drop_breadcrumb("我的考勤",home_users_path)
@@ -167,7 +167,7 @@ class UsersController < ApplicationController
         if params[:commit] == '统一修改'
           msg = @user.unify_update.flatten.delete_if{|item| PwdDb::NoUserReg =~ item}.join("<br>")
           #msg = '操作已提交，请等待密码修改结果！'
-          Usermailer.unify_update(@user.id,"密码更改通知","您于 #{Time.now.strftime("%F %T")} 修改公司账号密码为 #{@user.password}").deliver_later
+          Usermailer.unify_update(@user.id,"密码更改通知","您于 #{Time.now.strftime("%F %T")} 修改公司账号密码为 #{@user.password.sub(/^(.).*(.)$/,'\1******\2')}").deliver_later
         end
         format.html { redirect_to (can?(:manage,User) ? @user : home_users_path),notice: msg }
         format.json { render :show, status: :ok, location: @user }
@@ -195,7 +195,7 @@ class UsersController < ApplicationController
     @user.remember_token_expires_at = nil
     if @user.save
       msgs = @user.unify_update.flatten.delete_if{|item| PwdDb::NoUserReg =~ item}.join("<br>")
-      Usermailer.unify_update(@user.id,"密码重置通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被重置为 #{@user.password}").deliver_later
+      Usermailer.unify_update(@user.id,"密码重置通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被重置为 #{@user.password.sub(/^(.).*(.)$/,'\1******\2')}").deliver_later
     else
       msgs = @user.errors.full_messages.join(" ")
     end
