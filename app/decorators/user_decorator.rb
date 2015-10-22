@@ -364,20 +364,21 @@ class UserDecorator < ApplicationDecorator
   end
 
   #======================================================
-  def managed_user_list(ability)
-    arr_users = if depts = object.role_depts(ability,include_mine: false).presence
-      User.where(dept_code: depts).pluck(:user_name,:uid)
-    end || []
-    u_ids = object.leader_data.try(:last)
-    manage_users = if u_ids
-                     User.where(uid: u_ids).pluck(:user_name,:uid)
-                   elsif object.has_role?("admin")
-                     User.not_expired.pluck(:user_name,:uid)
-                   else
-                     []
-                   end
-    (arr_users+manage_users).uniq.sort_by{|it| it[0]}
-  end
+  #貌似只用于journal的添加
+  #def managed_user_list(ability)
+  #  arr_users = if depts = object.role_depts(ability,include_mine: false).presence
+  #    User.not_expired.where(dept_code: depts).pluck(:user_name,:uid)
+  #  end || []
+  #  u_ids = object.leader_data.try(:last)
+  #  manage_users = if u_ids
+  #                   User.where(uid: u_ids).pluck(:user_name,:uid)
+  #                 elsif object.has_role?("admin")
+  #                   User.not_expired.pluck(:user_name,:uid)
+  #                 else
+  #                   []
+  #                 end
+  #  (arr_users+manage_users).uniq.sort_by{|it| it[0]}
+  #end
 
   private
   def base_holiday_info

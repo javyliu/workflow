@@ -9,14 +9,14 @@ module ApplicationHelper
     end
   end
 
-  #当前用户可管理的部门列表,用于select
-  def cache_dept
-    @cache_dept ||= if current_user.has_role?(:admin)
+  #当前用户可管理的部门列表,用于select,应该包括直属部门
+  def cache_dept(user=current_user)
+    @cache_dept ||= if user.has_role?(:admin)
                       User.cache_departments
                     else
-                      role_depts = current_user.role_depts(current_ability)
-                      User.cache_departments.find_all{|item| role_depts.include?(item[1])}
-                    end.group_by{|it| it[2]}.transform_values!{|it| it.each{|item| item.slice!(2)} }
+                      _role_depts = user.role_depts(include_mine: true)
+                      User.cache_departments.find_all{|item| _role_depts.include?(item[1])}
+                    end.group_by{|it| it[2]}.transform_values{|it| it.map{|item| item[0,2]} }
 
   end
 end

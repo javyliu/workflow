@@ -8,7 +8,7 @@ class EpisodesController < ApplicationController
     drop_page_title("我的申请")
     drop_breadcrumb("我的考勤",home_users_path)
     drop_breadcrumb
-    @episodes = @episodes.where(parent_id: 0).order("id desc").page(params[:page]).includes(:holiday).decorate
+    @episodes = @episodes.rewhere(user_id: current_user.id).where(parent_id: 0).order("id desc").page(params[:page]).includes(:holiday).decorate
   end
 
   def list
@@ -17,7 +17,9 @@ class EpisodesController < ApplicationController
     drop_breadcrumb
     @episodes = @episodes.order("id desc")
 
-    if depts = current_user.role_depts(current_ability,include_mine: false).presence
+    #如果角色资源中设置了查看部门并且非全部部门，则会重新设置user_id查询参数，
+    #目的是为了减少查询语句中的长度，提升性能
+    if (depts = current_user.role_depts(include_mine: false).presence) && !User.is_all_dept?(depts)
       #Rails.logger.debug {depts.inspect}
       @episodes = @episodes.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@episodes.where_values_hash["user_id"])))
     end
@@ -92,7 +94,8 @@ class EpisodesController < ApplicationController
         raise CanCan::AccessDenied.new("该申请不存在！",list_episodes_path )
       end
     end
-    authorize!(:show,@episode)
+    #跨级审批时会报错，除非加上审批权限
+    #authorize!(:show,@episode)
     @approves = @episode.approves.to_a
     #Rails.logger.info @approves.inspect
     #如果当前用户有审批任务

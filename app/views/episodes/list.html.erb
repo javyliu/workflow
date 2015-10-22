@@ -11,7 +11,7 @@
       </div>
       <div class="columns medium-2">
         <label>假别:</label>
-        <%= collection_select(:episode,:holiday_id,Holiday.all,:id,:name,prompt: "请选择假期类别") %>
+        <%= collection_select(:episode,:holiday_id,Holiday::ALL,:id,:name,prompt: "请选择假期类别") %>
       </div>
       <div class="columns medium-1">
         <label>状态:</label>

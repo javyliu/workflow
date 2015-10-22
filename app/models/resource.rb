@@ -16,11 +16,14 @@ class Resource
 
   group :manager do
     resource [:read,:update,:destroy],Department
-    resource [:destroy,:export,:list],Episode
+    #没有该action，仅用于产生不同下属部门的权限判断
+    resource [:view,:change],Department,res_name: 'undering_dept'
+
+    resource [:read,:update,:destroy,:export,:list],Episode
     resource :list,Checkinout
     resource :create,Checkinout, res_name: 'user_checkinout',action_scope: 'other_actions'
     #modify 用于页面是否显示修改链接
-    resource [:modify,:update,:create,:list,:export],Journal
+    resource [:modify,:create,:update,:list,:export],Journal
     resource :manage,Holiday
     resource [:read,:update,:create,:destroy],User
     resource :display,User,res_name: 'menu'
@@ -39,14 +42,6 @@ class Resource
 
   #用于在角色管理界面列出查看部门资源
   #业务上用于某角色可查看的部门数组
-  DepartmentList = Struct.new(:name)
-  User.cache_departments.group_by{|it| it[2]}.each_pair do |gp,depts|
-    group gp do
-      depts.each do |dept|
-        resource :view,DepartmentList,res_name: dept[0..1].join,code: dept[1]
-      end
-    end
-  end
   #group :user do
   #  resource [:read,:update,:destroy], User do |admin,user|
   #    admin != user

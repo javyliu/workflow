@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
   def create
 
     _email = params[:email] =~ /@/ ? params[:email] : "#{params[:email]}@pipgame.com"
-    user = User.not_expired.find_by(email: _email).try(:authenticate,params[:password])
+    user = User.find_by(email: _email).try(:authenticate,params[:password])
     respond_to do |format|
       if user
         self.current_user = user

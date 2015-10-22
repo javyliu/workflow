@@ -25,6 +25,8 @@ class User < ActiveRecord::Base
   role_making role_cname: 'Role'
   self.primary_key = 'uid'
   belongs_to :dept, class_name: 'Department', foreign_key: :dept_code#,touch: true
+  #下属部门
+  serialize :department,Array
   has_many :checkinouts
   #昨天签到用户，用于发送日常邮件中的 includes
   has_one :yesterday_checkin,-> {where(rec_date: (User.query_date || Date.yesterday).to_s)},class_name: "Checkinout"
@@ -211,18 +213,26 @@ class User < ActiveRecord::Base
   end
 
 
+  #include_mine
+  #true 包括直属管理部门，
+  #false 仅下属部门，即在user表中 department 指定的数组
+  def role_depts(include_mine: true)
+    #binding.pry
+    @role_depts = if include_mine
+      self.department + (User.cache_default_departments.assoc(self.uid).try(:[],1) || [])
+    else
+      self.department
+    end
+  end
 
-  #ability: current_ability
   #include_mine: weather include self's department
-  #
-  def role_depts(ability,include_mine: true)
-    @self_depts ||= User.cache_default_departments.assoc(self.uid).try(:[],1) || []
-    @managed_depts ||= ability.model_adapter(Resource::DepartmentList,:view).conditions.inject([]){|sum,item| sum.push(item[:code])}.compact
-    include_mine ? @self_depts + @managed_depts : @managed_depts
+  #only get the department's code list
+
+  def self.is_all_dept?(depts)
+    self.cache_departments.length == depts.length
   end
 
   #列出在使用中的部门
-  #用户可管理部门可直接中角色资源中得到
   def self.cache_departments
     Rails.cache.fetch(:departments) do
       _depts = Department.pluck(:name,:code,:attend_rule_id)
@@ -271,6 +281,7 @@ class User < ActiveRecord::Base
       _redis.del("leaders_data")
     end
     Rails.cache.delete(:departments)
+    Rails.cache.delete(:default_departments)
   end
 
 end

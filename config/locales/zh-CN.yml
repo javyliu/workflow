@@ -26,12 +26,15 @@ zh-CN:
   actions:
     index: '列表'
     modify: '修改'
+    view: '查看'
+    change: '管理'
     read: "查看"
     show: '查看详细'
     edit: "编辑"
     new: "新建"
     update: "更新"
     create: "添加"
+    create_all: "添加查看部门"
     destroy: "删除"
     manage: "管理"
     list: "列表"
@@ -45,7 +48,6 @@ zh-CN:
     manual_unify_delete: '手动统一删除'
     unify_delete: '统一删除'
     unify_reset: '统一重置'
-    view: '查看'
   other_actions:
     create: '同步'
 
@@ -268,6 +270,7 @@ zh-CN:
       attend_rule: "考勤规则"
       checkinout: "签到"
       department: "部门"
+      undering_dept: "下属部门"
       episode: "申请"
       external_table: ""
       holiday: "假期"

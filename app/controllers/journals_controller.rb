@@ -11,7 +11,7 @@ class JournalsController < ApplicationController
     drop_breadcrumb
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
-    @journals = @journals.where(user_id: current_user.id).where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page])
+    @journals = @journals.rewhere(user_id: current_user.id).where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page])
     .select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
     .joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id
     left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ")
@@ -27,18 +27,16 @@ class JournalsController < ApplicationController
     drop_page_title("部门审批记录")
     drop_breadcrumb
 
-    if depts = current_user.role_depts(current_ability,include_mine: false).presence
-      #Rails.logger.debug {depts.inspect}
+      #Rails.logger.debug {@journals.to_sql}
+    if (depts = current_user.role_depts(include_mine: false).presence) && !User.is_all_dept?(depts)
       @journals = @journals.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@journals.where_values_hash["user_id"])))
     end
 
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
 
-
     @journals = @journals.where("check_type = 10 or dval <> 0").where(con_hash).where(ary_con).order("update_date desc")
     if params[:is_updated]
-      Rails.logger.info  @journals.where_values.inspect
       @journals.where_values.map do |item|
         item.gsub!(/update_date/,'journals.updated_at') if String === item
         item
@@ -50,9 +48,10 @@ class JournalsController < ApplicationController
     if params[:user].present?
       con_hash1,like_con = construct_condition(:user,like_ary: [:user_name])
       _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
-      @journals = @journals.where(user_id: _uids)
+      @journals = @journals.where(user_id: _uids) if _uids
     end
 
+      #Rails.logger.debug {@journals.to_sql}
     _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
 
     @journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id
@@ -105,7 +104,23 @@ class JournalsController < ApplicationController
     drop_breadcrumb("我的考勤",home_users_path)
     drop_page_title("新增异常考勤")
     drop_breadcrumb
+
     @journal = Journal.new
+
+
+    @managed_user_list = []
+    #部门管理员对直属管理人员有创建权限
+    if (con = current_ability.model_adapter(Journal,:create).conditions).kind_of?(Hash) && con[:user_id]
+      @managed_user_list = User.where(uid: con[:user_id]).pluck(:user_name,:uid)
+    end
+
+    #can?(:change,Department),表示可以对下属部门进行操作
+    if can?(:change,Department) && (depts = current_user.role_depts(include_mine: false).presence)
+      @managed_user_list.concat(User.not_expired.where(User.is_all_dept?(depts) ? nil : {dept_code: depts}).pluck(:user_name,:uid))
+    end
+    @managed_user_list = @managed_user_list.uniq.sort_by{|it| it[0]}
+
+
   end
 
   # GET /journals/1/edit

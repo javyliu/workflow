@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151019063253) do
+ActiveRecord::Schema.define(version: 20151022070140) do
 
   create_table "approves", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -141,9 +141,9 @@ ActiveRecord::Schema.define(version: 20151019063253) do
   end
 
   create_table "users", primary_key: "uid", force: :cascade do |t|
-    t.string   "user_name",                 limit: 20,                                  null: false
+    t.string   "user_name",                 limit: 20,                                   null: false
     t.string   "email",                     limit: 40
-    t.string   "department",                limit: 255
+    t.string   "department",                limit: 3000
     t.string   "title",                     limit: 255
     t.date     "expire_date"
     t.string   "dept_code",                 limit: 20
@@ -154,8 +154,8 @@ ActiveRecord::Schema.define(version: 20151019063253) do
     t.date     "onboard_date"
     t.date     "regular_date"
     t.datetime "remember_token_expires_at"
-    t.datetime "created_at",                            default: '2015-02-11 15:27:09', null: false
-    t.datetime "updated_at",                            default: '2015-02-11 15:27:09', null: false
+    t.datetime "created_at",                             default: '2015-02-11 15:27:09', null: false
+    t.datetime "updated_at",                             default: '2015-02-11 15:27:09', null: false
   end
 
   add_index "users", ["dept_code"], name: "index_users_on_dept_code", using: :btree

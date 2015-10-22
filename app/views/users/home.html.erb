@@ -1,7 +1,7 @@
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">
-    <% if @to_be_confirms.present? && can?(:confirm, :all)  %>
+    <% if @to_be_confirms.present? && can?(:confirm, User)  %>
     <h4><span></span></h4>
     <% @to_be_confirms.each do |key,values| %>
     <div class="panel">
