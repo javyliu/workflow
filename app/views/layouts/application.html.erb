@@ -57,12 +57,16 @@
           <% if can?(:display,User) %>
           <li class="has-dropdown"> <a href="#">管理功能</a>
           <ul class="dropdown">
+            <% if can?(:manage,Holiday) %>
             <li class="<%= cur_page?('spec_days') ? 'active' : '' %>"><%= link_to "节假日管理", spec_days_path %></li>
             <li class="<%= cur_page?('year_infos') ? 'active' : '' %>"><%= link_to "基础假期管理", year_infos_path %></li>
             <li class="<%= cur_page?('oa_configs') ? 'active' : '' %>"><%= link_to "系统配置", oa_configs_path %></li>
             <li class="<%= cur_page?('attend_rules') ? 'active' : '' %>"><%= link_to "考勤规则管理", attend_rules_path %></li>
-            <li class="<%= cur_page?('checkinouts','new','create') ? 'active' : '' %>"><%= link_to "同步打卡数据", new_checkinout_path %></li>
             <li class="<%= cur_page?('departments') ? 'active' : '' %>"><%= link_to "部门管理", departments_path %></li>
+            <% end %>
+            <% if can?(:create,Checkinout) %>
+            <li class="<%= cur_page?('checkinouts','new','create') ? 'active' : '' %>"><%= link_to "同步打卡数据", new_checkinout_path %></li>
+            <% end %>
             <% if can? :read,Role %>
             <li class="<%= cur_page?('roles') ? 'active' : '' %>"><%= link_to "角色管理", roles_path %></li>
             <% end %>

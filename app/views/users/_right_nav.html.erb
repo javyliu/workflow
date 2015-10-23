@@ -23,13 +23,19 @@
       <% end %>
       <% if can?(:display,User) %>
         <li class="divider"></li>
+        <% if can?(:manage,Holiday) %>
         <li><%= link_to_unless_current "节假日管理", spec_days_path %></li>
         <li><%= link_to_unless_current "基础假期管理", year_infos_path %></li>
         <li><%= link_to_unless_current "系统配置", oa_configs_path %></li>
         <li><%= link_to_unless_current "考勤规则管理", attend_rules_path %></li>
-        <li><%= link_to_unless_current "用户管理", users_path %></li>
-        <li><%= link_to_unless_current "同步打卡数据", new_checkinout_path %></li>
         <li><%= link_to_unless_current "部门管理", departments_path %></li>
+        <% end %>
+        <% if can?(:create,Checkinout) %>
+        <li><%= link_to_unless_current "同步打卡数据", new_checkinout_path %></li>
+        <% end %>
+        <% if can?(:read,User) %>
+        <li><%= link_to_unless_current "用户管理", users_path %></li>
+        <% end %>
         <% if can? :read,Role %>
         <li><%= link_to_unless_current "角色管理", roles_path %></li>
         <% end %>
