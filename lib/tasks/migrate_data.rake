@@ -196,5 +196,23 @@ namespace :migrate_data do
 
   end
 
+  desc "update user's role to role_making"
+  task user_role: :environment do
+    roles = %w[admin manager department_manager kaoqin_viewer pwd_manager badman]
+    roles[0...-1].each do |role|
+      Role.find_or_create_by(name: role) do |ite|
+        ite.display_name= I18n.t(role)
+      end
+    end
+
+    users = User.where("role_group > 0")
+    users.each do |item|
+      tmp_roles = roles.reject { |r| (item.role_group & 2**roles.index(r)).zero? }
+      tmp_roles.each do |it|
+        item.add_role(it)
+      end
+    end
+  end
+
 
 end
