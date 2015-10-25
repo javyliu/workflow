@@ -1,5 +1,5 @@
-#source 'https://rubygems.org'
-source 'http://ruby.taobao.org'
+source 'https://rubygems.org'
+#source 'http://ruby.taobao.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -71,7 +71,8 @@ gem 'kaminari'
 gem 'rest_in_place'
 
 #for role_making
-gem 'role_making',path: '../gems/role_making'
+#gem 'role_making',path: '../gems/role_making'
+gem 'role_making',git: 'https://github.com/javyliu/role_making.git'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
