@@ -195,7 +195,7 @@ class UsersController < ApplicationController
     @user.remember_token_expires_at = nil
     if @user.save
       msgs = @user.unify_update.flatten.delete_if{|item| PwdDb::NoUserReg =~ item}.join("<br>")
-      Usermailer.unify_update(@user.id,"密码重置通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被重置为 #{@user.password.sub(/^(.).*(.)$/,'\1******\2')}").deliver_later
+      Usermailer.unify_update(@user.id,"密码重置通知","您的公司账号密码于 #{Time.now.strftime("%F %T")} 被重置为 #{@user.password}").deliver_later
     else
       msgs = @user.errors.full_messages.join(" ")
     end
