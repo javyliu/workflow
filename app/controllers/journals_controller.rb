@@ -125,6 +125,17 @@ class JournalsController < ApplicationController
 
   # GET /journals/1/edit
   def edit
+    @managed_user_list = []
+    #部门管理员对直属管理人员有创建权限
+    if (con = current_ability.model_adapter(Journal,:create).conditions).kind_of?(Hash) && con[:user_id]
+      @managed_user_list = User.where(uid: con[:user_id]).pluck(:user_name,:uid)
+    end
+
+    #can?(:change,Department),表示可以对下属部门进行操作
+    if can?(:change,Department) && (depts = current_user.role_depts(include_mine: false).presence)
+      @managed_user_list.concat(User.not_expired.where(User.is_all_dept?(depts) ? nil : {dept_code: depts}).pluck(:user_name,:uid))
+    end
+    @managed_user_list = @managed_user_list.uniq.sort_by{|it| it[0]}
     drop_breadcrumb("我的考勤",home_users_path)
     drop_page_title("修改异常考勤")
     drop_breadcrumb
