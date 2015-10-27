@@ -84,15 +84,20 @@ class EpisodesController < ApplicationController
     drop_breadcrumb
     if /^\d+$/ =~ params[:task]
       @episode = Episode.find_by(id:params[:task])
-      raise CanCan::AccessDenied.new("该申请不存在！",list_episodes_path ) unless @episode
+      raise CanCan::AccessDenied.new("该申请不存在！",home_users_path ) unless @episode
       @task = Task.new("F002",@episode.user.leader_user.id,date:@episode.created_at.to_date.to_s,mid:@episode.id)
     else
       @task =  Task.init_from_subject(params[:task])
       @episode = Episode.find_by(id:@task.mid)
       unless @episode
         @task.remove(all: true)
-        raise CanCan::AccessDenied.new("该申请不存在！",list_episodes_path )
+        raise CanCan::AccessDenied.new("该申请不存在！",home_users_path )
       end
+    end
+
+    unless @episode.user
+      @task.remove(all: true)
+      raise CanCan::AccessDenied.new("该员工已离职！",home_users_path )
     end
     #跨级审批时会报错，除非加上审批权限
     #authorize!(:show,@episode)
