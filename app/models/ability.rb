@@ -6,7 +6,6 @@ class Ability
 
     if user.has_role?(:admin)
       can :manage,:all
-      return self
     end
     #cannot :manage, :all
     can :read,[Checkinout,Episode],user_id: user.id
