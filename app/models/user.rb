@@ -229,7 +229,7 @@ class User < ActiveRecord::Base
   #only get the department's code list
 
   def self.is_all_dept?(depts)
-    self.cache_departments.length == depts.length
+    self.cache_departments.length <= depts.length
   end
 
   #列出在使用中的部门
