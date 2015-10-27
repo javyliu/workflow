@@ -4,9 +4,6 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
 
-    if user.has_role?(:admin)
-      can :manage,:all
-    end
     #cannot :manage, :all
     can :read,[Checkinout,Episode],user_id: user.id
     can :destroy,[Episode] do |episode|
@@ -21,6 +18,9 @@ class Ability
       episode.user_id == user.id && episode.state.to_i == 0
     end
 
+    if user.has_role?(:admin)
+      can :manage,:all
+    end
     #2015-06-03 11:18 所有用户都可以更改考勤系统密码，除固定密码用户外，密码会被定期修改
     #can [:change_pwd,:update,:show]#,User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
 
@@ -99,6 +99,7 @@ class Ability
     #Role.all_without_reserved.each do |role|
     #  next unless user.has_role?(role.name)
     user.roles.each do |role|
+      next if role.name == "admin"
       role.role_resources.each do |res|
         resource = Resource.find_by_name(res.resource_name) rescue next
         if block = resource.behavior
