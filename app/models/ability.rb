@@ -18,9 +18,6 @@ class Ability
       episode.user_id == user.id && episode.state.to_i == 0
     end
 
-    if user.has_role?(:admin)
-      can :manage,:all
-    end
     #2015-06-03 11:18 所有用户都可以更改考勤系统密码，除固定密码用户外，密码会被定期修改
     #can [:change_pwd,:update,:show]#,User if user.email_en_name.in?(CharesDatabase::Tblemployee::StaticPwdUsers)
 
@@ -118,6 +115,9 @@ class Ability
       end
     end
 
+    if user.has_role?(:admin)
+      can :manage,:all
+    end
     #
     # The first argument to `can` is the action you are giving the user
     # permission to do.
