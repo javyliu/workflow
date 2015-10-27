@@ -45,8 +45,8 @@ class User < ActiveRecord::Base
 
   #2015-04-29 11:26 javy_liu delete all expired user when sys user
   #scope :not_expired, -> { where("expire_date is NULL or expire_date > '#{Date.today.to_s}'") }
-  #scope :not_expired, -> {where("uid > '1000'")}
-  scope :not_expired, -> {nil}
+  scope :not_expired, -> {where("uid > '1000'")}
+  #scope :not_expired, -> {nil}
 
   before_save  -> {self.mgr_code=nil if self.mgr_code.blank? }
   before_save :delete_caches,if: -> {(['expire_date','dept_code','mgr_code','title'] & self.changed).present?}
