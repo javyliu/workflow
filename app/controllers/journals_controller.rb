@@ -18,6 +18,7 @@ class JournalsController < ApplicationController
 
     respond_to do |format|
       format.html {  }
+      format.xls {}
       format.js { render partial: "j_items",object: @journals, content_type: Mime::HTML}
     end
   end
