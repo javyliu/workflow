@@ -1,0 +1,67 @@
+<Row>
+  <Cell ss:StyleID="s15">
+    <Data ss:Type="String"><%= row.dept_name %></Data>
+  </Cell>
+  <Cell ss:StyleID="s16">
+    <Data ss:Type="Number"><%= row_counter + 1 %></Data>
+  </Cell>
+  <Cell ss:StyleID="s17">
+    <Data ss:Type="String"><%= row.user_name %></Data>
+  </Cell>
+  <Cell ss:StyleID="s18">
+    <Data ss:Type="Number"><%= row.c_aff_later %></Data>
+  </Cell>
+  <Cell ss:StyleID="s18">
+    <Data ss:Type="Number"><%= row.c_aff_leave %></Data>
+  </Cell>
+  <Cell ss:StyleID="s18">
+    <Data ss:Type="Number"><%= row.c_aff_forget_checkin %></Data>
+  </Cell>
+  <Cell ss:StyleID="s16" ss:Formula="=(RC[-3]+RC[-2]+RC[-1])*20">
+    <Data ss:Type="Number">0</Data>
+  </Cell>
+  <Cell ss:StyleID="s19">
+    <Data ss:Type="Number"><%= row.c_aff_switch_time.to_f + row.c_aff_spec_appr_holiday.to_f + row.c_aff_spec_appr_later.to_f %></Data>
+  </Cell>
+  <Cell ss:StyleID="s24">
+    <Data ss:Type="String"><%= row.remain_switch_time.to_f + row.remain_ab_points.to_f %></Data>
+  </Cell>
+  <Cell ss:StyleID="s16">
+    <Data ss:Type="Number"><%= row.c_aff_holiday_year %></Data>
+  </Cell>
+  <Cell ss:StyleID="s25">
+    <Data ss:Type="String"><%= row.remain_holiday_year %></Data>
+  </Cell>
+  <Cell ss:StyleID="s18">
+    <Data ss:Type="Number"><%= row.c_aff_sick %></Data>
+  </Cell>
+  <Cell ss:StyleID="s26">
+    <Data ss:Type="Number"><%= row.c_aff_sick_salary %></Data>
+  </Cell>
+  <Cell ss:StyleID="s16">
+    <Data ss:Type="String"><%= row.remain_sick_salary %></Data>
+  </Cell>
+  <Cell ss:StyleID="s18">
+    <Data ss:Type="Number"><%= row.c_aff_persion_leave %></Data>
+  </Cell>
+  <Cell ss:StyleID="s18">
+    <Data ss:Type="Number"><%= row.c_aff_absent %></Data>
+  </Cell>
+  <Cell ss:StyleID="s18">
+    <Data ss:Type="Number">0</Data>
+  </Cell>
+  <Cell ss:StyleID="s18" ss:Formula="=21.75-RC[-3]-RC[-6]">
+    <Data ss:Type="Number">21.75</Data>
+  </Cell>
+  <Cell ss:StyleID="s27" ss:Formula="=IF(RC[-11]/8&lt;0.5,0,IF(RC[-11]/8&gt;=0.5,RC[-11]/8))">
+    <Data ss:Type="Number">0</Data>
+  </Cell>
+  <Cell ss:StyleID="s19">
+    <Data ss:Type="Number">2</Data>
+  </Cell>
+  <Cell ss:StyleID="s18" ss:Formula="=IF(RC[1]=&quot;&quot;,ROUND(RC[-3]-RC[-2]-RC[-11]-RC[-8]-RC[-4]-RC[-1],0),0)">
+    <Data ss:Type="Number">20</Data>
+  </Cell>
+  <Cell ss:StyleID="s16"/>
+  <Cell ss:StyleID="s16"/>
+</Row>

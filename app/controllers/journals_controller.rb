@@ -3,6 +3,7 @@ class JournalsController < ApplicationController
   load_and_authorize_resource# param_method: :journal_params
   skip_load_resource only: [:new,:create,:update]
 
+  UserData = Struct.new(:dept_name,:user_name,:remain_switch_time,:remain_holiday_year,:remain_sick_salary,:remain_affair_salary,:remain_ab_points,*Journal::CheckType.transpose[0].map(&:intern))
   # GET /journals
   # GET /journals.json
   def index
@@ -18,7 +19,10 @@ class JournalsController < ApplicationController
 
     respond_to do |format|
       format.html {  }
-      format.xls {}
+      format.xls do
+        response.headers['Content-Disposition'] = 'attachment; filename="社区工作.xls"'
+        render template: 'journals/month_kaoqin'
+      end
       format.js { render partial: "j_items",object: @journals, content_type: Mime::HTML}
     end
   end
@@ -28,6 +32,8 @@ class JournalsController < ApplicationController
     drop_page_title("部门审批记录")
     drop_breadcrumb
 
+    @start_time = params[:journal].try(:[],:gt_update_date)
+    @end_time = params[:journal].try(:[],:lt_update_date)
       #Rails.logger.debug {@journals.to_sql}
     if (depts = current_user.role_depts(include_mine: false).presence) && !User.is_all_dept?(depts)
       @journals = @journals.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@journals.where_values_hash["user_id"])))
@@ -55,21 +61,73 @@ class JournalsController < ApplicationController
       #Rails.logger.debug {@journals.to_sql}
     _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
 
-    @journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id
+    @html_journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id
                                                 inner join users on uid = journals.user_id
                                                 inner join departments on dept_code = code
                                                 left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date
                                                 ")
     respond_to do |format|
       format.html do
-        @journals = @journals.page(params[:page])
+        @html_journals = @html_journals.page(params[:page])
       end
       format.js do
-        @journals = @journals.page(params[:page])
-        render partial: "items",object: @journals, content_type: Mime::HTML
+        @html_journals = @html_journals.page(params[:page])
+        render partial: "items",object: @html_journals, content_type: Mime::HTML
+      end
+      format.xlsx do
+        response.headers['Content-Disposition'] = "attachment; filename='考勤汇总表.xlsx'"
+        _select = "id,group_concat(update_date) comments,user_id,check_type,sum(dval) dval,group_concat(description separator '<br>') description"
+
+        @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info,:year_journals])
+
+        @journals = @journals.group_by(&:user_id).inject([]) do |sum,(_k,v)|
+          ud = UserData.new
+
+          user = v.first.user
+
+          #用户已离职
+          next sum unless user
+
+          @year_journals = user.year_journals
+
+          ud.dept_name = user.dept.name
+          ud.user_name = user.user_name
+
+          base_holiday_info ||= user.last_year_info
+          if  base_holiday_info
+            #年假
+            ud.remain_holiday_year = ( base_holiday_info.year_holiday - year_journal(5) ).to_f/10
+            #倒休
+            ud.remain_switch_time = (base_holiday_info.switch_leave + year_journal(8) + year_journal(12)).to_f/10
+            #带薪病假
+            ud.remain_sick_salary = (base_holiday_info.sick_leave - year_journal(17)).to_f/10
+            #带薪事假
+            ud.remain_affair_salary = ( base_holiday_info.affair_leave - year_journal(11) ).to_f/10
+            #ab分
+            ud.remain_ab_points = (base_holiday_info.ab_point + year_journal(9) + year_journal(21) + year_journal(24)+ year_journal(25)).to_f/10
+          end
+
+          UserData.members.each do |att|
+            att = att.to_s
+            ck_type = Journal::CheckType.assoc(att)
+            next unless ck_type
+            journal = v.detect{|item| item.check_type == ck_type[1]}
+            next unless journal
+            s_unit = ck_type[7]
+            if att.start_with?("c_aff")
+              ud.send("#{att}=",journal.dval.to_f/(s_unit == 0 ? 1 : s_unit.to_f))
+            end
+          end
+
+          sum << ud
+
+        end
+
+
+        #render template: 'journals/month_with_depts'
       end
       format.xls do
-        xsl_file = @journals.to_csv(select: _select) do |item,cols|
+        xsl_file = @htlm_journals.to_csv(select: _select) do |item,cols|
           ck_type = Journal::CheckType.rassoc(item.check_type)
           _attrs = item.attributes
           _attrs["check_type"] = ck_type.third
@@ -262,5 +320,9 @@ class JournalsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def journal_params
     params.require(:journal).permit(:user_id, :update_date, :check_type, :description, :dval)
+  end
+
+  def year_journal(check_type_id)
+    @year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
   end
 end
