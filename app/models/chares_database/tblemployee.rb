@@ -9,13 +9,18 @@ module CharesDatabase
     def self.sys_users(need_change_pwd=true,path="/root/sh/mailpasswd.txt")
       pwds = Hash[*YAML.load_file(path).split(/:|\s+/)]
       _date = Date.today
-      self.where("expireDate is null or expireDate >= current_date()").find_each do |item|
+      #十天之内离职用户亦会同步，为了防止同步出错后第二天同步不能修复离职员工
+      self.where("expireDate is null or expireDate >= date_sub(current_date(),interval '10 00' DAY_HOUR)").find_each do |item|
         #User.create!(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title,onboard_date: item.onboardDate,regular_date: item.regularDate,password: '123123')
         u = User.find_or_initialize_by(uid: item.userId)
+        u.expire_date=item.expireDate
+        if u.expire_date && u.expire_date < _date
+          Rails.logger.info { "-----------delete user :#{u.user_name}" }
+          u.delete and next
+        end
         u.user_name = item.name
         u.email=item.email
         u.department=item.department
-        u.expire_date=item.expireDate
         u.dept_code=item.deptCode
         #2015-03-27 09:37 javy don't sys the mgrcode and department
         #u.mgr_code=item.mgrCode
@@ -38,10 +43,6 @@ module CharesDatabase
           end
         end
 
-        if u.expire_date && u.expire_date < _date
-          Rails.logger.info { "-----------delete user :#{u.user_name}" }
-          u.delete and next
-        end
 
         #u.password = u.email? ? (pwds[u.email[/.*(?=@)/,0]] || '123123') : '123123' #如果邮箱为空,或密码表为空，则设置密码为123123
         #puts u.inspect
