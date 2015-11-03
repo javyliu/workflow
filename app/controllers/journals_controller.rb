@@ -79,7 +79,7 @@ class JournalsController < ApplicationController
         if @start_time.blank? || @end_time.blank?
           raise AccessDenied.new("请设定导出时间,请设置本年度考勤时间，否则年假不准确",:back)
         end
-        _select = "id,group_concat(update_date) comments,user_id,check_type,sum(dval) dval,group_concat(description separator '<br>') description"
+        _select = "id,group_concat(update_date) comments,user_id,check_type,sum(dval) dval,group_concat(description separator ';') description"
         response.headers['Content-Disposition'] = "attachment; filename='考勤汇总表(#{@start_time}-#{@end_time}).xlsx'"
         @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info,:year_journals])
         @journals = JournalDecorator.decorate_collection(@journals.group_by(&:user_id))
