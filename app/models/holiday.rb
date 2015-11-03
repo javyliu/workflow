@@ -32,7 +32,7 @@ class Holiday < ActiveRecord::Base
   #16特批
   #17加班
   def self.unit(holiday_id)
-    Journal::CheckType.detect{|item|item[6] == holiday_id}[3]
+    Journal::CheckType.detect{|item|item[6] == holiday_id}.try(:[],3)
     #case holiday_id
     #when 2,3,7
     #  "次"
