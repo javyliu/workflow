@@ -8,17 +8,21 @@ class ApplicationController < ActionController::Base
   before_action :login_required
   include JavyTool::Breadcrumb
   include JavyTool::ConstructQuery
+  include JavyTool::CustomError
 
-  rescue_from CanCan::AccessDenied do |exception|
-    return_url = exception.action =~ /^\// ? exception.action : root_url
+  rescue_from CanCan::AccessDenied,AccessDenied do |exception|
     respond_to do |format|
-      format.html do
-        redirect_to return_url, alert: exception.message
+      format.js do
+        render :js => "alert('#{exception.message}')",content_type: Mime::JS
       end
       format.json do
         render :json => exception.message.kind_of?(Hash) ? exception.message : {error: exception.message}
       end
-      format.js {render :js => "alert('#{exception.message}')"}
+      format.any do
+        response.headers.delete('Content-Disposition')
+        return_url = exception.action.presence || root_url
+        redirect_to return_url, alert: exception.message
+      end
     end
 
   end

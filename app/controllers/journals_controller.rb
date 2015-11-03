@@ -3,7 +3,7 @@ class JournalsController < ApplicationController
   load_and_authorize_resource# param_method: :journal_params
   skip_load_resource only: [:new,:create,:update]
 
-  UserData = Struct.new(:dept_name,:user_name,:user_id,:remain_switch_time,:remain_holiday_year,:remain_sick_salary,:remain_affair_salary,:remain_ab_points,:c_aff_later,:c_aff_leave,:c_aff_forget_checkin,:c_aff_switch_time,:c_aff_spec_appr_holiday,:c_aff_spec_appr_later,:c_aff_holiday_year,:c_aff_sick,:c_aff_sick_salary,:c_aff_persion_leave,:c_aff_absent)
+  #UserData = Struct.new(:dept_name,:user_name,:user_id,:remain_switch_time,:remain_holiday_year,:remain_sick_salary,:remain_affair_salary,:remain_ab_points,:c_aff_later,:c_aff_leave,:c_aff_forget_checkin,:c_aff_switch_time,:c_aff_spec_appr_holiday,:c_aff_spec_appr_later,:c_aff_holiday_year,:c_aff_sick,:c_aff_sick_salary,:c_aff_persion_leave,:c_aff_absent)
   # GET /journals
   # GET /journals.json
   def index
@@ -75,57 +75,14 @@ class JournalsController < ApplicationController
         render partial: "items",object: @html_journals, content_type: Mime::HTML
       end
       format.xlsx do
-        response.headers['Content-Disposition'] = "attachment; filename='考勤汇总表.xlsx'"
-        _select = "id,group_concat(update_date) comments,user_id,check_type,sum(dval) dval,group_concat(description separator '<br>') description"
-
-        @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info,:year_journals])
-
-        @journals = @journals.group_by(&:user_id).inject([]) do |sum,(k,v)|
-          ud = UserData.new
-          ud.user_id = k
-
-          user = v.first.user
-
-          #用户已离职
-          next sum unless user
-
-          @year_journals = user.year_journals
-
-          ud.dept_name = user.dept.name
-          ud.user_name = user.user_name
-
-          base_holiday_info ||= user.last_year_info
-          if  base_holiday_info
-            #年假
-            ud.remain_holiday_year = ( base_holiday_info.year_holiday - year_journal(5) ).to_f/10
-            #倒休
-            ud.remain_switch_time = (base_holiday_info.switch_leave + year_journal(8) + year_journal(12)).to_f/10
-            #带薪病假
-            ud.remain_sick_salary = (base_holiday_info.sick_leave - year_journal(17)).to_f/10
-            #带薪事假
-            ud.remain_affair_salary = ( base_holiday_info.affair_leave - year_journal(11) ).to_f/10
-            #ab分
-            ud.remain_ab_points = (base_holiday_info.ab_point + year_journal(9) + year_journal(21) + year_journal(24)+ year_journal(25)).to_f/10
-          end
-
-          UserData.members.each do |att|
-            att = att.to_s
-            ck_type = Journal::CheckType.assoc(att)
-            next unless ck_type
-            journal = v.detect{|item| item.check_type == ck_type[1]}
-            next unless journal
-            s_unit = ck_type[7]
-            if att.start_with?("c_aff")
-              ud.send("#{att}=",journal.dval.to_f/(s_unit == 0 ? 1 : s_unit.to_f))
-            end
-          end
-
-          sum << ud
-
+        #默认时间为当年
+        if @start_time.blank? || @end_time.blank?
+          raise AccessDenied.new("请设定导出时间,请设置本年度考勤时间，否则年假不准确",:back)
         end
-
-
-        #render template: 'journals/month_with_depts'
+        _select = "id,group_concat(update_date) comments,user_id,check_type,sum(dval) dval,group_concat(description separator '<br>') description"
+        response.headers['Content-Disposition'] = "attachment; filename='考勤汇总表(#{@start_time}-#{@end_time}).xlsx'"
+        @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info,:year_journals])
+        @journals = JournalDecorator.decorate_collection(@journals.group_by(&:user_id))
       end
       format.xls do
         xsl_file = @htlm_journals.to_csv(select: _select) do |item,cols|

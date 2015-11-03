@@ -38,8 +38,10 @@ module CharesDatabase
               u.remember_token            = nil
             end
           end
+          #只有新用户才会无密码，所以在此初始化部分数据
           if u.password_digest.nil?
             u.password = '123123'
+            u.title = item.title
           end
         end
 

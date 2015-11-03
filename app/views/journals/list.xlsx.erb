@@ -272,8 +272,8 @@
     <Table ss:ExpandedColumnCount="23" ss:ExpandedRowCount="3" x:FullColumns="1" x:FullRows="1" ss:DefaultColumnWidth="54" ss:DefaultRowHeight="14.25">
       <Column ss:Index="1" ss:StyleID="s9" ss:AutoFitWidth="0" ss:Width="44.25" ss:Span="22"/>
       <Row ss:Height="20.25">
-        <Cell ss:StyleID="s28" ss:MergeAcross="22">
-          <Data ss:Type="String">考勤汇总表(<%= @start_date %>-<%= @end_date %>)</Data>
+        <Cell ss:StyleID="s28" ss:MergeAcross="23">
+          <Data ss:Type="String">考勤汇总表(<%= @start_time %>-<%= @end_time %>)</Data>
         </Cell>
       </Row>
       <Row ss:Height="24">
@@ -302,13 +302,13 @@
           <Data ss:Type="String">倒休/特批 </Data>
         </Cell>
         <Cell ss:StyleID="s20">
-          <Data ss:Type="String">15年&#10;剩余倒休</Data>
+          <Data ss:Type="String">本年&#10;剩余倒休</Data>
         </Cell>
         <Cell ss:StyleID="s21">
           <Data ss:Type="String">年假</Data>
         </Cell>
         <Cell ss:StyleID="s21">
-          <Data ss:Type="String">15年&#10;剩余年假</Data>
+          <Data ss:Type="String">本年&#10;剩余年假</Data>
         </Cell>
         <Cell ss:StyleID="s22">
           <Data ss:Type="String">病假</Data>
@@ -317,7 +317,7 @@
           <Data ss:Type="String">带薪病假</Data>
         </Cell>
         <Cell ss:StyleID="s22">
-          <Data ss:Type="String">15年剩余&#10;带薪病假</Data>
+          <Data ss:Type="String">本年剩余&#10;带薪病假</Data>
         </Cell>
         <Cell ss:StyleID="s12">
           <Data ss:Type="String">事假</Data>
@@ -342,6 +342,9 @@
         </Cell>
         <Cell ss:StyleID="s12">
           <Data ss:Type="String">转正前出勤天数</Data>
+        </Cell>
+        <Cell ss:StyleID="s12">
+          <Data ss:Type="String">试用转正日期</Data>
         </Cell>
         <Cell ss:StyleID="s12">
           <Data ss:Type="String">备注</Data>

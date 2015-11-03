@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/javyliu/javy_tool.git
-  revision: 3fed3baffe2219b47b8c82bb5d5d0f694125ac98
+  revision: 2b2fcb1fc932b596058ad74a2be1c8bc292aa106
   specs:
-    javy_tool (0.1.1)
+    javy_tool (0.1.2)
 
 GIT
   remote: https://github.com/javyliu/role_making.git
