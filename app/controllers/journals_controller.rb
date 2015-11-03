@@ -3,7 +3,7 @@ class JournalsController < ApplicationController
   load_and_authorize_resource# param_method: :journal_params
   skip_load_resource only: [:new,:create,:update]
 
-  UserData = Struct.new(:dept_name,:user_name,:remain_switch_time,:remain_holiday_year,:remain_sick_salary,:remain_affair_salary,:remain_ab_points,*Journal::CheckType.transpose[0].map(&:intern))
+  UserData = Struct.new(:dept_name,:user_name,:user_id,:remain_switch_time,:remain_holiday_year,:remain_sick_salary,:remain_affair_salary,:remain_ab_points,:c_aff_later,:c_aff_leave,:c_aff_forget_checkin,:c_aff_switch_time,:c_aff_spec_appr_holiday,:c_aff_spec_appr_later,:c_aff_holiday_year,:c_aff_sick,:c_aff_sick_salary,:c_aff_persion_leave,:c_aff_absent)
   # GET /journals
   # GET /journals.json
   def index
@@ -80,8 +80,9 @@ class JournalsController < ApplicationController
 
         @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info,:year_journals])
 
-        @journals = @journals.group_by(&:user_id).inject([]) do |sum,(_k,v)|
+        @journals = @journals.group_by(&:user_id).inject([]) do |sum,(k,v)|
           ud = UserData.new
+          ud.user_id = k
 
           user = v.first.user
 
