@@ -1,6 +1,7 @@
 class JournalDecorator <  Draper::Decorator
   delegate_all
 
+  attr_accessor :year_journals
   #attr_reader :user
   #attr_accessor :dept_name,:user_name,:user_id,:remain_switch_time,:remain_holiday_year,:remain_sick_salary,:remain_affair_salary
   # Define presentation-specific methods here. Helpers are accessed through
@@ -12,6 +13,10 @@ class JournalDecorator <  Draper::Decorator
   #     end
   #   end
 
+  def export_date
+    @export_date ||= Date.today
+  end
+
   def user
     @journal_user ||= object[1][0].user
   end
@@ -19,9 +24,9 @@ class JournalDecorator <  Draper::Decorator
   #是否转正
   def regular_date
     return nil unless user
-    if user.regular_date.present? && user.regular_date > Date.today
+    if user.regular_date.present? && user.regular_date >= export_date.at_beginning_of_month
       user.regular_date
-    elsif user.regular_date.nil? && user.onboard_date + 3.months > Date.today
+    elsif user.regular_date.nil? && user.onboard_date + 3.months > export_date
       "试用中"
     end
   end
@@ -109,7 +114,7 @@ class JournalDecorator <  Draper::Decorator
   #  #<Journal:0xc63ccf0 id: 5650, user_id: "1002">]]
   #
   def year_journal(check_type_id)
-    user.year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
+    year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
   end
 
 end

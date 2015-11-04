@@ -81,8 +81,12 @@ class JournalsController < ApplicationController
         end
         _select = "id,group_concat(update_date) comments,user_id,check_type,sum(dval) dval,group_concat(description separator ';') description"
         response.headers['Content-Disposition'] = "attachment; filename='考勤汇总表(#{@start_time}-#{@end_time}).xlsx'"
-        @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info,:year_journals])
-        @journals = JournalDecorator.decorate_collection(@journals.group_by(&:user_id))
+        @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info])
+        #因为year_journals 带有group 聚合，在includes时会被抛弃,为防止n+1,所以手动eager_load
+        year_journals = Journal.grouped_journals.where(user_id: @journals.flat_map(&:user_id).uniq)
+        @journals = JournalDecorator.decorate_collection(@journals.group_by(&:user_id)).each do |item|
+          item.year_journals = year_journals.find_all{|it| it.user_id == item.user_id}
+        end
       end
       format.xls do
         xsl_file = @htlm_journals.to_csv(select: _select) do |item,cols|

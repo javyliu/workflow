@@ -20,6 +20,7 @@ class Journal < ActiveRecord::Base
   validates :check_type, presence: true
   validates :user_id, presence: true
   validates :update_date, presence: true
+  scope :grouped_journals, ->{ select("user_id,check_type,sum(dval) dval").where(["check_type in (?) and update_date > ?",Journal::UserCheckTypeIds,OaConfig.setting(:end_year_time)]).group(:user_id,:check_type)}
   #用于数据手动组装,避免n+1
   #has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
   #数组说明

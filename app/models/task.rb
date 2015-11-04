@@ -162,7 +162,7 @@ class Task
     #非示通过的
     yes_holidays = Holiday.select("holidays.id holiday_id,holidays.name,episodes.user_id,episodes.id").joins(:episodes).where(["user_id in (:users) and state <> 2 and date(start_date) <= :yesd and end_date >= :yesd ",yesd: task.date,users: uids]).to_a
 
-    year_journals = Journal.select("id,user_id,check_type,sum(dval) dval").group(:user_id,:check_type).where(["user_id in (?) and update_date > ?",uids,OaConfig.setting(:end_year_time)]).to_a
+    year_journals = Journal.grouped_journals.where(["user_id in (?)",uids]).to_a
 
     journals = task.date.to_s < Date.today.to_s ? Journal.where(["user_id in (?) and update_date = ?",uids,task.date]).to_a : []
 

@@ -37,7 +37,8 @@ class User < ActiveRecord::Base
   #用户在某一天的已确认异常考勤,用于手动加载防止n+1
   #has_one :journal
   #从本年度计考勤之日起的异常考勤，用于计算每天的剩余年假
-  has_many :year_journals, -> { where(["check_type in (?) and update_date > ?",Journal::UserCheckTypeIds,OaConfig.setting(:end_year_time)]).select("id,user_id,check_type,sum(dval) dval").group(:check_type) },class_name: "Journal"
+  has_many :year_journals, ->{ select("id,user_id,check_type,sum(dval) dval").where(["check_type in (?) and update_date > ?",Journal::UserCheckTypeIds,OaConfig.setting(:end_year_time)]).group(:user_id,:check_type) },class_name: "Journal"
+
 
   has_many :episodes
   #用于在Task#eager_load_from_task方法中手动组装数据，
