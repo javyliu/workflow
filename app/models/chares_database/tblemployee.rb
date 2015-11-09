@@ -28,6 +28,7 @@ module CharesDatabase
         #u.title= item.title
         u.onboard_date= item.onboardDate
         u.regular_date= item.regularDate
+
         #有email的用户才会设置密码，否则不设
         if u.email
           _uname = u.email[/.*(?=@)/,0]
@@ -42,6 +43,8 @@ module CharesDatabase
           if u.password_digest.nil?
             u.password = '123123'
             u.title = item.title
+            #初始化其year_info
+            u.create_last_year_info
           end
         end
 
@@ -49,6 +52,10 @@ module CharesDatabase
         #u.password = u.email? ? (pwds[u.email[/.*(?=@)/,0]] || '123123') : '123123' #如果邮箱为空,或密码表为空，则设置密码为123123
         #puts u.inspect
         u.save!
+        #如果用户的转正日期今日相等，则更新用户的基础带薪病假
+        if u.regular_date == _date
+          u.last_year_info.update_attribute(:sick_leave, OaConfig.setting(:sick_leave_days).to_i * 10)
+        end
       end
 
       User.where("expire_date < current_date() ").delete_all
