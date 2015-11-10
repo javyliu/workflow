@@ -128,14 +128,15 @@ class User < ActiveRecord::Base
         leaders_ary = JSON.parse(leaders_ary)
       else
         leaders_ary = User.find_by_sql( <<-heredoc
-    select b.attend_rule_id,b.mgr_code uid,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
+                                       select tmp.attend_rule_id,tmp.mgr_code uid, GROUP_CONCAT(tmp.user_ids) user_ids from (
+    select b.attend_rule_id,b.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
     where  a.mgr_code is NULL and b.attend_rule_id is not NULL GROUP BY b.`code`
     UNION
-    select b.attend_rule_id,a.mgr_code uid,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where  a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code;
+    select b.attend_rule_id,a.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
+    where  a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code
+    ) as tmp GROUP BY tmp.mgr_code;
                                        heredoc
-                                      ).group_by(&:uid)
-        .map{|k,v| [k,v.first.attend_rule_id,v.inject([]){|uids,item|uids.push(*item.user_ids.split(","))}.tap{|t|t.delete(k) if k != '1002'}]}
+                                      ).inject([]){|uids,item|uids.push([item.uid,item.attend_rule_id,item.user_ids.split(",").tap{|t|t.delete(item.uid) if item.uid != '1002'}])}
         _redis.set("leaders_data",leaders_ary)
         leaders_ary
       end
