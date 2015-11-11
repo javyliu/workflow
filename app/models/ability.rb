@@ -82,6 +82,10 @@ class Ability
     #  #can :read,Checkinout,user_id: user.leader_data.try(:last)
     #end
 
+    if user.has_role?(:admin)
+      can :manage,:all
+      cannot :create,Journal
+    end
     #if user.role?("badman")
     #  cannot manage,:all
     #end
@@ -115,9 +119,6 @@ class Ability
       end
     end
 
-    if user.has_role?(:admin)
-      can :manage,:all
-    end
     #
     # The first argument to `can` is the action you are giving the user
     # permission to do.
