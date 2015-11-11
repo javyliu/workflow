@@ -63,8 +63,8 @@
 <script type="text/javascript" charset="utf-8">
 
 $(document).on("ready page:load",function(ev){
-    console.log(ev)
-  $(".resources h6 a").click(function(e){
+    //console.log(ev)
+  $(".resources h6 a").unbind("click").click(function(e){
       e.preventDefault();
       var ck_state = !!$(this).data("ck");
       $(this).parent().next("ul").find("input[type=checkbox]").prop("checked",!ck_state);
