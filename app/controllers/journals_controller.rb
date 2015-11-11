@@ -89,7 +89,7 @@ class JournalsController < ApplicationController
         end
       end
       format.xls do
-        xsl_file = @htlm_journals.to_csv(select: _select) do |item,cols|
+        xsl_file = @html_journals.to_csv(select: _select) do |item,cols|
           ck_type = Journal::CheckType.rassoc(item.check_type)
           _attrs = item.attributes
           _attrs["check_type"] = ck_type.third
