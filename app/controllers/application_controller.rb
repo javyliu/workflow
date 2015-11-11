@@ -20,7 +20,8 @@ class ApplicationController < ActionController::Base
       end
       format.any do
         response.headers.delete('Content-Disposition')
-        return_url = exception.action.presence || root_url
+        return_url = exception.action =~ /^\// ? exception.action : root_url
+        #return_url = exception.action.presence || root_url
         redirect_to return_url, alert: exception.message
       end
     end
