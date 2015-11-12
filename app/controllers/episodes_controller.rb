@@ -63,8 +63,8 @@ class EpisodesController < ApplicationController
         xsl_file = @episodes.to_csv(select: "用户编号,姓名,部门,假别,开始时间,结束时间,时长,单位,审批状态,说明,创建时间") do |item,_|
           _attrs = item.attributes
           _attrs["created_at"] = item.created_at.try(:strftime,"%F %T")
-          _attrs[:user_name] = item.user.try(:user_name)
-          _attrs[:dept_name] = item.user.try(:dept).try(:name)
+          _attrs["user_name"] = item.user.try(:user_name)
+          _attrs["dept_name"] = item.user.try(:dept).try(:name)
           _attrs["unit"] = Holiday.unit(item.holiday_id)
           _attrs["start_date"] = item.start_date.try(:strftime,"%F %T")
           _attrs["end_date"] = item.end_date.try(:strftime,"%F %T")
