@@ -2,9 +2,9 @@
 <% ck_type = Journal::CheckType.rassoc(item.check_type) %>
 <tr>
   <td><%= item.update_date.strftime("%m/%d") %></td>
-  <td><%= item.user_name %></td>
-  <td><%= short_dept_name(item.dept_name) %></td>
-  <td><%= ck_type.third %></td>
+  <td><%= item.user.try(:user_name) %></td>
+  <td><%= short_dept_name(item.user.try(:dept).try(:name)) %></td>
+  <td><%= ck_type[2] %></td>
   <td><%= dis_dval(item,ck_type) %></td>
   <td><%= item.checkin.try(:strftime,"%H:%M") %></td>
   <td><%= item.checkout.try(:strftime,"%H:%M") %></td>

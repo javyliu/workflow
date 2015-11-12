@@ -22,11 +22,11 @@
           </div>
           <div class="columns medium-2">
             <label>开始日期:</label>
-            <%= text_field_tag "journal[gt_update_date]","",class: 'datepicker' ,readonly: true %>
+            <%= text_field_tag "journal[gt_update_date]",@start_time,class: 'datepicker' ,readonly: true %>
           </div>
           <div class="columns medium-2">
             <label>结束日期:</label>
-            <%= text_field_tag "journal[lt_update_date]","",class: 'datepicker',readonly: true  %>
+            <%= text_field_tag "journal[lt_update_date]",@end_time,class: 'datepicker',readonly: true  %>
           </div>
           <div class="columns medium-1">
             <label>是否修改:</label>

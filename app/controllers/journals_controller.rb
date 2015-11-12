@@ -59,15 +59,22 @@ class JournalsController < ApplicationController
     end
 
       #Rails.logger.debug {@journals.to_sql}
-    _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,user_name,check_type,dval,null unit,description,departments.name dept_name,episodes.id episode_id,episodes.holiday_id,episodes.state"
+    _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,check_type,dval,description,episodes.id episode_id,episodes.holiday_id,episodes.state"
 
-    @html_journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id
-                                                inner join users on uid = journals.user_id
-                                                inner join departments on dept_code = code
-                                                left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date
-                                                ")
+    @html_journals = @journals.select(_select).joins(" left join checkinouts on update_date=rec_date and journals.user_id = checkinouts.user_id left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ").includes(user: [:dept])
+
     respond_to do |format|
       format.html do
+        today = Date.today
+        if @start_time.blank?
+          @start_time = today.change(month: today.month - 2)
+          @html_journals = @html_journals.where("update_date >= ?",@start_time)
+        end
+        if @end_time.blank?
+          @end_time = today
+          @html_journals = @html_journals.where("update_date <= ?",@end_time)
+        end
+
         @html_journals = @html_journals.page(params[:page])
       end
       format.js do
@@ -84,18 +91,21 @@ class JournalsController < ApplicationController
         @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:last_year_info])
         #因为year_journals 带有group 聚合，在includes时会被抛弃,为防止n+1,所以手动eager_load
         year_journals = Journal.grouped_journals.where(user_id: @journals.flat_map(&:user_id).uniq)
-        @journals = JournalDecorator.decorate_collection(@journals.group_by(&:user_id)).each do |item|
+        @journals = JournalWithRemainDecorator.decorate_collection(@journals.group_by(&:user_id)).each do |item|
           item.year_journals = year_journals.find_all{|it| it.user_id == item.user_id}
         end
       end
       format.xls do
-        xsl_file = @html_journals.to_csv(select: _select) do |item,cols|
+        cols = "id,update_date,checkin,checkout,user_id,user_name,check_type,dval,unit,description,department,episode_id,holiday_id,state,created_at,updated_at".split(",")
+        xsl_file = @html_journals.to_csv(select: "编号,日期,签入时间,签出时间,用户编号,用户名,异常类型,时间,异常单位,描述,部门,假条编号,假别,假条状态,创建时间,更新时间") do |item,_|
           ck_type = Journal::CheckType.rassoc(item.check_type)
           _attrs = item.attributes
+          _attrs["user_name"] = item.user.user_name
           _attrs["check_type"] = ck_type.third
           _attrs["checkin"] = item.checkin.try(:strftime,"%H:%M")
           _attrs["checkout"] = item.checkout.try(:strftime,"%H:%M")
           _attrs["unit"] = ck_type.fourth
+          _attrs["department"] = item.user.dept.name
           _attrs["holiday_id"] = view_context.dis_episode(item,ck_type,link: false)
           _attrs["state"] = Episode::State.rassoc(item.state).first if item.state
           _attrs["dval"] = case ck_type.last
@@ -111,7 +121,7 @@ class JournalsController < ApplicationController
           _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
         end
         #xsl_file
-        send_data xsl_file
+        send_data xsl_file,disposition: 'attachment', filename: "journals_data_#{Date.today.to_s(:number)}.xls"
       end
     end
   end

@@ -1,5 +1,5 @@
-class JournalDecorator <  Draper::Decorator
-  delegate_all
+class JournalWithRemainDecorator <  Draper::Decorator
+  #delegate_all
 
   attr_accessor :year_journals
   #attr_reader :user

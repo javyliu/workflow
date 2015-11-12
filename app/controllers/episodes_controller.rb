@@ -26,7 +26,7 @@ class EpisodesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        @episodes = @episodes.where(parent_id: 0).page(params[:page]).includes(:holiday,user:[:dept]).decorate
+        @episodes = @episodes.where("parent_id=0 and start_date >= ? ",OaConfig.setting(:end_year_time)).page(params[:page]).includes(:holiday,user:[:dept]).decorate
       end
       format.js do
         params.permit!
@@ -40,8 +40,10 @@ class EpisodesController < ApplicationController
         #Rails.logger.info array_con.inspect
         @episodes = @episodes.where(parent_id: 0)
         @episodes = @episodes.where(user_id: _user_ids) if _user_ids
+        if params[:episode][:start_date].blank?
+          @episodes = @episodes.where("start_date >= ? ",OaConfig.setting(:end_year_time))
+        end
         @episodes = @episodes.page(params[:page]).where(con_hash1).where(array_con).includes(:holiday,user:[:dept]).decorate
-
 
         render partial: "items",object: @episodes, content_type: Mime::HTML
       end
@@ -54,12 +56,15 @@ class EpisodesController < ApplicationController
         @episodes = @episodes.where(user_id: _user_ids) if _user_ids
         @episodes = @episodes.where(con_hash1).where(array_con)
 
-        _select = "user_id,user_name,name dept_name,holiday_id,start_date,end_date,total_time,null unit,state,comment,episodes.created_at"
-        @episodes = @episodes.select(_select).joins(" inner join users on user_id=uid inner join departments on dept_code = code")
+        _select = "user_id,holiday_id,start_date,end_date,total_time,state,comment,episodes.created_at"
+        @episodes = @episodes.select(_select).includes(user: [:dept])#.joins(" inner join users on user_id=uid inner join departments on dept_code = code")
         _holidays = Holiday.all.pluck(:id,:name)
-        xsl_file = @episodes.to_csv(select: _select) do |item,cols|
+        cols = "user_id,user_name,dept_name,holiday_id,start_date,end_date,total_time,unit,state,comment,created_at".split(",")
+        xsl_file = @episodes.to_csv(select: "用户编号,姓名,部门,假别,开始时间,结束时间,时长,单位,审批状态,说明,创建时间") do |item,_|
           _attrs = item.attributes
           _attrs["created_at"] = item.created_at.try(:strftime,"%F %T")
+          _attrs[:user_name] = item.user.try(:user_name)
+          _attrs[:dept_name] = item.user.try(:dept).try(:name)
           _attrs["unit"] = Holiday.unit(item.holiday_id)
           _attrs["start_date"] = item.start_date.try(:strftime,"%F %T")
           _attrs["end_date"] = item.end_date.try(:strftime,"%F %T")
@@ -68,7 +73,8 @@ class EpisodesController < ApplicationController
           _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
         end
         #xsl_file
-        send_data xsl_file
+        #send_data xsl_file
+        send_data xsl_file,disposition: 'attachment', filename: "episodes_data_#{Date.today.to_s(:number)}.xls"
       end
 
 

@@ -20,7 +20,7 @@ module JournalsHelper
   end
 
   def short_dept_name(dept_name)
-    dept_name.split('-').last
+    dept_name.split('-').last if dept_name
   end
 
 end
