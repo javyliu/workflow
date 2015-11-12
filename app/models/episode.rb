@@ -32,7 +32,7 @@ class Episode < ActiveRecord::Base
   before_validation :init_attr
 
   validate do
-    is_exist_con = Episode.where(["user_id = ? and ck_type = ? and  start_date <= ?  and end_date > ?",self.user_id,self.ck_type,self.start_date.end_of_day.to_s(:db),self.start_date.to_date])
+    is_exist_con = Episode.where(["user_id = :user_id and ck_type = :ck_type and  (date(start_date) <= :start_date  and end_date >= :start_date or :start_date <= date(start_date) and :end_date >= date(start_date) )",user_id: self.user_id,ck_type: self.ck_type,start_date: self.start_date.to_date,end_date: self.end_date.to_date])
     is_exist_con = is_exist_con.where("id != ?",self.id) unless self.new_record?
     errors.add(:base, '已经存在同类申请了，请删除后再次申请！') if is_exist_con.exists?
   end

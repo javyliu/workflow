@@ -136,6 +136,10 @@ class EpisodesController < ApplicationController
     #@episode.start_date =  Time.now.beginning_of_day.strftime("%Y-%m-%d %H:%M")
     #@episode.end_date = Time.now.end_of_day.strftime("%Y-%m-%d %H:%M")
     #@episode.holiday = @holiday
+    if params[:journal_id].present? && journal = Journal.find_by(id: params[:journal_id])
+      @episode.start_date = journal.update_date.beginning_of_day
+      @episode.end_date = journal.update_date.end_of_day
+    end
     @episode.title = current_user.title
     @episode.holiday_id = params[:holiday_id]
     #@episode.children = [Episode.new]
