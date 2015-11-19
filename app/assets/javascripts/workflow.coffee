@@ -40,9 +40,6 @@ $(->
   $(document).on("ajax:success",".pagination a",(event,data,status,xhr)->
     $("#content").html(data)
   )
-  $(document).on("click",".export_xls", ->
-    $(this).attr("href",$(this).attr("href")+"?"+$(this).closest("form").serialize())
-  )
 
   #for top-bar
   $(document).on 'ready page:load', ->
@@ -153,9 +150,7 @@ $(->
     if data.error
       $(this).data("restInPlaceEditor").abort()
       alert(data.error)
-  $(document).on("ajax:success","[data-remote][data-method=delete]",(e,data) ->
-    $(this).closest($(this).data("destroy") || "tr").remove()
-  )
+
   #for new approve
   $(document).on "click","#new_approve .button", (e)->
     if $(this).hasClass("success")
