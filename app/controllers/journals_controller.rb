@@ -100,12 +100,12 @@ class JournalsController < ApplicationController
         xsl_file = @html_journals.to_csv(select: "编号,日期,签入时间,签出时间,用户编号,用户名,异常类型,时间,异常单位,描述,部门,假条编号,假别,假条状态,创建时间,更新时间") do |item,_|
           ck_type = Journal::CheckType.rassoc(item.check_type)
           _attrs = item.attributes
-          _attrs["user_name"] = item.user.user_name
+          _attrs["user_name"] = item.user.try(:user_name)
           _attrs["check_type"] = ck_type.third
           _attrs["checkin"] = item.checkin.try(:strftime,"%H:%M")
           _attrs["checkout"] = item.checkout.try(:strftime,"%H:%M")
           _attrs["unit"] = ck_type.fourth
-          _attrs["department"] = item.user.dept.name
+          _attrs["department"] = item.user.try(:dept).try(:name)
           _attrs["holiday_id"] = view_context.dis_episode(item,ck_type,link: false)
           _attrs["state"] = Episode::State.rassoc(item.state).first if item.state
           _attrs["dval"] = case ck_type.last
