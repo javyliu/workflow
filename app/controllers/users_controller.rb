@@ -45,6 +45,7 @@ class UsersController < ApplicationController
     .select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
     .joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id
     left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ")
+    @my_journals.instance_variable_set(:@total_count,@my_journals.except(:joins,:order,:offset,:select,:limit).count)
 
   end
 

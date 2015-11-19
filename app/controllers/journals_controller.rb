@@ -13,9 +13,11 @@ class JournalsController < ApplicationController
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
     @journals = @journals.rewhere(user_id: current_user.id).where(con_hash).where(ary_con).where("check_type = 10 or dval != 0").order("update_date desc,id desc").page(params[:page])
-    .select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
+    @journals = @journals.select("journals.*,checkin,checkout,episodes.id episode_id,episodes.holiday_id,episodes.state")
     .joins("left join checkinouts on update_date = rec_date and journals.user_id = checkinouts.user_id
     left join episodes on journals.user_id = episodes.user_id and ck_type = check_type and state <> 2 and update_date >= date(start_date) and update_date <= end_date ")
+
+    @journals.instance_variable_set(:@total_count,@journals.except(:joins,:order,:offset,:select,:limit).count)
 
     respond_to do |format|
       format.html {  }
@@ -76,9 +78,11 @@ class JournalsController < ApplicationController
         end
 
         @html_journals = @html_journals.page(params[:page])
+        @html_journals.instance_variable_set(:@total_count,@html_journals.except(:joins,:select,:limit,:order,:offset).count)
       end
       format.js do
         @html_journals = @html_journals.page(params[:page])
+        @html_journals.instance_variable_set(:@total_count,@html_journals.except(:joins,:select,:limit,:order,:offset).count)
         render partial: "items",object: @html_journals, content_type: Mime::HTML
       end
       format.xlsx do
