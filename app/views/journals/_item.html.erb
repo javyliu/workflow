@@ -6,6 +6,6 @@
   <td><%= ck_type.third %></td>
   <td><%= dis_dval(item,ck_type) %></td>
   <td><%= item.description %></td>
-  <td><%= dis_episode(item,ck_type,link: true,prompt_new: true) %></td>
+  <td><%= dis_episode(item,ck_type,link: true,prompt_new: true,format: :js) %></td>
   <td><%= Episode::State.rassoc(item.state).try(:first) if item.state %></td>
 </tr>

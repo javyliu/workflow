@@ -51,7 +51,7 @@
   </div>
   <% end %>
   <% if @approve %>
-  <%= form_for @approve do |f| %>
+  <%= form_for @approve,request.xhr? ? {remote: true} : {remote: false} do |f| %>
   <div class="field">
     <%= f.label :des,"简要说明" %><br>
     <%= f.hidden_field :episode_id %>

@@ -74,17 +74,21 @@ class ApprovesController < ApplicationController
         @episode.children.update_all(state: state)
         #返回假单显页面
         format.html { redirect_to episode_path(@task), notice: '审核成功.' }
+        format.js {render js: "$('#search form').submit();$('#modal_window').foundation('reveal','close')"}
         format.json { render :show, status: :created, location: @approve }
       else
-        drop_page_title("假期审批")
-        drop_breadcrumb("我的考勤",home_users_path)
-        drop_breadcrumb
-        @approves = @episode.approves.to_a
-        if @episode.state.in?([0,3]) && can?(:create,Approve)
-          @approve = @episode.approves.new
+        format.js { render js: "alert('#{@approve.errors.full_messages.join(';')}')"}
+        format.html do
+          drop_page_title("假期审批")
+          drop_breadcrumb("我的考勤",home_users_path)
+          drop_breadcrumb
+          @approves = @episode.approves.to_a
+          if @episode.state.in?([0,3]) && can?(:create,Approve)
+            @approve = @episode.approves.new
+          end
+          flash.now[:alert] = @approve.errors.full_messages
+          render 'episodes/show'
         end
-        flash.now[:alert] = @approve.errors.full_messages
-        format.html { render 'episodes/show' }
         format.json { render json: @approve.errors, status: :unprocessable_entity }
       end
     end

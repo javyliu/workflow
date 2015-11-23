@@ -9,7 +9,7 @@
   <td><%= item.checkin.try(:strftime,"%H:%M") %></td>
   <td><%= item.checkout.try(:strftime,"%H:%M") %></td>
   <td><%= item.description %></td>
-  <td><%= dis_episode(item,ck_type,link: true) %></td>
+  <td><%= dis_episode(item,ck_type,link: true,format: :js) %></td>
   <td><%= Episode::State.rassoc(item.state).try(:first) if item.state %></td>
   <td><%= item.created_at.strftime('%m/%d %T') %></td>
   <td><%= item.updated_at.strftime('%m/%d %T') %></td>
