@@ -39,9 +39,9 @@ class Episode < ActiveRecord::Base
 
   #get the parent episode
   #if no parent return self
-  #def parent
-  #  self.parent_id == 0 ? self : Episode.find_by_id(self.parent_id)
-  #end
+  def parent
+    self.parent_id == 0 ? self : Episode.find_by_id(self.parent_id)
+  end
 
 
   State = [["未审批",0],["通过",1],["未通过",2],["审核中",3]]

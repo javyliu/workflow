@@ -89,7 +89,7 @@ class EpisodesController < ApplicationController
     drop_breadcrumb("部门申请",list_episodes_path)
     drop_breadcrumb
     if /^\d+$/ =~ params[:task]
-      @episode = Episode.find_by(id:params[:task])
+      @episode = Episode.find_by(id:params[:task]).try(:parent)
       raise CanCan::AccessDenied.new("该申请不存在！",home_users_path ) unless @episode
       @task = Task.new("F002",@episode.user.leader_user.id,date:@episode.created_at.to_date.to_s,mid:@episode.id)
     else
