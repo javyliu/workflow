@@ -10,9 +10,9 @@
     名字:
     <strong><%= f.object.name %> </strong>
   </div>
-<div class="field">
-  管理者:
-    <strong> <%= f.object.leader_user.try(:user_name) %> </strong>
+  <div class="field">
+    管理者ID:
+    <%= f.text_field :mgr_code %>
   </div>
   <div class="field">
     <%= f.label :attend_rule_id,"考勤规则:" %>
