@@ -18,7 +18,7 @@ class Department < ActiveRecord::Base
 
   belongs_to :leader_user,foreign_key: :mgr_code,class_name: "User"
 
-  #after_save :delete_caches
+  after_save :delete_caches,if: -> {mgr_code_changed?}
 
   #[
   #0,组名，
@@ -43,5 +43,6 @@ class Department < ActiveRecord::Base
   def delete_caches
     Rails.logger.debug "delete all_depts cache"
     Rails.cache.delete(:all_depts)
+    User.delete_caches
   end
 end

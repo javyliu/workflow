@@ -4,6 +4,7 @@ class Task
   attr_accessor :leader_user_id #任务接收人
   attr_accessor :action_name #处理作务的action名称
   attr_accessor :mid #任务对像id
+  attr_accessor :ext_opts
 
   SubjectRex = /(\w+):(\w+):([-\d]+)(:(\d+))?/
   Expired = "expired"
@@ -125,12 +126,17 @@ class Task
     type,leader_user_id = args
     raise "type is nil" if type.nil? || leader_user_id.nil?
     _task = self.new(type,leader_user_id,date: opts.delete(:date),mid: opts.delete(:mid))
-    Sidekiq.redis do |conn|
-      conn.hmset(_task.task_name,"state",Task::Pending,"count",0,"date",_task.date,*opts.to_a.flatten(1))
-      conn.sadd("task:pendings",_task.task_name)
-      conn.sadd("task:pendings:#{_task.leader_user_id}",_task.task_name)
-    end
+    _task.ext_opts = opts.to_a.flatten(1)
+    _task.save
     _task
+  end
+
+  def save
+    Sidekiq.redis do |conn|
+      conn.hmset(self.task_name,"state",Task::Pending,"count",0,"date",self.date,*self.ext_opts)
+      conn.sadd("task:pendings",self.task_name)
+      conn.sadd("task:pendings:#{self.leader_user_id}",self.task_name)
+    end
   end
 
   #删除任务

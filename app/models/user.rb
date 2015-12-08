@@ -279,12 +279,16 @@ class User < ActiveRecord::Base
 
   private
 
-  def delete_caches
+  def self.delete_caches
     Sidekiq.redis do |_redis|
       _redis.del("leaders_data")
     end
     Rails.cache.delete(:departments)
     Rails.cache.delete(:default_departments)
+  end
+
+  def delete_caches
+    self.class.delete_caches
   end
 
 end

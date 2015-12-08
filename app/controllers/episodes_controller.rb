@@ -84,10 +84,6 @@ class EpisodesController < ApplicationController
   # GET /episodes/F002:1416:2014-10-10:10
   # GET /episodes/1.json
   def show
-    drop_page_title("申请审批")
-    drop_breadcrumb("我的考勤",home_users_path)
-    drop_breadcrumb("部门申请",list_episodes_path)
-    drop_breadcrumb
     if /^\d+$/ =~ params[:task]
       @episode = Episode.find_by(id:params[:task]).try(:parent)
       raise CanCan::AccessDenied.new("该申请不存在！",home_users_path ) unless @episode
@@ -115,8 +111,16 @@ class EpisodesController < ApplicationController
     end
 
     respond_to do |format|
-      format.html {  }
-      format.js {render template: 'episodes/show',content_type: Mime::HTML  }
+      format.html do
+        drop_page_title("申请审批")
+        drop_breadcrumb("我的考勤",home_users_path)
+        drop_breadcrumb("部门申请",list_episodes_path)
+        drop_breadcrumb
+      end
+      format.js do
+        expires_now
+        render template: 'episodes/show',content_type: Mime::HTML
+      end
     end
 
   end
