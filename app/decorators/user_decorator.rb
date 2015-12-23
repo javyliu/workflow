@@ -239,7 +239,7 @@ class UserDecorator < ApplicationDecorator
       elsif @ckin_time.tuesday? &&  (_tmp_diff = start_working_time.change(hour: 8) - @ckin_time) > 0 #周二早于8点上班算维护到的情况,截至9点算A分
         @a_point += ((_tmp_diff.to_i/60+60)/attend_rule.min_unit.to_f).round.to_f/unit
         if attend_rule.name == "platform" #平台因不算ab分，所以设置结束工作时间点
-          end_working_time = @ckin_time.change(hour: 16)
+          end_working_time = @ckin_time.change(hour: 16,min: 30)
         elsif attend_rule.id.in?([1,2]) #ab分为工作室
           ref_cmd.push("维护")
         end
