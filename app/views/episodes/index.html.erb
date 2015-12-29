@@ -20,10 +20,10 @@
   <tbody>
   <% @episodes.each do |episode| %>
   <tr>
-    <td><%= episode.holiday.name %></td>
+    <td><%= episode.holiday.try(:name) %></td>
     <td><%= episode.start_date %></td>
     <td><%= episode.end_date %></td>
-    <td><%= episode.total_time %><%= episode.holiday.unit %></td>
+    <td><%= episode.total_time %><%= episode.holiday.try(:unit) %></td>
     <td><%= episode.comment.truncate(15) %></td>
     <td><%= episode.state %></td>
     <td><%= link_to('详情', episode_path(episode,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})%> &nbsp;

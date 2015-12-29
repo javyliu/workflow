@@ -23,7 +23,7 @@
     <%= f.label :roles,"角色" %>
     <ul class='medium-block-grid-7'>
       <% Role.all_without_reserved.each do |role| %>
-      <li><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role) %><%= role.display_name %> </label></li>
+      <li><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
       <% end %>
     </ul>
     <%= hidden_field_tag "user[role_ids][]",nil %>

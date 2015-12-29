@@ -5,9 +5,10 @@
   <td><%= item.dept_name %></td>
   <td><%= item.checkin %></td>
   <td><%= item.checkout %></td>
+  <td><%= item.description %></td>
 </tr>
 <% end %>
 <tr>
   <td colspan="3"><%= paginate(items) %></td>
-    <td colspan=2><%= page_entries_info items,entry_name: "记录" %></td>
+    <td colspan=3><%= page_entries_info items,entry_name: "记录" %></td>
 </tr>

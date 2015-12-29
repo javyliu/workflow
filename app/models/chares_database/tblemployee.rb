@@ -20,7 +20,8 @@ module CharesDatabase
         end
         u.user_name = item.name
         u.email=item.email
-        u.department=item.department
+        #2015-12-29 部门字段已更新其意义为该用户可管理的部门，同步时不再同步
+        #u.department=item.department
         u.dept_code=item.deptCode
         #2015-03-27 09:37 javy don't sys the mgrcode and department
         #u.mgr_code=item.mgrCode

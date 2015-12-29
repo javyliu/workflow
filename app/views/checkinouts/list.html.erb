@@ -1,6 +1,6 @@
 <div class="row">
-  <%= render 'users/right_nav' %>
-  <div class="columns medium-9 medium-pull-3">
+  <%#= render 'users/right_nav' %>
+  <div class="columns medium-12">
     <% if  can? :list,Checkinout %>
     <div id="search" class="panel">
       <form data-remote="true"  action="#" data-replace-with="#content">
@@ -41,6 +41,7 @@
           <th>部门</th>
           <th>签入时间</th>
           <th>签出时间</th>
+          <th>异常描述</th>
         </tr>
       </thead>
       <tbody id="content">
