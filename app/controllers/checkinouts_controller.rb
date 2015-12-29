@@ -41,7 +41,7 @@ class CheckinoutsController < ApplicationController
     @checkinouts = @checkinouts.where(con_hash).where(ary_con).page(params[:page])
     @checkinouts = @checkinouts.where(user_id: _uids) if _uids.present?
 
-    @checkinouts = @checkinouts.select("checkinouts.*,GROUP_CONCAT(journals.id,'!!',journals.description separator '<br>') description,count(journals.id) count_journals").joins('left join journals on checkinouts.user_id = journals.user_id and checkinouts.rec_date = journals.update_date').group('checkinouts.id').order('checkinouts.id')
+    @checkinouts = @checkinouts.select("checkinouts.*,GROUP_CONCAT(journals.id,'!!',journals.description separator '<br>') description,count(journals.id) count_journals").joins('left join journals on checkinouts.user_id = journals.user_id and checkinouts.rec_date = journals.update_date').group('checkinouts.id').order('checkinouts.id desc')
     @checkinouts = @checkinouts.preload(user: [:dept]).decorate
 
     #@checkinouts.except(:select,:joins,:limit,:order,:offset,:group).total_count
