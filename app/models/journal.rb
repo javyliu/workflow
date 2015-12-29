@@ -106,6 +106,10 @@ class Journal < ActiveRecord::Base
     CheckType.assoc(MailDecType.rassoc(key.downcase).first)
   end
 
+  def ck_type
+    @_ck_type ||= Journal::CheckType.rassoc(self.check_type)
+  end
+
   #用于邮件显示中在“其它”栏中回复的标识符，主要用于邮件中说明的展示
   def self.mail_dec_identities
     @mail_dec_identities ||= MailDecType.transpose.first

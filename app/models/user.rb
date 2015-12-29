@@ -73,6 +73,8 @@ class User < ActiveRecord::Base
                      end
   end
 
+
+
   #每日发送前一天部门的考勤邮件，如果昨天是工作日 ，则发送每个部门的考勤邮件，如果是非工作日 ，则只发送有考勤异常部门的邮件
   def self.leaders_by_date(date)
     if SpecDay.workday?(date: date)

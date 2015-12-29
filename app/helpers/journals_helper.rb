@@ -1,5 +1,6 @@
 module JournalsHelper
-  def dis_dval(item,ck_type)
+  def dis_dval(item,ck_type=nil)
+    ck_type ||= item.ck_type
     case ck_type.last
     when 0
       ""
@@ -10,6 +11,7 @@ module JournalsHelper
     end.to_s + ck_type.fourth
 
   end
+
 
   def dis_episode(item,ck_type,link: true,prompt_new: false,format: :html)
     if ck_type[6].nil?

@@ -2,15 +2,15 @@ class CheckinoutDecorator < ApplicationDecorator
   delegate_all
 
   def checkin
-    object.checkin.strftime("%H:%M")
+    object.checkin.try(:strftime,"%H:%M")
   end
 
   def checkout
-    object.checkout.strftime("%H:%M")
+    object.checkout.try(:strftime,"%H:%M")
   end
 
   def ref_time
-    object.ref_time.strftime("%H:%M")
+    object.ref_time.try(:strftime,"%H:%M")
   end
 
   def user_name
@@ -27,19 +27,39 @@ class CheckinoutDecorator < ApplicationDecorator
       object.description.split("<br>").each do |item|
         id,text = item.split('!!')
         tmp_str << h.link_to(text || '无描述',h.journal_path(id,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})
+        tmp_str << "&nbsp;"
       end
     else
       is_work_day = SpecDay.workday?(date: object.rec_date)
 
       #小于9小时就是异常，非工作日有记录是异常
-      return h.content_tag(:span,'非工作日加班',class: 'alert label')  if !is_work_day
-      return h.content_tag(:span,'工时不足8小时',class: 'alert label')  if (object.checkout - object.checkin) < 32400
+      text = if !is_work_day
+               '非工作日加班'
+             elsif (object.checkout - object.checkin) < 32400
+               '工时不足8小时'
+             else
+               ckin_time = object.checkin
+               start_working_time,end_working_time = regular_working_time
+               #非正常工作时间上下班都为异常
+               if ckin_time > start_working_time || object.checkout < end_working_time
+                 '上下班异常'
+               else
+                 nil
+               end
+             end
+      if text
+        task_name = "F001:#{User.cached_leaders.detect{|it|it[2].include?(object.user_id.to_s)}.first}:#{object.rec_date}"
+        tmp_str << h.link_to(h.kaoqing_users_path(task_name,cmd: 'update')) do
+          h.concat(h.content_tag(:span,text,class: 'alert label'))
+        end
+      else
+        return nil
+      end
 
-      ckin_time = object.checkin
-      start_working_time,end_working_time = regular_working_time
+      #return h.content_tag(:span,'非工作日加班',class: 'alert label')  if !is_work_day
+      #return h.content_tag(:span,'工时不足8小时',class: 'alert label')  if (object.checkout - object.checkin) < 32400
+      #return h.content_tag(:span,'上下班异常',class: 'alert label')  if ckin_time > start_working_time || object.checkout < end_working_time
 
-      #非正常工作时间上下班都为异常
-      return h.content_tag(:span,'上下班异常',class: 'alert label')  if ckin_time > start_working_time || object.checkout < end_working_time
     end
     tmp_str.html_safe
   end

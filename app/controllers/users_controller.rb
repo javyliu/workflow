@@ -112,7 +112,7 @@ class UsersController < ApplicationController
       tasks
     end
 
-    @rule = AttendRule.find(@user.leader_data[1])
+    @rule = AttendRule.find(@user.leader_data[1]) rescue Rails.logger.debug{"error_no_leader_data:#{@user.id}"}
 
     @user = @user.decorate
     @user.report_titles = ReportTitle.where(id: @rule.title_ids).order("ord,id")

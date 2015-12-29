@@ -1,29 +1,23 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>User:</strong>
-  <%= @journal.user_id %>
-</p>
+<fieldset>
+  <legend><span><%= @journal.update_date  %>(<%= l(@journal.update_date,format: '%A') %>)</span></legend>
+  <p>
+  <strong><%= @journal.user.try(:user_name) %></strong>
+  </p>
+  <p>
+  <strong>异常类型:</strong>
+  <%= @journal.ck_type[2] %>
+  </p>
 
-<p>
-  <strong>Update date:</strong>
-  <%= @journal.update_date %>
-</p>
-
-<p>
-  <strong>Check type:</strong>
-  <%= @journal.check_type %>
-</p>
-
-<p>
-  <strong>Description:</strong>
+  <p>
+  <strong>审批描述:</strong>
   <%= @journal.description %>
-</p>
+  </p>
 
-<p>
-  <strong>Dval:</strong>
-  <%= @journal.dval %>
-</p>
+  <p>
+  <strong>异常工时： </strong>
+  <%= dis_dval(@journal) %>
+  </p>
 
-<%= link_to 'Edit', edit_journal_path(@journal) %> |
-<%= link_to 'Back', journals_path %>
+  <%= link_to '编辑', edit_journal_path(@journal) %>
+</fieldset>
