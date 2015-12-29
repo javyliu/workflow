@@ -152,6 +152,17 @@ class User < ActiveRecord::Base
     @leader_data ||= User.leader_data(self.id)
   end
 
+  #返回一个数组
+  #[:description,:id,:name,:time_range,:min_unit]
+  def rule
+    _id = self.id.to_s
+    @rule ||= if rule_id = User.cached_leaders.detect{|it| it[0] == _id || it[2].include?(_id)}.try(:[],1)
+                AttendRule.list.rassoc(rule_id.to_i)
+              else
+                nil
+              end
+  end
+
   def pending_tasks
     @pending_tasks ||= Task.user_pending_tasks(self.id)
   end

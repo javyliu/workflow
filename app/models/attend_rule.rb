@@ -22,7 +22,7 @@ class AttendRule < ActiveRecord::Base
 
 
   def self.list
-    @list ||= self.pluck(:description,:id,:name)
+    @list ||= self.pluck(:description,:id,:name,:time_range,:min_unit)
   end
 
 

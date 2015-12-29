@@ -21,17 +21,10 @@ class CheckinoutsController < ApplicationController
   end
 
   def list
-    drop_breadcrumb("我的考勤",home_users_path)
-    drop_page_title("部门签到记录")
-    drop_breadcrumb
     #@checkinouts = @checkinouts.select("a.*,GROUP_CONCAT(b.id,'!!',b.description separator '<br>') description,count(a.rec_date) count_journals").joins('a left join journals b on a.user_id = b.user_id and a.rec_date = b.update_date').group('a.id').order('a.id')
-    @checkinouts = @checkinouts.select("a.*,GROUP_CONCAT(b.id,'!!',b.description separator '<br>') description,count(b.id) count_journals").joins('a left join journals b on a.user_id = b.user_id and a.rec_date = b.update_date').group('a.id').order('a.id')
-    Rails.logger.debug {@checkinouts.to_sql}
+    #Rails.logger.debug {@checkinouts.to_sql}
     #用于通过部门查找用户，此时不应该括括直属部门，因为直属管理的部门人员已在resource文件中作为条件做了限定
     if can?(:view,Department) && (depts = current_user.role_depts(include_mine: false).presence) && !User.is_all_dept?(depts)
-      #Rails.logger.debug {depts.inspect}
-      #select a.*,GROUP_CONCAT(b.id,'!!',b.description separator '<br>') description,count(a.rec_date) count_journals from checkinouts a LEFT JOIN journals b on a.user_id = b.user_id and a.rec_date = b.update_date
-      #GROUP BY a.id  order by a.id desc limit 100
       @checkinouts = @checkinouts.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@checkinouts.where_values_hash["user_id"])))
     end
 
@@ -45,14 +38,25 @@ class CheckinoutsController < ApplicationController
       _uids = User.not_expired.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
 
-    Rails.logger.debug {@checkinouts.to_sql}
     @checkinouts = @checkinouts.where(con_hash).where(ary_con).page(params[:page])
     @checkinouts = @checkinouts.where(user_id: _uids) if _uids.present?
 
-    Rails.logger.debug {@checkinouts.to_sql}
+    @checkinouts = @checkinouts.select("checkinouts.*,GROUP_CONCAT(journals.id,'!!',journals.description separator '<br>') description,count(journals.id) count_journals").joins('left join journals on checkinouts.user_id = journals.user_id and checkinouts.rec_date = journals.update_date').group('checkinouts.id').order('checkinouts.id')
+    @checkinouts = @checkinouts.preload(user: [:dept]).decorate
+
+    #@checkinouts.except(:select,:joins,:limit,:order,:offset,:group).total_count
+    @checkinouts.set_total_count{|obj| obj.except(:joins,:select,:limit,:order,:offset,:group).count}
+    #@checkinouts.instance_variable_set(:@total_count,
+
     respond_to do |format|
-      format.html { @checkinouts = @checkinouts.eager_load(user: [:dept]).decorate }
-      format.js {render partial: "items",object: @checkinouts.includes(user: [:dept]).decorate, content_type: Mime::HTML}
+      format.html do
+        drop_breadcrumb("我的考勤",home_users_path)
+        drop_page_title("部门签到记录")
+        drop_breadcrumb
+      end
+      format.js do
+        render partial: "items",object: @checkinouts, content_type: Mime::HTML
+      end
     end
   end
 

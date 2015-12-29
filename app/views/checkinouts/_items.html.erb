@@ -9,6 +9,6 @@
 </tr>
 <% end %>
 <tr>
-  <td colspan="3"><%= paginate(items) %></td>
+  <td colspan="3"><%= paginate(items,remote: true) %></td>
     <td colspan=3><%= page_entries_info items,entry_name: "记录" %></td>
 </tr>
