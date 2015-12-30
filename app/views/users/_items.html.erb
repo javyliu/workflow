@@ -3,7 +3,7 @@
     <td><%= user.uid %></td>
     <td><%= user.user_name %></td>
     <td><%= user.email %></td>
-    <td><%= user.dept.name %></td>
+    <td><%= user.dept.try(:name) %></td>
     <td><%= user.title %></td>
     <td><%= user.expire_date %></td>
     <td><%= user.mgr_code %></td>
