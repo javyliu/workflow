@@ -17,7 +17,7 @@ module JournalsHelper
     if ck_type[6].nil?
       ""
     else
-      item.episode_id ? (link ? link_to(ck_type[2],episode_url(item.episode_id,format: format),data:{"reveal-id": "modal_window","reveal-ajax": true}) : ck_type[2]) : (prompt_new ? link_to("提交申请",new_episode_path(holiday_id: ck_type[6],journal_id: item.id)) : "无假条")
+      item.episode_id ? (link ? link_to(ck_type[2],episode_url(item.episode_id,format: format),data:{"reveal-id": "modal_window","reveal-ajax": true}) : ck_type[2]) : (prompt_new ? link_to("提交申请",new_episode_path(holiday_id: ck_type[6],journal_id: item.id)) : "<span class='label warning'>无假条</span>".html_safe)
     end
   end
 

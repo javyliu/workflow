@@ -17,7 +17,7 @@ class CheckinoutDecorator < ApplicationDecorator
     object.try(:user).try(:user_name)
   end
   def dept_name
-    object.try(:user).try(:dept).try(:name)
+    h.short_dept_name(object.try(:user).try(:dept).try(:name))
   end
 
   def description
