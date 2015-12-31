@@ -31,7 +31,7 @@ class Resource
     resource [:read,:update],OaConfig
     resource [:read,:update],AttendRule
     resource [:read,:update],ReportTitle
-    resource [:read,:update,:create],YearInfo
+    resource [:read,:update,:create,:export],YearInfo
     resource :manage,Role
   end
 
