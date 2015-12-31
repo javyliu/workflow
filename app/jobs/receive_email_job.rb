@@ -94,10 +94,6 @@ class ReceiveEmailJob < ActiveJob::Base
           _text = td.text.strip
           next if _text.blank?
 
-          journal = Journal.find_or_initialize_by(user_id: _user_id ,update_date:date)
-          #取邮件中的默认描述
-          journal.description = item.css("td[id=c_ref_cmd]").text.strip
-          journal.dval = 0
           _med = td.attr(:id).strip
           #使用others来替换不常用的异常考勤类型
           if  _med == "c_aff_others"
@@ -108,7 +104,13 @@ class ReceiveEmailJob < ActiveJob::Base
           end
           Rails.logger.info("-------method:#{_med} -text:#{_text}")
           raise "cktype is nil" unless cktype
-          journal.check_type = cktype.second
+
+          journal = Journal.find_or_initialize_by(user_id: _user_id ,update_date:date,check_type: cktype.second )
+          #取邮件中的默认描述
+          journal.description = item.css("td[id=c_ref_cmd]").text.strip
+          journal.dval = 0
+
+          #journal.check_type = cktype.second
           if _med == "c_aff_spec_appr" #特批
             journal.description = _text
           else
