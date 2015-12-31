@@ -161,7 +161,7 @@ class Task
     rule ||= AttendRule.find(leader_user.leader_data[1])
 
     leader_user.ref_cmd[0] = 0
-    users = User.where(uid: uids).includes(:last_year_info,:dept).decorate
+    users = User.where(uid: uids).includes(:year_infos,:dept).decorate
 
     date_checkins = Checkinout.where(user_id: uids,rec_date: task.date).to_a
 

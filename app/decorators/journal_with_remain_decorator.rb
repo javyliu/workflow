@@ -80,7 +80,7 @@ class JournalWithRemainDecorator <  Draper::Decorator
 
   private
   def base_holiday_info
-    @base_holiday_info ||= (user.last_year_info || user.create_last_year_info)
+    user.last_year_info
   end
 
 

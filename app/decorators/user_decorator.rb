@@ -382,7 +382,7 @@ class UserDecorator < ApplicationDecorator
 
   private
   def base_holiday_info
-    @base_holiday_info ||= (object.last_year_info || object.create_last_year_info)
+    object.last_year_info
   end
 
   def year_journal(check_type_id)

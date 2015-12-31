@@ -10,6 +10,7 @@ class YearInfosController < ApplicationController
     respond_to do |format|
       format.html do
         @year_infos = @year_infos.select("year_infos.*,users.user_name").page(params[:page]).joins(:user)
+        @year_infos.instance_variable_set(:@total_count,@year_infos.except(:joins,:order,:offset,:select,:limit).count)
       end
       format.js do
         params.permit!
@@ -19,6 +20,8 @@ class YearInfosController < ApplicationController
         @year_infos = @year_infos.where(user_id: _user_ids) if _user_ids
         #@year_infos = @year_infos.page(params[:page]).includes(:user)
         @year_infos = @year_infos.select("year_infos.*,users.user_name").page(params[:page]).joins(:user)
+        @year_infos.instance_variable_set(:@total_count,@year_infos.except(:joins,:order,:offset,:select,:limit).count)
+
 
         render partial: "items",object: @year_infos, content_type: Mime::HTML
 
@@ -52,7 +55,8 @@ class YearInfosController < ApplicationController
           _attrs["ab_point"] = item.ab_point.to_f/10
 
           #TODO need fix the number type
-          if item.year == _start_year
+          #在年订截止日期之前还需要计划本年度剩余假期,即在2016年2月18日之前仍可导出2015年的剩余假期
+          if item.year >= _start_year
             _attrs["r_year_holiday"] = ( item.year_holiday - year_journal(item.user_id,5)).to_f/10
             _attrs["r_sick_leave"] = (item.sick_leave - year_journal(item.user_id,17)).to_f/10
             _attrs["r_affair_leave"] = ( item.affair_leave - year_journal(item.user_id,11)).to_f/10
@@ -89,7 +93,7 @@ class YearInfosController < ApplicationController
     msgs = []
     _calcute_date = Date.parse(OaConfig.setting(:end_year_time))
     _year = Date.today.year
-    _last_year = _year - 1
+    #_last_year = _year - 1
     _attrs = case params[:type]
              when "all"
                {year_holiday: 50,sick_leave: OaConfig.setting(:sick_leave_days).to_i * 10,affair_leave: OaConfig.setting(:affair_leave_days).to_i * 10,switch_leave: 0,ab_point: 0}

@@ -30,9 +30,9 @@ class User < ActiveRecord::Base
   has_many :checkinouts
   #昨天签到用户，用于发送日常邮件中的 includes
   has_one :yesterday_checkin,-> {where(rec_date: (User.query_date || Date.yesterday).to_s)},class_name: "Checkinout"
-  has_many :year_infos
+  has_many :year_infos,->{where("year >= ?", OaConfig.setting(:end_year_time)[/^\d+/]).order("year desc") }
   #假期及ab分基础数据，用于计算用户剩余年假
-  has_one :last_year_info,-> {where(year: OaConfig.setting(:end_year_time)[0..3]) },class_name: "YearInfo"
+  #has_one :last_year_info,-> {select("id,year,user_id,sum(year_holiday) year_holiday,sum(sick_leave) sick_leave,sum(affair_leave) affair_leave,sum(switch_leave) switch_leave,sum(ab_point) ab_point")},class_name: "YearInfo"
   has_many :journals
   #用户在某一天的已确认异常考勤,用于手动加载防止n+1
   #has_one :journal
@@ -73,6 +73,11 @@ class User < ActiveRecord::Base
                      end
   end
 
+  #[:year, :user_id, :year_holiday, :sick_leave, :affair_leave, :switch_leave, :ab_point]
+  GroupYearInfoColumns = YearInfo.attribute_names.map(&:intern).slice(3..-3)
+  def last_year_info
+    @last_year_info ||= self.year_infos.inject{|r,item| GroupYearInfoColumns.each{|it|r[it] += item[it]};r} || self.year_infos.create(year: Date.today.year)
+  end
 
 
   #每日发送前一天部门的考勤邮件，如果昨天是工作日 ，则发送每个部门的考勤邮件，如果是非工作日 ，则只发送有考勤异常部门的邮件
