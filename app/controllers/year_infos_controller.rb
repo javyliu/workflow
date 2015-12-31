@@ -13,7 +13,7 @@ class YearInfosController < ApplicationController
       end
       format.js do
         params.permit!
-        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
+        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name],left_like: [:email,:dept_code])
         _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
         @year_infos = @year_infos.where(params[:date]) if params[:date] && params[:date][:year].present?
         @year_infos = @year_infos.where(user_id: _user_ids) if _user_ids
