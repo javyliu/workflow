@@ -30,6 +30,8 @@ module CharesDatabase
         u.onboard_date= item.onboardDate
         u.regular_date= item.regularDate
 
+
+
         #有email的用户才会设置密码，否则不设
         if u.email
           _uname = u.email[/.*(?=@)/,0]
@@ -45,7 +47,7 @@ module CharesDatabase
             u.password = '123123'
             u.title = item.title
             #初始化其year_info
-            u.create_last_year_info
+            #u.create_last_year_info
           end
         end
 
@@ -53,13 +55,41 @@ module CharesDatabase
         #u.password = u.email? ? (pwds[u.email[/.*(?=@)/,0]] || '123123') : '123123' #如果邮箱为空,或密码表为空，则设置密码为123123
         #puts u.inspect
         u.save!
+        #更新基础假期表,每天都要计算一次
+
+        calcute_year_info_data(u,_date)
         #如果用户的转正日期今日相等，则更新用户的基础带薪病假
-        if u.regular_date == _date
-          u.last_year_info.update_attribute(:sick_leave, OaConfig.setting(:sick_leave_days).to_i * 10)
-        end
+        #if u.regular_date == _date
+        #  u.last_year_info.update_attribute(:sick_leave, OaConfig.setting(:sick_leave_days).to_i * 10)
+        #end
       end
 
       User.where("expire_date < current_date() ").delete_all
+    end
+
+    def self.calcute_year_info_data(user,date=Date.today)
+
+      year_info = YearInfo.find_or_initialize_by(user_id: user.id,year: date.year)
+      #如果用户的转正日期今日相等，则更新用户的基础带薪病假
+      if user.regular_date == date
+        year_info.sick_leave = OaConfig.setting(:sick_leave_days).to_i * 10
+      end
+
+      _total_years = (date - item.onboard_date).fdiv(365) rescue(Rails.logger.debug{"#{user.id} 司龄计算错误"};0)
+      year_info.year_holiday = if _total_years < 1
+                                 0
+                               elsif _total_years < 2
+                                 #最小单位为0.5天 * 10 为5
+                                 (((item.onboard_date.end_of_year - item.onboard_date)*100.0)/365).round.to_f/2.tap{|t|Rails.logger.info("user_id: #{user.id}:#{t}")}
+                               elsif _total_years <= 10
+                                 50
+                               elsif _total_years <= 20
+                                 100
+                               else
+                                 150
+                               end
+      year_info.save!
+
     end
 
     #在users表中的直属管理者,指定经理等人的上一级管理者

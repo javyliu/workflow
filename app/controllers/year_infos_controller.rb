@@ -92,7 +92,9 @@ class YearInfosController < ApplicationController
 
     msgs = []
     _calcute_date = Date.parse(OaConfig.setting(:end_year_time))
-    _year = Date.today.year
+    _today = Date.today
+    _year = _today.year
+    _calcute_date = _today if _calcute_date.year < _year
     #_last_year = _year - 1
     _attrs = case params[:type]
              when "all"
@@ -111,9 +113,11 @@ class YearInfosController < ApplicationController
 
 
     User.where("email is not null").find_each do |item|
+      #如果年度考勤截止日期的年度小于当前年度，表明此时处于元旦后到春节期间，此时如果初始化年度假期的话，计算员工是否有年假会有问题，
+      #所以此时年假的日期有当年日期来计算，
 
       if _attrs[:year_holiday] #计算年假
-        _total_years = (_calcute_date - item.onboard_date).fdiv(365)
+        _total_years = (_calcute_date - (item.onboard_date || _today)).fdiv(365)
         _attrs[:year_holiday] = if _total_years < 1
                                   0
                                 elsif _total_years <= 10

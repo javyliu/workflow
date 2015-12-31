@@ -1,14 +1,16 @@
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns large-9 medium-pull-3">
+    <!--
     <div class="panel">
-      <%= link_to "初始化本年度假期", year_infos_path(type: :all),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年的所有基础假期，确定执行么？',disable_with: '操作中'} %>
-      <%= link_to "初始化年假", year_infos_path(type: :year_holiday),class: 'button medium',method: :post,data: {confirm: '该操作将初始化所有用户的年假，确定执行么？',disable_with: '操作中'} %>
-      <%= link_to "初始化带薪病假", year_infos_path(type: :sick_leave),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年所有用户的带薪病假，确j定执行么？',disable_with: '操作中'} %>
-      <%= link_to "初始化带薪事假", year_infos_path(type: :affair_leave),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年所有用户的带薪病假，确定执行么？',disable_with: '操作中'} %>
-      <%= link_to "清空倒休", year_infos_path(type: :switch_leave),class: 'button medium',method: :post,data: {confirm: '该操作将清空所有用户的倒休时长，确定执行么？',disable_with: '操作中'} %>
-      <%= link_to "清空AB分", year_infos_path(type: :ab_point),class: 'button medium',method: :post,data: {confirm: '该操作将清空所有用户的AB分，确定执行么？',disable_with: '操作中'} %>
+      <%#= link_to "初始化本年度假期", year_infos_path(type: :all),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年的所有基础假期，确定执行么？',disable_with: '操作中'} %>
+      <%#= link_to "初始化年假", year_infos_path(type: :year_holiday),class: 'button medium',method: :post,data: {confirm: '该操作将初始化所有用户的年假，确定执行么？',disable_with: '操作中'} %>
+      <%#= link_to "初始化带薪病假", year_infos_path(type: :sick_leave),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年所有用户的带薪病假，确j定执行么？',disable_with: '操作中'} %>
+      <%#= link_to "初始化带薪事假", year_infos_path(type: :affair_leave),class: 'button medium',method: :post,data: {confirm: '该操作将初始化今年所有用户的带薪病假，确定执行么？',disable_with: '操作中'} %>
+      <%#= link_to "清空倒休", year_infos_path(type: :switch_leave),class: 'button medium',method: :post,data: {confirm: '该操作将清空所有用户的倒休时长，确定执行么？',disable_with: '操作中'} %>
+      <%#= link_to "清空AB分", year_infos_path(type: :ab_point),class: 'button medium',method: :post,data: {confirm: '该操作将清空所有用户的AB分，确定执行么？',disable_with: '操作中'} %>
     </div>
+    -->
     <div id="search" class="panel">
       <form data-remote="true"  action="#" data-replace-with="#content">
         <div class="row">

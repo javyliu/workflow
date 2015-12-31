@@ -19,12 +19,13 @@ set :output, "~/cron_log.log"
 
 #每天早上5点同步checkinout数据库
 job_type :job, "cd :path && :environment_variable=:environment bin/sidekiq_pusher :task :output"
+#同步用户、用户密码等
+every 1.day,at: '4:30' do
+  job "SysUserJob"
+end
+
 every 1.day,at: '5am' do
   job "SysKaoqingDataJob"
-end
-#同步用户密码
-every 1.day,at: '7:05' do
-  job "SysUserJob"
 end
 
 #每天早上8.00发出每日考勤邮件
