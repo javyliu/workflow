@@ -34,7 +34,7 @@ class CheckinoutsController < ApplicationController
 
     _uids = nil
     if params[:user].present?
-      con_hash1,like_con = construct_condition(:user,like_ary: [:user_name])
+      con_hash1,like_con = construct_condition(:user,like_ary: [:user_name],left_like:[:dept_code])
       _uids = User.not_expired.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
 

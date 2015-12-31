@@ -30,7 +30,7 @@ class EpisodesController < ApplicationController
       end
       format.js do
         params.permit!
-        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
+        con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email],left_like: [:email,:dept_code])
         #Rails.logger.info con_hash.inspect
         #Rails.logger.info like_hash.inspect
         _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
