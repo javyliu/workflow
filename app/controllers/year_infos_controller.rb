@@ -6,7 +6,7 @@ class YearInfosController < ApplicationController
   def index
     drop_page_title("基础假期管理")
     drop_breadcrumb
-    @year_infos = @year_infos.order("year desc")
+    @year_infos = @year_infos.order("year desc,user_id asc").where("user_id>1000")
     respond_to do |format|
       format.html do
         @year_infos = @year_infos.select("year_infos.*,users.user_name").page(params[:page]).joins(:user)

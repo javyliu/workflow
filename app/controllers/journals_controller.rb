@@ -69,7 +69,7 @@ class JournalsController < ApplicationController
       format.html do
         today = Date.today
         if @start_time.blank?
-          @start_time = today.change(month: (today.month - 1),day: 1)
+          @start_time = today.last_month #change(month: (today.month - 1),day: 1)
           @html_journals = @html_journals.where("update_date >= ?",@start_time)
         end
         if @end_time.blank?

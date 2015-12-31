@@ -91,7 +91,7 @@ class UsersController < ApplicationController
     _today = Date.today
     limit_day = OaConfig.setting(:limit_day_of_month).to_i
     @need_update = @user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
-    _is_expired =  @date < _today.change(day:limit_day,month: _today.month - 1) || (_today.day > limit_day && @date.day < limit_day)
+    _is_expired =  @date < _today.last_month.change(day:limit_day) || (_today.day > limit_day && @date.day < limit_day)
     if _is_expired
       @task.remove(all: true)
       flash.now[:alert] = '该日考勤已过期，如需修改请联系人事部门。'

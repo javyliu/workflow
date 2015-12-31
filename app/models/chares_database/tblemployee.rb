@@ -70,17 +70,17 @@ module CharesDatabase
     def self.calcute_year_info_data(user,date=Date.today)
 
       year_info = YearInfo.find_or_initialize_by(user_id: user.id,year: date.year)
-      #如果用户的转正日期今日相等，则更新用户的基础带薪病假
-      if user.regular_date == date
+      #如果用户的转正日期小于等于于今日，则更新用户的基础带薪病假
+      if user.regular_date && user.regular_date <= date || user.onboard_date.year <= 2014
         year_info.sick_leave = OaConfig.setting(:sick_leave_days).to_i * 10
       end
 
-      _total_years = (date - item.onboard_date).fdiv(365) rescue(Rails.logger.debug{"#{user.id} 司龄计算错误"};0)
+      _total_years = (date - user.onboard_date).fdiv(365) rescue(Rails.logger.debug{"#{user.id} 司龄计算错误"};0)
       year_info.year_holiday = if _total_years < 1
                                  0
-                               elsif _total_years < 2
-                                 #最小单位为0.5天 * 10 为5
-                                 (((item.onboard_date.end_of_year - item.onboard_date)*100.0)/365).round.to_f/2.tap{|t|Rails.logger.info("user_id: #{user.id}:#{t}")}
+                               elsif _total_years >= 1 && user.onboard_date.year == (date.year - 1)
+                                 #最小单位为0.5天 * 10 为5 ((date2-data1)*2*5.0/365).round*10/2
+                                 (((user.onboard_date.end_of_year - user.onboard_date)*10.0)/365).round*5
                                elsif _total_years <= 10
                                  50
                                elsif _total_years <= 20

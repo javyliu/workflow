@@ -40,7 +40,7 @@ class EpisodesController < ApplicationController
         #Rails.logger.info array_con.inspect
         @episodes = @episodes.where(parent_id: 0)
         @episodes = @episodes.where(user_id: _user_ids) if _user_ids
-        if params[:episode][:start_date].blank?
+        if params[:episode] && params[:episode][:start_date].blank?
           @episodes = @episodes.where("start_date >= ? ",OaConfig.setting(:end_year_time))
         end
         @episodes = @episodes.page(params[:page]).where(con_hash1).where(array_con).includes(:holiday,user:[:dept]).decorate

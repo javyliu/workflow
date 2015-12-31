@@ -1,5 +1,5 @@
 <p>
-  <strong>Uid:</strong>
+  <strong>用户编号:</strong>
   <%= @user.uid %>
 </p>
 
@@ -7,7 +7,14 @@
   <strong>姓名:</strong>
   <%= @user.user_name %>
 </p>
-
+<p>
+  <strong>入职日:</strong>
+  <%= @user.onboard_date %>
+</p>
+<p>
+  <strong>转正日:</strong>
+  <%= @user.regular_date %>
+</p>
 <p>
   <strong>邮箱:</strong>
   <%= @user.email %>
@@ -47,7 +54,7 @@
   <h6><%= group %></h6>
   <ul class='medium-block-grid-8'>
     <% depts.each do |dept| %>
-    <li><label> <%= dept[0] %></label></li>
+    <li><label> <%= short_dept_name(dept[0]) %></label></li>
     <% end %>
   </ul>
   <% end %>

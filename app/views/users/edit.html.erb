@@ -21,9 +21,9 @@
   </div>
   <div class="columns medium-8">
     <%= f.label :roles,"角色" %>
-    <ul class='medium-block-grid-7'>
-      <% Role.all_without_reserved.each do |role| %>
-      <li><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
+    <ul class='medium-block-grid-6'>
+      <% Role.all.each do |role| %>
+      <li style="display: <%='none' if role.name == 'admin'  %>"><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
       <% end %>
     </ul>
     <%= hidden_field_tag "user[role_ids][]",nil %>
@@ -36,7 +36,7 @@
     <h6><%= group %> <a href='#' >全选</a></h6>
     <ul class='medium-block-grid-8'>
       <% depts.each do |dept| %>
-      <li><label> <%= check_box_tag "user[department][]",dept[1],f.object.department.include?(dept[1]) %><%= dept[0] %> </label></li>
+      <li><label> <%= check_box_tag "user[department][]",dept[1],f.object.department.include?(dept[1]) %><%= short_dept_name(dept[0]) %> </label></li>
       <% end %>
     </ul>
     <% end %>
