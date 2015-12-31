@@ -25,11 +25,12 @@ class YearInfosController < ApplicationController
       end
 
       format.xls do
-        _select = "year,user_id,user_name,name dept_name,year_holiday,sick_leave,affair_leave,switch_leave,ab_point,null r_year_holiday,null r_sick_leave,null r_affair_leave,null r_switch_leave,null r_ab_point"
+        _cols = "year,user_id,user_name,name,year_holiday,sick_leave,affair_leave,switch_leave,ab_point,r_year_holiday,r_sick_leave,r_affair_leave,r_switch_leave,r_ab_point".split(',')
+
         params.permit!
         con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
         _user_ids = User.where(con_hash).where(like_hash).pluck(:uid) if con_hash || like_hash
-        @year_infos = @year_infos.select(_select).joins(" inner join users on user_id = uid inner join departments on dept_code = code")
+        @year_infos = @year_infos.select("year_infos.*,users.user_name,departments.name").joins(" inner join users on user_id = uid inner join departments on dept_code = code")
         @year_infos = @year_infos.where(params[:date]) if params[:date] && params[:date][:year].present?
 
 
@@ -42,7 +43,7 @@ class YearInfosController < ApplicationController
         #@user_year_journals = @user_year_journals.to_a
 
         _start_year = OaConfig.setting(:end_year_time)[/\d+/].to_i
-        xsl_file = @year_infos.to_csv(select: _select) do |item,cols|
+        xsl_file = @year_infos.to_csv(select: %w(年度 用户ID 用户名 部门 年假 病假 事假 假休 AB分 剩余年假 剩余病假 剩余事假 剩余倒休 剩余AB分).join(',')) do |item,_|
           _attrs = item.attributes
           _attrs["year_holiday"] = item.year_holiday.to_f/10
           _attrs["sick_leave"] = item.sick_leave.to_f/10
@@ -58,7 +59,7 @@ class YearInfosController < ApplicationController
             _attrs["r_switch_leave"] =(item.switch_leave + year_journal(item.user_id,8) + year_journal(item.user_id,12)).to_f/10
             _attrs["r_ab_point"] =  (item.ab_point + year_journal(item.user_id,9) + year_journal(item.user_id,21) + year_journal(item.user_id,24)+ year_journal(item.user_id,25)).to_f/10
           end
-          _attrs.values_at(*cols)#.tap{|t|Rails.logger.info(t.inspect)}
+          _attrs.values_at(*_cols)#.tap{|t|Rails.logger.info(t.inspect)}
         end
         #xsl_file
         send_data xsl_file
