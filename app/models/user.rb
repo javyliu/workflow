@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
   #用户在某一天的已确认异常考勤,用于手动加载防止n+1
   #has_one :journal
   #从本年度计考勤之日起的异常考勤，用于计算每天的剩余年假
-  has_many :year_journals, ->{ select("id,user_id,check_type,sum(dval) dval").where(["check_type in (?) and update_date > ?",Journal::UserCheckTypeIds,OaConfig.setting(:end_year_time)]).group(:user_id,:check_type) },class_name: "Journal"
+  has_many :year_journals, ->{ select("user_id,check_type,sum(dval) dval,year(update_date) year").where(["check_type in (?) and update_date > ?",Journal::UserCheckTypeIds,OaConfig.setting(:end_year_time)]).group(:user_id,:check_type,:year).order("year desc") },class_name: "Journal"
 
 
   has_many :episodes
@@ -76,7 +76,13 @@ class User < ActiveRecord::Base
   #[:year, :user_id, :year_holiday, :sick_leave, :affair_leave, :switch_leave, :ab_point]
   GroupYearInfoColumns = YearInfo.attribute_names.map(&:intern).slice(3..-3)
   def last_year_info
-    @last_year_info ||= self.year_infos.inject{|r,item| GroupYearInfoColumns.each{|it|r[it] += item[it]};r} || self.year_infos.create(year: Date.today.year)
+    @last_year_info ||= self.year_infos.inject do |r,item|
+      GroupYearInfoColumns.each do |it|
+        #病假及事假不相加
+        r[it] += item[it] unless it.in?([:sick_leave,:affair_leave])
+      end
+      r
+    end || self.year_infos.create(year: Date.today.year)
   end
 
 

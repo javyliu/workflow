@@ -300,6 +300,20 @@ class JournalsController < ApplicationController
   end
 
   def year_journal(check_type_id)
-    @year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
+    #@year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
+    @group_year_journals ||= @year_journals.group_by(&:check_type)
+    items = @group_year_journals[check_type_id]
+    return 0 unless items
+
+    if check_type_id.in?([11,17])
+      #大于1表示在缓冲区，需从年初开始计算剩余事假及病假
+      if items.length > 1
+        items.first.dval
+      else
+        0
+      end
+    else
+      (items and items.inject(0){|sum,item| sum += item.dval}).to_i
+    end
   end
 end
