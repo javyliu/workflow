@@ -1,71 +1,96 @@
-<p>
-  <strong>用户编号:</strong>
-  <%= @user.uid %>
-</p>
 
-<p>
-  <strong>姓名:</strong>
-  <%= @user.user_name %>
-</p>
-<p>
-  <strong>入职日:</strong>
-  <%= @user.onboard_date %>
-</p>
-<p>
-  <strong>转正日:</strong>
-  <%= @user.regular_date %>
-</p>
-<p>
-  <strong>邮箱:</strong>
-  <%= @user.email %>
-</p>
+<%= render partial: 'episodes/remain_holiday',object: @user.decorate %>
+<table class='w100'>
+  <tr>
+    <td>
+      <p>
+      <strong>用户编号:</strong>
+      <%= @user.uid %>
+      </p>
+    </td>
 
-<p>
-  <strong>部门:</strong>
-  <%= @user.dept.name %>
-</p>
+    <td><p>
+      <strong>姓名:</strong>
+      <%= @user.user_name %>
+    </p></td>
+  </tr>
 
-<p>
-  <strong>职位:</strong>
-  <%= @user.title %>
-</p>
+  <tr>
+    <td><p>
+      <strong>入职日:</strong>
+      <%= @user.onboard_date %>
+    </p></td>
+    <td><p>
+      <strong>转正日:</strong>
+      <%= @user.regular_date %>
+    </p></td>
+  </tr>
+  <tr>
+    <td><p>
+      <strong>邮箱:</strong>
+      <%= @user.email %>
+    </p></td>
 
-<p>
-  <strong>离职日期:</strong>
-  <%= @user.expire_date %>
-</p>
+    <td><p>
+      <strong>部门:</strong>
+      <%= @user.dept.name %>
+    </p></td>
 
-<p>
-  <strong>部门编号:</strong>
-  <%= @user.dept_code %>
-</p>
+  </tr>
+  <tr>
+    <td><p>
+      <strong>职位:</strong>
+      <%= @user.title %>
+    </p></td>
 
-<p>
-  <strong>直属管理者ID:</strong>
-  <%= @user.mgr_code %>
-</p>
-<p>
-  <strong>角色:</strong>
-  <%= @user.roles_name.join(",") %>
-</p>
-<div>
-  <strong>下属部门:</strong>
-  <% User.cache_departments.find_all{|item| @user.department.include?(item[1])}.group_by{|item| item[2]}.each_pair do |group,depts| %>
-  <h6><%= group %></h6>
-  <ul class='medium-block-grid-8'>
-    <% depts.each do |dept| %>
-    <li><label> <%= short_dept_name(dept[0]) %></label></li>
-    <% end %>
-  </ul>
-  <% end %>
+    <td><p>
+      <strong>离职日期:</strong>
+      <%= @user.expire_date %>
+    </p></td>
+  </tr>
 
-</div>
+  <tr>
+    <td><p>
+      <strong>部门编号:</strong>
+      <%= @user.dept_code %>
+    </p></td>
+
+    <td><p>
+      <strong>直属管理者ID:</strong>
+      <%= @user.mgr_code %>
+    </p></td>
+  </tr>
+
+  <tr>
+    <td colspan=2><p>
+      <strong>角色:</strong>
+      <%= @user.roles_name.join(",") %>
+    </p></td>
+  </tr>
+
+  <tr>
+    <td colspan=2>
+      <div>
+        <strong>下属部门:</strong>
+        <% User.cache_departments.find_all{|item| @user.department.include?(item[1])}.group_by{|item| item[2]}.each_pair do |group,depts| %>
+        <h6><%= group %></h6>
+        <ul class='medium-block-grid-8'>
+          <% depts.each do |dept| %>
+          <li><label> <%= short_dept_name(dept[0]) %></label></li>
+          <% end %>
+        </ul>
+        <% end %>
+
+      </div>
+    </td>
+  </tr>
+</table>
 
 <% foot do %>
 <script type="text/javascript" charset="utf-8">
 $(document).on("ready page:load", function(){
-  window.wrap_msgs($(".notice"));
-});
+    window.wrap_msgs($(".notice"));
+    });
 
 </script>
 

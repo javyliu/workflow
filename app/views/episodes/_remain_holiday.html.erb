@@ -3,7 +3,7 @@
   <table class="w100">
     <tr>
       <% remain_holiday.check_types.each do |item| %>
-      <th><%= item.third %></th>
+      <th><%= item.third.sub(/A|B/,'') %></th>
       <% end %>
     </tr>
     <tr>

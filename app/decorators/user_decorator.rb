@@ -330,6 +330,9 @@ class UserDecorator < ApplicationDecorator
       _cktype_ids.delete(12)
       _cktype_ids.push(8)
     end
+    if helpers.current_user.has_any_role?(:manager,:admin,:department_manager,:game_manager) && object.dept_group.first != :group_switch_time
+      _cktype_ids.push(21)
+    end
     @check_types = Journal::CheckType.select{|item| item[1].in?(_cktype_ids)}
   end
 
