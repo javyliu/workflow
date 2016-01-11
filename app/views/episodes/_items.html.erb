@@ -10,7 +10,7 @@
   <td><%= episode.state %></td>
   <td>
 <%= link_to('详情', episode_path(episode,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true}) if can?(:read,Episode)%>
-    <%= link_to('删除', episode_path(episode.id),data: {method: :delete,type: :json,remote: true,confirm: "确定要删除该假单么？"}) if can?(:destroy,episode) %>
+    <%= link_to('删除', episode_path(episode.id),data: {method: :delete,type: :json,remote: true,confirm: "确定要删除该假单么？"}) if can?(:destroy,episode.object) %>
   </td>
 </tr>
 <% end %>
