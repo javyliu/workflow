@@ -70,6 +70,7 @@ module CharesDatabase
     def self.calcute_year_info_data(user,date=Date.today)
 
       year_info = YearInfo.find_or_initialize_by(user_id: user.id,year: date.year)
+      return if year_info.irregular?
       #如果用户的转正日期小于等于于今日，则更新用户的基础带薪病假
       if user.regular_date && user.regular_date <= date || user.onboard_date.year <= 2014
         year_info.sick_leave = OaConfig.setting(:sick_leave_days).to_i * 10

@@ -7,6 +7,8 @@
   <td class="edit-in-place" data-attribute="affair_leave"><%= year_info.affair_leave %></td>
   <td class="edit-in-place" data-attribute="switch_leave"><%= year_info.switch_leave %></td>
   <td class="edit-in-place" data-attribute="ab_point"><%= year_info.ab_point %></td>
+  <td><%= year_info.irregular == 1 ? "非规则" : "" %></td>
+  <td><%= link_to "编辑", edit_year_info_path(year_info,format: :js), data:{"reveal-id": "modal_window","reveal-ajax": true} %></td>
 </tr>
 <% end %>
-<td colspan="7"><%= paginate(items,remote: true) %></td>
+<td colspan="8"><%= paginate(items,remote: true) %></td>

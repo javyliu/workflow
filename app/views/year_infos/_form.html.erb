@@ -1,45 +1,32 @@
-<%= form_for(@year_info) do |f| %>
-  <% if @year_info.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@year_info.errors.count, "error") %> prohibited this year_info from being saved:</h2>
 
-      <ul>
-      <% @year_info.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :year %><br>
-    <%= f.number_field :year %>
-  </div>
-  <div class="field">
-    <%= f.label :user_id %><br>
-    <%= f.text_field :user_id %>
-  </div>
-  <div class="field">
-    <%= f.label :year_holiday %><br>
-    <%= f.number_field :year_holiday %>
-  </div>
-  <div class="field">
-    <%= f.label :sick_leave %><br>
-    <%= f.number_field :sick_leave %>
-  </div>
-  <div class="field">
-    <%= f.label :affair_leave %><br>
-    <%= f.number_field :affair_leave %>
-  </div>
-  <div class="field">
-    <%= f.label :switch_leave %><br>
-    <%= f.number_field :switch_leave %>
-  </div>
-  <div class="field">
-    <%= f.label :ab_point %><br>
-    <%= f.number_field :ab_point %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+<h3><span><%= @year_info.user.user_name %> <%= @year_info.year %></span></h3>
+<%= form_for(@year_info, remote: true, type: :script) do |f| %>
+  <div class="row">
+  <div class='columns small-3'><%= f.label :year_holiday, "年假",class: 'inline' %></div>
+  <div class='columns small-9'><%= f.number_field :year_holiday %></div>
+</div>
+<div class="row">
+  <div class="columns small-3"><%= f.label :sick_leave, "病假" %></div>
+  <div class="columns small-9"><%= f.number_field :sick_leave %></div>
+</div>
+<div class="row">
+  <div class='columns small-3'><%= f.label :affair_leave, "事假" %></div>
+  <div class='columns small-9'><%= f.number_field :affair_leave %></div>
+</div>
+<div class="row">
+  <div class='columns small-3'><%= f.label :switch_leave, "倒休" %></div>
+  <div class='columns small-9'><%= f.number_field :switch_leave %></div>
+</div>
+<div class="row">
+  <div class='columns small-3'><%= f.label :ab_point, "AB分" %></div>
+  <div class='columns small-9'><%= f.number_field :ab_point %></div>
+</div>
+<div class="row">
+  <div class='columns small-3'><%= f.label :irregular, "非规则" %></div>
+  <div class='columns small-9'><%= f.check_box :irregular %> <small>勾选后不会每日更新</small></div>
+</div>
+<div class="actions">
+  <%= f.submit "提交", data: {disable_with: '提交中...'},class: 'button small' %>
+</div>
 <% end %>
+

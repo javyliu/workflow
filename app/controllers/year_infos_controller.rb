@@ -152,9 +152,11 @@ class YearInfosController < ApplicationController
     respond_to do |format|
       if @year_info.update(year_info_params)
         format.html { redirect_to @year_info, notice: 'Year info was successfully updated.' }
+        format.js {render :js => "alert('更新成功！')"}
         format.json { render :show, status: :ok, location: @year_info }
       else
         format.html { render :edit }
+        format.js {render :js => "alert('更新失败！')"}
         format.json { render json: @year_info.errors, status: :unprocessable_entity }
       end
     end
@@ -178,7 +180,7 @@ class YearInfosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def year_info_params
-      params.require(:year_info).permit(:year, :user_id, :year_holiday, :sick_leave, :affair_leave, :switch_leave, :ab_point)
+      params.require(:year_info).permit(:year, :user_id, :year_holiday, :sick_leave, :affair_leave, :switch_leave, :ab_point,:irregular)
     end
 
 

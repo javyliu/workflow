@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151112062022) do
+ActiveRecord::Schema.define(version: 20160120014400) do
 
   create_table "approves", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -86,9 +86,9 @@ ActiveRecord::Schema.define(version: 20151112062022) do
   end
 
   create_table "journals", force: :cascade do |t|
-    t.string   "user_id",     limit: 20
-    t.date     "update_date"
-    t.integer  "check_type",  limit: 4
+    t.string   "user_id",     limit: 20,  null: false
+    t.date     "update_date",             null: false
+    t.integer  "check_type",  limit: 4,   null: false
     t.string   "description", limit: 255
     t.integer  "dval",        limit: 4
     t.datetime "created_at",              null: false
@@ -194,6 +194,7 @@ ActiveRecord::Schema.define(version: 20151112062022) do
     t.integer  "ab_point",     limit: 8,  default: 0
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.integer  "irregular",    limit: 4,  default: 0
   end
 
   add_index "year_infos", ["user_id"], name: "index_year_infos_on_user_id", using: :btree
