@@ -73,8 +73,8 @@ class User < ActiveRecord::Base
                      end
   end
 
-  #[:id,:year, :user_id, :year_holiday, :sick_leave, :affair_leave, :switch_leave, :ab_point,:created_at,:updated_at]
-  GroupYearInfoColumns = YearInfo.attribute_names.map(&:intern).slice(3..-3)
+  #[:id,:year, :user_id, :year_holiday, :sick_leave, :affair_leave, :switch_leave, :ab_point,:created_at,:updated_at,:irregular]
+  GroupYearInfoColumns = YearInfo.attribute_names.map(&:intern).slice(3..-4)
   def last_year_info
     @last_year_info ||= self.year_infos.inject do |r,item|
       GroupYearInfoColumns.each do |it|
