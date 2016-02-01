@@ -396,11 +396,7 @@ class UserDecorator < ApplicationDecorator
 
     if check_type_id.in?([11,17])
       #大于1表示在缓冲区，需从年初开始计算剩余事假及病假
-      if items.length > 1
         items.first.dval
-      else
-        0
-      end
     else
       (items and items.inject(0){|sum,item| sum += item.dval}).to_i
     end
