@@ -52,19 +52,19 @@ class JournalWithRemainDecorator <  Draper::Decorator
   def remain_switch_time
     #倒休
     #binding.pry
-    user and (base_holiday_info.switch_leave + year_journal(8) + year_journal(12)).to_f/10
+    user and (base_holiday_info.switch_leave + year_journal(8,12)).to_f/10
   end
   #带薪病假
   def remain_sick_salary
-    user and (base_holiday_info.sick_leave - year_journal(17)).to_f/10
+    user and (base_holiday_info.sick_leave - year_journal(17,year: current_year)).to_f/10
   end
   #带薪事假
   def remain_affair_salary
-    user and ( base_holiday_info.affair_leave - year_journal(11) ).to_f/10
+    user and ( base_holiday_info.affair_leave - year_journal(11, year: current_year) ).to_f/10
   end
   #ab分
   def remain_ab_points
-   user and (base_holiday_info.ab_point + year_journal(9) + year_journal(21) + year_journal(24)+ year_journal(25)).to_f/10
+   user and (base_holiday_info.ab_point + year_journal(9,21,24,25)).to_f/10
   end
 
   def method_missing(meth,*args,&block)
@@ -89,7 +89,7 @@ class JournalWithRemainDecorator <  Draper::Decorator
     _journal = object[1].detect { |e| e.check_type == cktype[1] }
     return nil unless _journal
     #返回异常考勤日期说明
-    return _journal.comments if comments
+    return _journal.description if comments
     if cktype.last == 0
       _journal.description
     elsif cktype.last == 1
@@ -113,8 +113,15 @@ class JournalWithRemainDecorator <  Draper::Decorator
   #  #<Journal:0xc63cda4 id: 5649, user_id: "1002">,
   #  #<Journal:0xc63ccf0 id: 5650, user_id: "1002">]]
   #
-  def year_journal(check_type_id)
-    year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
+  def year_journal(*check_type_ids,year: nil)
+    year_journals.find_all do |e|
+      check_type_ids.include?(e.check_type) && (year ? year == e.year : true)
+    end.sum(&:dval).to_i
   end
+
+  def current_year
+    @current_year ||= export_date.year
+  end
+
 
 end

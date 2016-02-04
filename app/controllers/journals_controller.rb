@@ -37,9 +37,15 @@ class JournalsController < ApplicationController
     @start_time = params[:journal].try(:[],:gt_update_date)
     @end_time = params[:journal].try(:[],:lt_update_date)
       #Rails.logger.debug {@journals.to_sql}
+    _uids = nil
     if (depts = current_user.role_depts(include_mine: false).presence) && !User.is_all_dept?(depts)
-      @journals = @journals.rewhere(user_id: ( User.where(dept_code: depts).pluck(:uid) + Array.wrap(@journals.where_values_hash["user_id"])))
+      _uids =  User.where(dept_code: depts).pluck(:uid) + Array.wrap(@journals.where_values_hash["user_id"])
     end
+    if params[:user].present?
+      con_hash1,like_con = construct_condition(:user,like_ary: [:user_name],left_like: [:dept_code])
+      _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
+    end
+    @journals = @journals.rewhere(user_id: _uids) if _uids.present?
 
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
@@ -53,12 +59,8 @@ class JournalsController < ApplicationController
       @journals = @journals.where('journals.updated_at <> journals.created_at')
     end
 
-    _uids = nil
-    if params[:user].present?
-      con_hash1,like_con = construct_condition(:user,like_ary: [:user_name],left_like: [:dept_code])
-      _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
-      @journals = @journals.where(user_id: _uids) if _uids
-    end
+
+    #如果uids存在则重新设置user_id的query
 
       #Rails.logger.debug {@journals.to_sql}
     _select = "journals.id,update_date,checkin,checkout,journals.user_id,journals.created_at,journals.updated_at,check_type,dval,description,episodes.id episode_id,episodes.holiday_id,episodes.state"
@@ -90,11 +92,12 @@ class JournalsController < ApplicationController
         if @start_time.blank? || @end_time.blank?
           raise AccessDenied.new("请设定导出时间,请设置本年度考勤时间，否则年假不准确",:back)
         end
-        _select = "id,group_concat(update_date) comments,user_id,check_type,sum(dval) dval,group_concat(description separator ';') description"
+        _select = "id,user_id,check_type,sum(dval) dval,group_concat(update_date,' ',description separator ';') description"
         response.headers['Content-Disposition'] = "attachment; filename='考勤汇总表(#{@start_time}-#{@end_time}).xlsx'"
         @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:year_infos])
         #因为year_journals 带有group 聚合，在includes时会被抛弃,为防止n+1,所以手动eager_load
-        year_journals = Journal.grouped_journals.where(user_id: @journals.flat_map(&:user_id).uniq)
+        year_journals = Journal.grouped_journals
+        year_journals = year_journals.where(user_id: _uids) if _uids.present?
         @journals = JournalWithRemainDecorator.decorate_collection(@journals.group_by(&:user_id)).each do |item|
           item.year_journals = year_journals.find_all{|it| it.user_id == item.user_id}
         end

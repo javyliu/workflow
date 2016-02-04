@@ -96,7 +96,11 @@ $(->
     })
 
   $(document).on('click',".export_xls", ->
-      $(this).attr("href",$(this).attr("href")+"?"+$(this).closest("form").serialize())
+    _this = $(this)
+    unless _this.data('url')
+      _this.data('url',_this.attr("href"))
+
+    _this.attr("href",_this.data("url") + "?" + _this.closest("form").serialize())
   )
 
   #reveal modal
