@@ -258,7 +258,6 @@ class UserDecorator < ApplicationDecorator
       end
 
       end_diff_time = ((@ckout_time - end_working_time)/60).to_i #结束工作时间点
-      diff_time = ((@ckout_time - @ckin_time)/60/60).to_i #如果大于12小时，则记录点数
       #签出打卡
       if end_diff_time < 0 #早退
         end_diff_time = end_diff_time.abs
@@ -273,7 +272,7 @@ class UserDecorator < ApplicationDecorator
           @a_point = 0
           ref_cmd.push("事假1天")
         end
-      elsif end_diff_time > 0 && diff_time >=12 #加班
+      elsif end_diff_time > 0 && ((@ckout_time - @ckin_time)/60/60) >=12 #加班
 =begin 2016-03-02 去除加班
         end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
         _tmp = (end_diff_time/attend_rule.min_unit.to_f).round.to_f/unit #加班时长
