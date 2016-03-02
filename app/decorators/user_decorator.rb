@@ -204,9 +204,9 @@ class UserDecorator < ApplicationDecorator
 =end
       diff_time = ((@ckout_time - @ckin_time)/60).to_i
       if diff_time >= 8
-        ref_cmd.push("获得3点")
+        ref_cmd.push("获得<b>3</b>点")
       elsif diff_time >= 4
-        ref_cmd.push("获得1点")
+        ref_cmd.push("获得<b>1</b>点")
       end
       return
     end
@@ -258,7 +258,7 @@ class UserDecorator < ApplicationDecorator
       end
 
       end_diff_time = ((@ckout_time - end_working_time)/60).to_i #结束工作时间点
-      diff_time = ((@ckout_time - @ckin_time)/60).to_i #如果大于12小时，则记录点数
+      diff_time = ((@ckout_time - @ckin_time)/60/60).to_i #如果大于12小时，则记录点数
       #签出打卡
       if end_diff_time < 0 #早退
         end_diff_time = end_diff_time.abs
@@ -288,7 +288,7 @@ class UserDecorator < ApplicationDecorator
           @a_point += _tmp
         end
 =end
-        ref_cmd.push("获得1点")
+        ref_cmd.push("获得<b>1</b>点")
       end
 
       episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
