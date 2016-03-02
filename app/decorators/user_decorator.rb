@@ -145,6 +145,10 @@ class UserDecorator < ApplicationDecorator
     ref_cmd.uniq.join("<br>").html_safe
   end
 
+  #当月点数
+  def c_month_count
+  end
+
   # 好
   #def method_missing(meth, *args, &block)
   #  if /^c_aff_(?<prop>.*)/ =~ meth
@@ -171,6 +175,7 @@ class UserDecorator < ApplicationDecorator
     if !is_work_day && !yes_ckin
       return
     elsif !is_work_day && yes_ckin #非工作日，有考勤
+=begin 2016-03-01 加班更改为点数，超过4小时为1点，8小时为3个点
       diff_time = ((@ckout_time - @ckin_time)/60).to_i
       ref_cmd.push("加班")
       #15进制与30进制
@@ -196,6 +201,13 @@ class UserDecorator < ApplicationDecorator
         ref_cmd.push("忘打卡")
       end
       episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
+=end
+      diff_time = ((@ckout_time - @ckin_time)/60).to_i
+      if diff_time >= 8
+        ref_cmd.push("获得3点")
+      elsif diff_time >= 4
+        ref_cmd.push("获得1点")
+      end
       return
     end
 
@@ -246,6 +258,7 @@ class UserDecorator < ApplicationDecorator
       end
 
       end_diff_time = ((@ckout_time - end_working_time)/60).to_i #结束工作时间点
+      diff_time = ((@ckout_time - @ckin_time)/60).to_i #如果大于12小时，则记录点数
       #签出打卡
       if end_diff_time < 0 #早退
         end_diff_time = end_diff_time.abs
@@ -260,7 +273,8 @@ class UserDecorator < ApplicationDecorator
           @a_point = 0
           ref_cmd.push("事假1天")
         end
-      elsif end_diff_time > 0 #加班
+      elsif end_diff_time > 0 && diff_time >=12 #加班
+=begin 2016-03-02 去除加班
         end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
         _tmp = (end_diff_time/attend_rule.min_unit.to_f).round.to_f/unit #加班时长
 
@@ -273,6 +287,8 @@ class UserDecorator < ApplicationDecorator
           ref_cmd.push("加班")
           @a_point += _tmp
         end
+=end
+        ref_cmd.push("获得1点")
       end
 
       episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
@@ -353,6 +369,8 @@ class UserDecorator < ApplicationDecorator
                    c_sick_leaver
                  when 'c_aff_b_points'
                    c_ab_point
+                 when 'c_aff_count'
+                   c_month_count
                  end
     "#{_value} #{check_type.fourth}"
   end
