@@ -67,6 +67,10 @@ class JournalWithRemainDecorator <  Draper::Decorator
    user and (base_holiday_info.ab_point + year_journal(9,21,24,25)).to_f/10
   end
 
+  #当月点数
+  def c_month_count
+    year_journal(26)
+  end
   #日期范围内异常考勤描述（日期+异常）
   def description
     object[1].each_with_object(""){|item,memo| memo << "#{item.description};"}

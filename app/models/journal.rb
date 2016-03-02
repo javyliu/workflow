@@ -22,6 +22,9 @@ class Journal < ActiveRecord::Base
   validates :update_date, presence: true
   scope :grouped_journals, ->{ select("user_id,check_type,sum(dval) dval,year(update_date) year").where(["check_type in (?) and update_date > ?",Journal::UserCheckTypeIds,OaConfig.setting(:end_year_time)]).group(:user_id,:check_type,:year).order("year desc")}
 
+  scope :month_journals, ->{ select("user_id,check_type,sum(dval) dval").where(["check_type = ?",26]).group(:user_id,:check_type) }
+
+
   #用于数据手动组装,避免n+1
   #has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
   #数组说明
@@ -85,7 +88,6 @@ class Journal < ActiveRecord::Base
 
   #TODO: 把cktype与holiday统一起来放到holiday表中，更新现在的ck_type
 
-  #2015-04-02 10:18 无用代码
   UserCheckTypeIds = [5,8,9,11,12,17,21,24,25]
   #用于其它中的别名对应
   MailDecType= [
@@ -105,6 +107,16 @@ class Journal < ActiveRecord::Base
   #得到类别标识，用于邮件回复中通过字符返回标识符
   def self.cktype_from_key(key)
     CheckType.assoc(MailDecType.rassoc(key.downcase).first)
+  end
+
+  def self.count_time_range(date: Date.today)
+    date = date.respond_to?(:day) ? date : Date.parse(date)
+    day = date.day
+    if day >= 26
+      [date.change(day: 26),date.next_month.change(day: 25)]
+    else
+      [date.last_month.change(day: 26),date.change(day: 25)]
+    end
   end
 
   def ck_type

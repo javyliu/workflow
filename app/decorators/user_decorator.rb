@@ -147,6 +147,7 @@ class UserDecorator < ApplicationDecorator
 
   #当月点数
   def c_month_count
+    year_journal(26)
   end
 
   # 好
@@ -407,7 +408,12 @@ class UserDecorator < ApplicationDecorator
 
   def year_journal(check_type_id)
     #object.year_journals.detect { |e| e.check_type == check_type_id }.try(:dval).to_i
-    @group_year_journals ||= object.year_journals.group_by(&:check_type)
+    @group_year_journals ||= if object.year_journals.loaded?
+                               object.year_journals
+                             else
+                               object.year_journals.to_a + object.journals.month_journals.where("update_date between ? and ?",*Journal.count_time_range).to_a
+
+                             end.group_by(&:check_type)
     items = @group_year_journals[check_type_id]
     return 0 unless items
     year = Date.today.year.freeze

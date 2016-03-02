@@ -16,7 +16,7 @@
       <thead>
         <tr>
           <% @user.report_titles.each do |item| %>
-          <th><%= item.des.gsub(/.{2}/,'\0<br>').html_safe %></th>
+          <th class="<%= Journal::CheckType.assoc(item.name).try(:[],4) %>"><%= item.des.gsub(/.{2}/,'\0<br>').html_safe %></th>
           <% end %>
         </tr>
       </thead>
