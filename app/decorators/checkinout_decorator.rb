@@ -68,11 +68,11 @@ class CheckinoutDecorator < ApplicationDecorator
     ckin_time = object.checkin
     #设置该用户的正常工作时间
 
-    time_range = object.user.rule[3] rescue Rails.logger.debug{ "no_rule_error: #{object.user_id}"}; time_range = "0"
+    time_range = object.user.rule[3] rescue (Rails.logger.debug{ "no_rule_error: #{object.user_id}"}; "0")
     #Rails.logger.debug {"-------------#{time_range}--"}
     if time_range == "0" #弹性工作时间
       if ckin_time <= ckin_time.change(hour:9,min:1)
-        [ckin_time.change(hour:9),ckin_time.change(hour: 18)]
+        [ckin_time.change(hour:9,min: 1),ckin_time.change(hour: 18)]
       elsif ckin_time <= ckin_time.change(hour:9,min:31)
         [ckin_time,ckin_time.change(hour: 18,min: ckin_time.min)]
       else
