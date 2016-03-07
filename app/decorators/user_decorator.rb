@@ -75,7 +75,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def c_user_name
-    "<span #{object.assault_state?(current_date) ? "class='red bold' title='#{object.assault_start_date} ~ #{object.assault_end_date}'" : ""}>#{object.user_name}</span>".html_safe
+    "<span #{object.assault_state?(current_date) ? "class='green bold' title='#{object.assault_start_date} ~ #{object.assault_end_date}'" : ""}>#{object.user_name}</span>".html_safe
   end
 
   #带薪事假

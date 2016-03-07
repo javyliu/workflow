@@ -1,7 +1,7 @@
 <% items.each do |user| %>
   <tr>
     <td><%= user.uid %></td>
-    <td><%= user.user_name %></td>
+    <td><%= user.assault_state?(@date) ? "<span class='green bold'>#{user.user_name}</span>".html_safe : user.user_name %></td>
     <td><%= user.email %></td>
     <td><%= user.dept.try(:name) %></td>
     <td><%= user.title %></td>

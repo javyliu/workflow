@@ -51,7 +51,7 @@
     <li>年假、病假、事假：（单位：天，一般为0.5或1天）</li>
     <li>特批描述：填写特批的原因，如“特批假期”或“因公外出”等，填写文字</li>
     <li>其它：特殊假期，x0.5, x1。其中x代表类别，数字1或0.5代表天数/次数；如a0.5表示旷工0.5天，i1表示哺乳期晚来1小时1次</li>
-    <li>名字为红色表示该员工已进入突击状态。</li>
+    <li>名字为绿色表示该员工已进入突击状态。</li>
     <li><span class="blue">x如下：</span><br>
     <% Journal::MailDecType.each do |item| %>
     <% cktype = Journal::CheckType.assoc(item.first) %>

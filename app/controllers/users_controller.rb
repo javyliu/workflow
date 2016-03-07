@@ -17,6 +17,7 @@ class UsersController < ApplicationController
     con_hash,like_hash = construct_condition(:user,like_ary: [:user_name,:email])
     drop_page_title("用户管理")
     drop_breadcrumb
+    @date = Date.today
     @users = @users.not_expired.where(con_hash).where(like_hash) if con_hash || like_hash
     @users = @users.not_expired.page(params[:page]).includes(:dept,:roles)
     #@user = current_user.decorate
