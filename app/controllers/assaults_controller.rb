@@ -88,7 +88,7 @@ class AssaultsController < ApplicationController
 
         _task = Task.create("F003",leader_user.id,leader_user_id: leader_user.id,date: @assault.created_at.to_date.to_s,mid: @assault.id)
         #用于测试
-        _task1 = Task.create("F003",current_user.id,leader_user_id: current_user.id,date: @assault.created_at.to_date.to_s,mid: @assault.id)
+        #_task1 = Task.create("F003",current_user.id,leader_user_id: current_user.id,date: @assault.created_at.to_date.to_s,mid: @assault.id)
         Rails.logger.info _task.task_name
         #发送邮件
         Usermailer.assault_approve(_task.task_name).deliver_later
