@@ -45,7 +45,7 @@ class JournalsController < ApplicationController
       con_hash1,like_con = construct_condition(:user,like_ary: [:user_name],left_like: [:dept_code])
       _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
-    @journals = @journals.rewhere(user_id: _uids) if _uids.present?
+    @journals = @journals.rewhere(user_id: _uids)# if _uids.present?
 
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])
