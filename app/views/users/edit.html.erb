@@ -19,16 +19,29 @@
     <%= f.label :mgr_code,"直属管理者ID" %>
     <%= f.text_field :mgr_code %>
   </div>
-  <div class="columns medium-8">
+  <div class="columns medium-4">
+    <%= f.label :assault_start_date,"突击开始时间" %>
+    <%= f.text_field :assault_start_date,class: "datepicker",readonly: true  %>
+  </div>
+  <div class="columns medium-4">
+    <%= f.label :assault_end_date,"突击结束时间" %>
+    <%= f.text_field :assault_end_date,class: "datepicker",readonly: true  %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="columns medium-12">
     <%= f.label :roles,"角色" %>
-    <ul class='medium-block-grid-6 resources'>
+    <ul class='medium-block-grid-10 resources'>
       <% Role.all.each do |role| %>
-      <li style="display: <%='none' if role.name == 'admin'  %>"><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
-      <% end %>
+        <li style="display: <%='none' if role.name == 'admin'  %>"><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
+    <% end %>
     </ul>
     <%= hidden_field_tag "user[role_ids][]",nil %>
   </div>
 </div>
+
+
 <div class="row resources">
   <div class="columns medium-12">
     <h5>下属部门 </h5>

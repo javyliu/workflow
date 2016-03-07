@@ -22,7 +22,8 @@ class Journal < ActiveRecord::Base
   validates :update_date, presence: true
   scope :grouped_journals, ->{ select("user_id,check_type,sum(dval) dval,year(update_date) year").where(["check_type in (?) and update_date > ?",Journal::UserCheckTypeIds,OaConfig.setting(:end_year_time)]).group(:user_id,:check_type,:year).order("year desc")}
 
-  scope :month_journals, ->{ select("user_id,check_type,sum(dval) dval").where(["check_type = ?",26]).group(:user_id,:check_type) }
+  #按月统计的数值，本月点数(26)，迟到早退特批（25）
+  scope :month_journals, ->{ select("user_id,check_type,sum(dval) dval").where(check_type:[25,26]).group(:user_id,:check_type) }
 
 
   #用于数据手动组装,避免n+1

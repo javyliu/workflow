@@ -57,7 +57,7 @@ class UserDecorator < ApplicationDecorator
   #return an ReportTitle array
 
   attr_accessor :report_titles
-  attr_accessor :uids
+  attr_accessor :uids,:current_date
   #def report_titles
   #  @report_title ||= ReportTitle.where(id: object.dept.attend_rule.title_ids).order("ord,id")
   #end
@@ -75,7 +75,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def c_user_name
-    object.user_name
+    "<span #{object.assault_state?(current_date) ? "class='red bold' title='#{object.assault_start_date} ~ #{object.assault_end_date}'" : ""}>#{object.user_name}</span>".html_safe
   end
 
   #带薪事假
@@ -150,6 +150,10 @@ class UserDecorator < ApplicationDecorator
     year_journal(26)
   end
 
+  def c_month_later_or_absent
+    year_journal(25).to_f/10
+  end
+
   # 好
   #def method_missing(meth, *args, &block)
   #  if /^c_aff_(?<prop>.*)/ =~ meth
@@ -204,10 +208,12 @@ class UserDecorator < ApplicationDecorator
       episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
 =end
       diff_time = ((@ckout_time - @ckin_time)/60).to_i
-      if diff_time >= 8
-        ref_cmd.push("获得<b>3</b>点")
-      elsif diff_time >= 4
-        ref_cmd.push("获得<b>1</b>点")
+      if object.assault_state?(date)
+        if diff_time >= 9
+          ref_cmd.push("获得<b>3</b>点")
+        elsif diff_time >= 4
+          ref_cmd.push("获得<b>1</b>点")
+        end
       end
       return
     end
@@ -273,7 +279,7 @@ class UserDecorator < ApplicationDecorator
           @a_point = 0
           ref_cmd.push("事假1天")
         end
-      elsif end_diff_time > 0 && ((@ckout_time - @ckin_time)/60/60) >=12 #加班
+      elsif end_diff_time > 0 && ((@ckout_time - @ckin_time)/60/60) >=12 && object.assault_state?(date)#加班
 =begin 2016-03-02 去除加班
         end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
         _tmp = (end_diff_time/attend_rule.min_unit.to_f).round.to_f/unit #加班时长
@@ -305,6 +311,8 @@ class UserDecorator < ApplicationDecorator
     users = users || Task.eager_load_from_task(task,leader_user: self,rule: rule)
     tmp_str = ""
     users.each_with_index do |user,_index|
+      user.current_date = date
+
       user.index = _index + 1
       #用于网页展示和邮件展示时对于需填充字段用不同的class
       cls = if user.ref_cmd.present?

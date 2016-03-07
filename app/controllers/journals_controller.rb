@@ -41,11 +41,11 @@ class JournalsController < ApplicationController
     if (depts = current_user.role_depts(include_mine: false).presence) && !User.is_all_dept?(depts)
       _uids =  User.where(dept_code: depts).pluck(:uid) + Array.wrap(@journals.where_values_hash["user_id"])
     end
-    if params[:user].present?
+    if params[:user] && params[:user].map{|_,val| val.present?}.present?
       con_hash1,like_con = construct_condition(:user,like_ary: [:user_name],left_like: [:dept_code])
       _uids = User.where(con_hash1).where(like_con).pluck(:uid) if con_hash1 || like_con
     end
-    @journals = @journals.rewhere(user_id: _uids)# if _uids.present?
+    @journals = @journals.rewhere(user_id: _uids) unless _uids.nil?
 
     params.permit!
     con_hash,ary_con = construct_condition(:journal,gt:[:update_date],lt:[:update_date])

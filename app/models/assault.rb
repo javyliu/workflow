@@ -26,7 +26,8 @@ class Assault < ActiveRecord::Base
       if style == 0 #申请进入突击状态
         User.where(uid: employees).update_all(assault_start_date: start_date, assault_end_date: end_date)
       else #申请退出突击状态
-        User.where(uid: employees).update_all(assault_start_date: nil, assault_end_date: nil)
+        #User.where(uid: employees).update_all(assault_start_date: nil, assault_end_date: nil)
+        CancelUserAssaultDateJob.set(wait_until: self.start_date.beginning_of_day).perform_later(self)
       end
     end
 

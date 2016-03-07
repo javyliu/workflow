@@ -303,6 +303,17 @@ class User < ActiveRecord::Base
     msgs
   end
 
+  def assault_state?(current_date)
+    @assault_state = if assault_start_date.present?
+                       current_date = Date.parse(current_date) unless current_date.respond_to?(:wday)
+                       if assault_end_date.present?
+                         current_date >= assault_start_date  && current_date < assault_end_date
+                       else
+                         current_date >= assault_start_date
+                       end
+                     end
+  end
+
 
   private
 
