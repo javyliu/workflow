@@ -39,6 +39,26 @@ class Usermailer < ApplicationMailer
     @user = @episode.user
     mail(to: @user.email_name,subject: "#{@episode.holiday.name}申请确认单")#,body: "no body",content_type: "text/html")
   end
+
+  #发送突击申请确认邮件
+  def assault_approve(task_name)
+    @task = Task.init_from_subject(task_name)
+    @leader_user = User.find(@task.leader_user_id)
+    @assault = Assault.find(@task.mid)
+    #rule = AttendRule.find(@leader_user.leader_data[1])
+    #full_mailname = rule.name.start_with?("ab") ? FullMailname : %("#{@leader_user.user_name}" <#{@leader_user.email}>)
+    full_mailname = @leader_user.email_name
+    mail(to: full_mailname,subject: "#{@assault.dis_name}申请单")#,body: "no body",content_type: "text/html")
+  end
+
+  #给申请人发送突击申请确认邮件
+  def assault_approved(assault_id)
+    @assault = Assault.find(assault_id)
+    @approve = @assault.approve
+    @user = @assault.user
+    mail(to: @user.email_name,subject: "#{@assault.dis_name}申请确认单")#,body: "no body",content_type: "text/html")
+  end
+
   #每日需发送的考勤邮件
   #def daily_kaoqing(leader_user_id,uids = nil,date = nil,preview = nil)
   def daily_kaoqing(*args)

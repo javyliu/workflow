@@ -1,0 +1,37 @@
+<div class="panel">
+  <%= link_to "提交申请",new_episode_path,class: "button" %>
+  <%= link_to "提交突击申请",new_assault_path,class: "button warning" if can?(:create,Assault) %>
+  <%= link_to "取消突击申请",new_assault_path(style: 1),class: "button warning" if can?(:create,Assault) %>
+</div>
+<% if @assaults.present? %>
+<h4>突击申请 &nbsp; <%= link_to "假单申请", episodes_path %></h4>
+<table>
+  <thead>
+    <tr>
+      <th>类别</th>
+      <th>开始时间</th>
+      <th>结束时间</th>
+      <th>申请理由</th>
+      <th>审批结果</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @assaults.each do |assault| %>
+    <tr>
+    <td><%= assault.dis_name %></td>
+    <td><%= assault.start_date %></td>
+    <td><%= assault.end_date %></td>
+    <td><%= assault.description.truncate(15) %></td>
+    <td><%= assault.state %></td>
+    <td><%= link_to('详情', assault_path(assault,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})%> &nbsp;
+      <%= link_to('编辑', edit_assault_path(assault)) if can?(:update,assault.object) %>
+      <%= link_to('删除', assault_path(assault),data: {remote: true,method: :delete,type: :json}) if can?(:destroy,assault.object) %>
+    </td>
+  </tr>
+<% end %>
+  <tr> <td colspan=7> <%= paginate @assaults %> </td>
+  </tr>
+  </tbody>
+</table>
+<% end %>

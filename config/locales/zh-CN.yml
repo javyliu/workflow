@@ -292,6 +292,7 @@ zh-CN:
       department_journal: '部门异常考勤'
       mine_checkinout: '签到记录'
       user_checkinout: '打卡数据'
+      assault: "突击申请"
     attributes:
       episode:
         total_time: '申请时长'

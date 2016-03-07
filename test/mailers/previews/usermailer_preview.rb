@@ -25,6 +25,14 @@ class UsermailerPreview < ActionMailer::Preview
     Usermailer.episode_approve('F002:1416:2015-10-19:35')
   end
 
+  def assault_approve
+    Usermailer.assault_approve('F003:1004:2016-03-04:3')
+  end
+
+  def assault_approved
+    Usermailer.assault_approved(3)
+  end
+
   def episode_approved
     Usermailer.episode_approved(21)
   end

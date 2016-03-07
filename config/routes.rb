@@ -1,6 +1,9 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
 
+  get "assaults/:task" => "assaults#show",as: :assault,task: /\d+|(.+?:)+\d+/
+  resources :assaults, except: [:show]
+
   resources :roles
 
   resources :approves,only: [:create,:update]

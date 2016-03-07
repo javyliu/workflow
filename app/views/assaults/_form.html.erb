@@ -1,0 +1,68 @@
+<%= form_for(@assault) do |f| %>
+
+  <fieldset>
+  <legend><span><%= @page_title %></span></legend>
+
+  <div class="row">
+    <div class="columns medium-4">
+      <%= f.hidden_field :style %>
+      <%= f.label "突击类型" %>
+      <%= f.select :cate, Assault::Cates  %>
+    </div>
+    <div class="columns medium-4">
+      <%= f.label "开始时间" %>
+      <%= f.text_field :start_date,class: "datepicker",readonly: true ,required: true,value: "#{f.object.start_date.try(:strftime,'%F')}" %>
+    </div>
+    <div class="columns medium-4 datetime">
+      <%= f.label "结束时间" %>
+      <%= f.text_field :end_date,class: "datepicker",readonly: true , value: "#{f.object.end_date.try(:strftime,'%F')}"  %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="columns medium-12 resources">
+      <label>突击人员 &nbsp;<a href='#' >全选</a></label>
+      <ul class='medium-block-grid-8'>
+        <% @users.each do |emp| %>
+          <li><label> <%= check_box_tag "assault[employees][]",emp.id,f.object.employees.include?(emp.id) %><%= emp.user_name %> </label></li>
+      <% end %>
+      </ul>
+      <%= hidden_field_tag "employees[]",nil %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="columns medium-12">
+      <%= f.label :description,"申请理由" %>
+      <%= f.text_area :description,required: true %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="columns">
+      <%= f.submit "提交",class: "button",data: {disable_with: "提交中,请稍候..."} %>
+    </div>
+  </div>
+</fieldset>
+<% end %>
+<fieldset>
+  <legend><span>说明</span></legend>
+  <p>1、突击人员为考勤管理人员所能管理人员。</p>
+  <p>2、结束时间非必填。</p>
+</fieldset>
+
+<% foot do %>
+<script type="text/javascript" charset="utf-8">
+
+$(document).on("ready page:load",function(ev){
+    //console.log(ev)
+  $("label a").unbind("click").click(function(e){
+      e.preventDefault();
+      var ck_state = !!$(this).data("ck");
+      $(this).parent().next("ul").find("input[type=checkbox]").prop("checked",!ck_state);
+      $(this).text(ck_state ? "全选" : "取消全选").data("ck",!ck_state);
+    });
+});
+
+</script>
+<% end %>

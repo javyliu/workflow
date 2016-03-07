@@ -19,7 +19,8 @@
 class Episode < ActiveRecord::Base
   belongs_to :holiday
   belongs_to :user
-  has_many :approves,dependent: :delete_all
+  #has_many :approves,dependent: :delete_all
+  has_many :approves, as: :approveable, dependent: :delete_all
 
   validates :user_id,:comment,:start_date,:end_date,:title,:total_time, presence: true
   #validates_uniqueness_of :ck_type, conditions: -> {|args| where("? between start_date and end_date", Time.now.to_date )}
@@ -30,6 +31,7 @@ class Episode < ActiveRecord::Base
 
   #belongs_to :parent,class_name: 'Episode',foreign_key: :parent_id
   before_validation :init_attr
+
 
   validate do
     is_exist_con = Episode.where(["user_id = :user_id and ck_type = :ck_type and  (date(start_date) <= :start_date  and end_date >= :start_date or :start_date <= date(start_date) and :end_date >= date(start_date) )",user_id: self.user_id,ck_type: self.ck_type,start_date: self.start_date.to_date,end_date: self.end_date.to_date])
@@ -50,6 +52,7 @@ class Episode < ActiveRecord::Base
   include JavyTool::Csv
   #只有父假单会发送状态更改通知邮件
   after_save :send_email,if: -> {self.state_changed? && self.parent_id == 0 && self.state != 0}
+  after_save :update_children, on: :create, if: -> {self.parent_id == 0}
 
   def sum_total_day
     @sum_total_day ||= self.children.to_a.push(self).inject(0){|sum,item| sum += calcucate_day_total(item)}
@@ -75,5 +78,10 @@ class Episode < ActiveRecord::Base
       else
         0
       end
+  end
+
+  #更新子假单
+  def update_children
+    self.children.update_all(state: state)
   end
 end

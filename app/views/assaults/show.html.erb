@@ -1,0 +1,68 @@
+<fieldset>
+  <legend><span><%= @assault.user.user_name %>的<%= @assault.dis_name %>申请单</span></legend>
+  <table class='w100'>
+    <tr>
+      <th>类别</th>
+      <th>开始时间</th>
+      <th>结束时间</th>
+    </tr>
+    <tr>
+      <td><%= @assault.cate %></td>
+      <td><%= @assault.start_date %></td>
+      <td><%= @assault.end_date %></td>
+    </tr>
+    <tr>
+      <td colspan=4>
+      <strong>突击人员:</strong>
+        <%= @assault.users.pluck(:user_name).join(" ") %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=4>
+      <strong>申请事由:</strong>
+        <%= @assault.description %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=4><strong>申请时间:</strong>
+      <%= @assault.created_at.strftime("%y-%m-%d %H:%M:%S") %>
+      <strong>审核状态:</strong>
+      <%= Episode::State.rassoc(@assault.state).first %> </td>
+    </tr>
+  </table>
+  <% if @approve.present? %>
+  <div>
+    <strong>审核人员:</strong>
+    <table class="w100">
+      <tr>
+        <th>审核人</th>
+        <th>简要说明</th>
+        <th>审核状态</th>
+        <th>审核时间</th>
+      </tr>
+      <tr>
+        <td><%= @approve.user_name %></td>
+        <td><%= @approve.des %></td>
+        <td><%= Episode::State.rassoc(@approve.state).first %></td>
+        <td><%= @approve.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
+      </tr>
+    </table>
+  </div>
+  <% end %>
+  <% if @new_approve %>
+  <%= form_for @new_approve do |f| %>
+  <div class="field">
+    <%= f.label :des,"审核简要说明" %>
+    <%= f.hidden_field :approveable_id %>
+    <%= f.hidden_field :approveable_type %>
+    <%= hidden_field_tag :task,@task %>
+    <%= f.hidden_field :state %>
+    <%= f.text_area :des %>
+  </div>
+  <%= f.submit '通过', class: "button success" %>
+  <%= f.submit '驳回',class: "button" %>
+  <% end %>
+  <% end %>
+
+</fieldset>
+

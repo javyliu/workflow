@@ -1,0 +1,61 @@
+<h4>Dear <%= @user.user_name %>:</h4>
+<p>
+您的 [<%= @assault.cate %>]<%= @assault.dis_name %>申请 已被审批为:<b class="green"><%= Episode::State.rassoc(@assault.state).first %></b>
+<%= link_to '查看详情', assault_url(@assault.id) %>
+</p>
+<p><strong>审核人员:</strong></p>
+<table style="margin-left:2em;">
+  <tr>
+    <th>审核人</th>
+    <th>简要说明</th>
+    <th>审核状态</th>
+    <th>审核时间</th>
+  </tr>
+  <tr>
+    <td><%= @approve.user_name %></td>
+    <td><%= @approve.des %></td>
+    <td><%= Episode::State.rassoc(@approve.state).first %></td>
+    <td><%= @approve.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+</table>
+<p><strong>申请详情:</strong></p>
+<table style="margin-left:2em;">
+  <tbody>
+  <tr>
+    <td>申请人名字</td>
+    <td><%= @assault.user.user_name %></td>
+  </tr>
+  <tr>
+    <td>申请</td>
+    <td>
+      <table>
+        <tr>
+          <th>申请类别</th>
+          <th>开始时间</th>
+          <th>结束时间</th>
+        </tr>
+        <tr>
+          <td><%= @assault.dis_name %></td>
+          <td><%= @assault.start_date %></td>
+          <td><%= @assault.end_date %></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>突击人员</td>
+    <td><%= @assault.users.pluck(:user_name).join(" ") %></td>
+  </tr>
+  <tr>
+    <td>申请事由</td>
+    <td><%= @assault.description %></td>
+  </tr>
+  <tr>
+    <td>申请时间</td>
+    <td><%= @assault.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+
+  </tbody>
+</table>
+
+

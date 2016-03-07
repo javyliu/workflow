@@ -33,6 +33,7 @@ class Resource
     resource [:read,:update],ReportTitle
     resource [:read,:update,:create,:export],YearInfo
     resource :manage,Role
+    resource [:read,:create,:update,:destroy],Assault
   end
 
   group :change_pwd do

@@ -35,7 +35,7 @@
         <ul class="left">
           <li class="<%= cur_page?('welcome','index') ? 'active' : '' %>"><a href="/">首页</a></li>
           <li class="<%= cur_page?('users','home') ? 'active' : '' %>"> <%= link_to "我的考勤", home_users_path %> </li>
-          <li class="<%= cur_page?('episodes','index','new','create','show','edit') ? 'active' : '' %>"><%= link_to "我的申请", episodes_path %></li>
+          <li class="<%= cur_page?(['assaults','episodes'],'index','new','create','show','edit') ? 'active' : '' %>"><%= link_to "我的申请", episodes_path %></li>
           <li class="<%= cur_page?('checkinouts', 'index') ? 'active' : '' %>"><%= link_to "我的签到记录", checkinouts_path %></li>
           <li class="<%= cur_page?('journals', 'index') ? 'active' : '' %>"><%= link_to "我的异常考勤", journals_path %></li>
           <% if current_user %>

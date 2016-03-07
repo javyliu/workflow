@@ -87,12 +87,13 @@ html.turbolinks-progress-bar::before {
 .child_episodes > .row{border-top:dotted 1px #ccc;}
 
 .resources{
+  li{padding-bottom: 0.5rem;}
   input[type=checkbox]{
     margin: 0 4px 0.1rem 0;
     vertical-align: middle;
   }
 }
-.group_shi{background-color: #F3DCC4;border-right:solid 1px #ccc;}
+.group_shi{background-color: #F3DCC4;border-right:solid 1px #ccc;border-left:solid 1px #ccc;}
 .group_chi{background-color: #FAEBD7;border-right:solid 1px #ccc;}
 .group_tian{background-color: #FFF8DC;border-right:solid 1px #ccc;}
 .group_te{background-color: #DEB887;border-right:solid 1px #ccc;}

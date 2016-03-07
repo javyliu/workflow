@@ -1,41 +1,42 @@
 <div class="panel">
   <%= link_to "提交申请",new_episode_path,class: "button" %>
-
+  <%= link_to "提交突击申请",new_assault_path,class: "button warning" if can?(:create,Assault) %>
+  <%= link_to "取消突击申请",new_assault_path(style: 1),class: "button warning" if can?(:create,Assault) %>
 </div>
 
 <% if @episodes.present? %>
-  <h4>我的申请</h4>
-<table>
-  <thead>
-    <tr>
-      <th>类别</th>
-      <th>开始时间</th>
-      <th>结束时间</th>
-      <th>申请时长</th>
-      <th>事由</th>
-      <th>审批结果</th>
-      <th></th>
+  <h4>假期申请 &nbsp; <%= link_to "突击申请", assaults_path %></h4>
+  <table>
+    <thead>
+      <tr>
+        <th>类别</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>申请时长</th>
+        <th>事由</th>
+        <th>审批结果</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @episodes.each do |episode| %>
+      <tr>
+      <td><%= episode.holiday.try(:name) %></td>
+      <td><%= episode.start_date %></td>
+      <td><%= episode.end_date %></td>
+      <td><%= episode.total_time %><%= episode.holiday.try(:unit) %></td>
+      <td><%= episode.comment.truncate(15) %></td>
+      <td><%= episode.state %></td>
+      <td><%= link_to('详情', episode_path(episode,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})%> &nbsp;
+        <%= link_to('编辑', edit_episode_path(episode)) if can?(:update,episode.object) %>
+        <%= link_to('删除', episode_path(episode),data: {remote: true,method: :delete,type: :json}) if can?(:destroy,episode.object) %>
+      </td>
     </tr>
-  </thead>
-  <tbody>
-  <% @episodes.each do |episode| %>
-  <tr>
-    <td><%= episode.holiday.try(:name) %></td>
-    <td><%= episode.start_date %></td>
-    <td><%= episode.end_date %></td>
-    <td><%= episode.total_time %><%= episode.holiday.try(:unit) %></td>
-    <td><%= episode.comment.truncate(15) %></td>
-    <td><%= episode.state %></td>
-    <td><%= link_to('详情', episode_path(episode,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})%> &nbsp;
-      <%= link_to('编辑', edit_episode_path(episode)) if can?(:update,episode.object) %>
-      <%= link_to('删除', episode_path(episode),data: {remote: true,method: :delete,type: :json}) if can?(:destroy,episode.object) %>
-    </td>
-  </tr>
   <% end %>
-  <tr> <td colspan=7> <%= paginate @episodes %> </td>
-  </tr>
-  </tbody>
-</table>
+    <tr> <td colspan=7> <%= paginate @episodes %> </td>
+    </tr>
+    </tbody>
+  </table>
 <% end %>
 
 

@@ -107,7 +107,7 @@ class EpisodesController < ApplicationController
     #Rails.logger.info @approves.inspect
     #如果当前用户有审批任务
     if current_user.pending_tasks.include?(@task.to_s)
-      @approve = @episode.approves.new
+      @new_approve = @episode.approves.new
     end
 
     respond_to do |format|

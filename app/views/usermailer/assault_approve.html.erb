@@ -1,0 +1,48 @@
+<h4>Dear <%= @leader_user.user_name %>:</h4>
+<p> 请您确认以下申请： </p>
+<table style="margin-left:2em;">
+  <tbody>
+  <tr>
+    <td>名字</td>
+    <td><%= @assault.user.user_name %></td>
+  </tr>
+  <tr>
+    <td>部门</td>
+    <td><%= @assault.user.dept.name %></td>
+  </tr>
+  <tr>
+    <td>申请</td>
+    <td>
+      <table>
+        <tr>
+          <th>申请类别</th>
+          <th>开始时间</th>
+          <th>结束时间</th>
+        </tr>
+        <tr>
+          <td><%= @assault.dis_name %></td>
+          <td><%= @assault.start_date %></td>
+          <td><%= @assault.end_date %></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>突击人员</td>
+    <td><%= @assault.users.pluck(:user_name).join(" ") %></td>
+  </tr>
+  <tr>
+    <td>申请事由</td>
+    <td><%= @assault.description %></td>
+  </tr>
+  <tr>
+    <td>申请时间</td>
+    <td><%= @assault.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+  </tr>
+  <tr>
+    <td colspan=2><%= link_to '审批', assault_url(@task.to_s) %></td>
+  </tr>
+  </tbody>
+</table>
+
+

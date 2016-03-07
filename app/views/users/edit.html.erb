@@ -21,7 +21,7 @@
   </div>
   <div class="columns medium-8">
     <%= f.label :roles,"角色" %>
-    <ul class='medium-block-grid-6'>
+    <ul class='medium-block-grid-6 resources'>
       <% Role.all.each do |role| %>
       <li style="display: <%='none' if role.name == 'admin'  %>"><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
       <% end %>

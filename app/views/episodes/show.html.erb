@@ -50,11 +50,12 @@
     </table>
   </div>
   <% end %>
-  <% if @approve %>
-  <%= form_for @approve,request.xhr? ? {remote: true} : {remote: false} do |f| %>
+  <% if @new_approve %>
+  <%= form_for @new_approve,request.xhr? ? {remote: true} : {remote: false} do |f| %>
   <div class="field">
-    <%= f.label :des,"简要说明" %><br>
-    <%= f.hidden_field :episode_id %>
+    <%= f.label :des,"审核简要说明" %>
+    <%= f.hidden_field :approveable_id %>
+    <%= f.hidden_field :approveable_type %>
     <%= hidden_field_tag :task,@task %>
     <%= f.hidden_field :state %>
     <%= f.text_area :des %>

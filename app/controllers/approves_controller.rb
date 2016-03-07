@@ -24,6 +24,7 @@ class ApprovesController < ApplicationController
 
   # POST /approves
   # POST /approves.json
+  PolyParam = Struct.new(:title,:class_name,:back_path)
   def create
     @approve = Approve.new(approve_params)
     @approve.user_id = current_user.id
@@ -37,63 +38,92 @@ class ApprovesController < ApplicationController
     if @approve.state.to_i == 0
       @approve.state = params[:commit] == "通过" ? 1 : 2
     end
-    @episode = @approve.episode
+    @approveable = @approve.approveable
+
+    @poly_params = PolyParam.new
+    @poly_params.class_name = @approve.approveable_type
+
     respond_to do |format|
       if @approve.save
         #当前任务完成,删除提醒任务
         @task.update(:state,Task::Completed)
         @task.remove(all: true)
-        state = 3
 
-        #只做经理，总监，副总确认
-        #非驳回请求，如果请假天数大于3天，需要总监再次确认，如果大于等于5天，要求副总进行确认
+        #更新假单或突击申请状态
+        @approveable.state = self.send("approve_#{@poly_params.class_name.downcase}") #更新为审批中
+        @approveable.save!
 
-        if @episode.sum_total_day > 3 && @approve.state != 2
-          leader_user = current_user.leader_user
-          #如果请假天数大于5天
-          if current_user.title.to_i > 300  #确认人员为经理,则要求总监再作确认
-            _task = Task.create(@task.type,leader_user.id,leader_user_id: leader_user.id,date: @task.date,mid: @task.mid)
-            Usermailer.episode_approve(_task.task_name).deliver_later
-          elsif current_user.title.to_i > 200 #确认人员为总监,且请假天数大于等于5天，则给副总发送确认邮件
-            if  @episode.sum_total_day >= 5
-              _task = Task.create(@task.type,leader_user.id,leader_user_id: leader_user.id,date: @task.date,mid: @task.mid)
-              Usermailer.episode_approve(_task.task_name).deliver_later
-            else
-              state = @approve.state
-            end
-          else #副总
-            state = @approve.state
-          end
-        else #小于三天的假期直接更新状态为审核状态
-          state = @approve.state
-        end
-
-        #更新假单状态
-        @episode.state = state #更新为审批中
-        @episode.save!
-        @episode.children.update_all(state: state)
-        #返回假单显页面
-        format.html { redirect_to episode_path(@task), notice: '审核成功.' }
+        #返回假单显示页面
+        format.html { redirect_to @poly_params.back_path, notice: '审核成功.' }
+        #只有假单审批才会有js format
         format.js {render js: "$('#search form').submit();$('#modal_window').foundation('reveal','close')"}
         format.json { render :show, status: :created, location: @approve }
       else
         format.js { render js: "alert('#{@approve.errors.full_messages.join(';')}')"}
         format.html do
-          drop_page_title("假期审批")
+          drop_page_title(@poly_params.title)
           drop_breadcrumb("我的考勤",home_users_path)
           drop_breadcrumb
-          @approves = @episode.approves.to_a
-          if @episode.state.in?([0,3]) && can?(:create,Approve)
-            @approve = @episode.approves.new
+
+          # @approveable = Assault or Episode
+          new_approve = if @poly_params.class_name == "Assault".freeze
+                          @approveable.build_approve
+                        else
+                          @approves = @approveable.approves.to_a
+                          @approveable.approves.new
+                        end
+
+
+          if @approveable.state.in?([0,3]) && can?(:create,Approve)
+            @approve = new_approve
           end
+
           flash.now[:alert] = @approve.errors.full_messages
-          render 'episodes/show'
+          render "#{@poly_params.class_name.tableize}/show"
         end
         format.json { render json: @approve.errors, status: :unprocessable_entity }
       end
     end
   end
 
+  private
+  #审批假单
+  def approve_episode
+    state = 3
+    @poly_params.title = '假期审批'
+    @poly_params.back_path = episode_path(@task);
+    #只做经理，总监，副总确认
+    #非驳回请求，如果请假天数大于3天，需要总监再次确认，如果大于等于5天，要求副总进行确认
+    if @approveable.sum_total_day > 3 && @approve.state != 2
+      leader_user = current_user.leader_user
+      #如果请假天数大于5天
+      if current_user.title.to_i > 300  #确认人员为经理,则要求总监再作确认
+        _task = Task.create(@task.type,leader_user.id,leader_user_id: leader_user.id,date: @task.date,mid: @task.mid)
+        Usermailer.episode_approve(_task.task_name).deliver_later
+      elsif current_user.title.to_i > 200 #确认人员为总监,且请假天数大于等于5天，则给副总发送确认邮件
+        if  @approveable.sum_total_day >= 5
+          _task = Task.create(@task.type,leader_user.id,leader_user_id: leader_user.id,date: @task.date,mid: @task.mid)
+          Usermailer.episode_approve(_task.task_name).deliver_later
+        else
+          state = @approve.state
+        end
+      else #副总
+        state = @approve.state
+      end
+    else #小于三天的假期直接更新状态为审核状态
+      state = @approve.state
+    end
+    state
+  end
+
+  #审批突击申请单,副总直接审批
+  def approve_assault
+    @poly_params.title = '突击申请审批'
+    @poly_params.back_path = assault_path(@task);
+    @approve.state
+  end
+
+  public
   # PATCH/PUT /approves/1
   # PATCH/PUT /approves/1.json
   def update
@@ -126,6 +156,6 @@ class ApprovesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def approve_params
-      params.require(:approve).permit(:user_id, :user_name, :state, :des, :episode_id)
+      params.require(:approve).permit(:user_id, :user_name, :state, :des,:approveable_id, :approveable_type)
     end
 end

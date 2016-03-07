@@ -5,17 +5,17 @@ class Ability
     user ||= User.new # guest user (not logged in)
 
     #cannot :manage, :all
-    can :read,[Checkinout,Episode],user_id: user.id
-    can :destroy,[Episode] do |episode|
-      episode.user_id == user.id && episode.state.to_i == 0
+    can :read,[Checkinout,Episode,Assault],user_id: user.id
+    can :destroy,[Episode,Assault] do |episode|
+      episode.user_id.to_s == user.id && episode.state.to_i == 0
     end
     #can [:index,:home],User,uid: user.id
     can [:update,:change_pwd,:home],User,uid: user.id
     cannot :edit,User
-    can [:index],Journal,user_id: user.id
-    can [:create],Episode,user_id: user.id
-    can [:update],Episode do |episode|
-      episode.user_id == user.id && episode.state.to_i == 0
+    can :index,Journal,user_id: user.id
+    can :create,Episode,user_id: user.id
+    can :update,[Episode,Assault] do |episode|
+      episode.user_id.to_s == user.id && episode.state.to_i == 0
     end
 
     #2015-06-03 11:18 所有用户都可以更改考勤系统密码，除固定密码用户外，密码会被定期修改

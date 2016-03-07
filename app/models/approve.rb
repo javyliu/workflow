@@ -13,6 +13,7 @@
 #
 
 class Approve < ActiveRecord::Base
-  belongs_to :episode
+  #belongs_to :episode
   belongs_to :user
+  belongs_to :approveable, polymorphic: true
 end
