@@ -96,8 +96,9 @@ class JournalsController < ApplicationController
         response.headers['Content-Disposition'] = "attachment; filename='考勤汇总表(#{@start_time}-#{@end_time}).xlsx'"
         @journals = @journals.select(_select).group("user_id,check_type").includes(user:[:dept,:year_infos])
         #因为year_journals 带有group 聚合，在includes时会被抛弃,为防止n+1,所以手动eager_load
-        year_journals = Journal.grouped_journals.to_a + Journal.month_journals.where("update_date between ? and ?",@start_time,@end_time).to_a
+        year_journals = Journal.grouped_journals
         year_journals = year_journals.where(user_id: _uids) if _uids.present?
+        year_journals = year_journals.to_a + Journal.month_journals.where("update_date between ? and ?",@start_time,@end_time).to_a
         @journals = JournalWithRemainDecorator.decorate_collection(@journals.group_by(&:user_id)).each do |item|
           item.year_journals = year_journals.find_all{|it| it.user_id == item.user_id}
         end
