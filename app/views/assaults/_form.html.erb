@@ -24,7 +24,7 @@
       <label>突击人员 &nbsp;<a href='#' >全选</a></label>
       <ul class='medium-block-grid-8'>
         <% @users.each do |emp| %>
-          <li><label> <%= check_box_tag "assault[employees][]",emp.id,f.object.employees.include?(emp.id) %><%= emp.user_name %> </label></li>
+          <li><label> <%= check_box_tag "assault[employees][]",emp.id %> <span <%= emp.assault_state?(@date) ? "class='green bold'".html_safe : "" %>><%= emp.user_name %></span> </label></li>
       <% end %>
       </ul>
       <%= hidden_field_tag "employees[]",nil %>

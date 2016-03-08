@@ -58,6 +58,7 @@ class AssaultsController < ApplicationController
   def new
     @assault.style = params[:style].to_i
     title = @assault.style == 0 ? "突击申请" : "取消突击申请"
+    @date = Date.today
     drop_page_title(title)
     drop_breadcrumb("我的申请",assaults_path)
     drop_breadcrumb
@@ -72,6 +73,7 @@ class AssaultsController < ApplicationController
     drop_breadcrumb("我的申请",assaults_path)
     drop_page_title("编辑申请")
     drop_breadcrumb
+    @date = Date.today
     @users = User.where(uid: current_user.leader_data[2])
   end
 
@@ -100,6 +102,7 @@ class AssaultsController < ApplicationController
         drop_breadcrumb("我的申请",assaults_path)
         drop_breadcrumb
         @users = User.where(uid: current_user.leader_data[2])
+        @date = Date.today
         flash.now[:alert] = @assault.errors.full_messages.join("\n")
         format.html { render :new }
         format.json { render json: @assault.errors, status: :unprocessable_entity }
