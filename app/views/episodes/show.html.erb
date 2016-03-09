@@ -1,6 +1,6 @@
 <%= render partial: 'episodes/remain_holiday',object: @episode.user.decorate %>
 <fieldset>
-  <legend><span><%= @episode.user.user_name %>的申请单</span></legend>
+  <legend><span <%="class='label warning'".html_safe if @episode.user.assault_state? %>><%= @episode.user.user_name %>的申请单</span></legend>
   <table class='w100'>
     <tr>
       <th>假别</th>
