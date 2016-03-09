@@ -1,6 +1,11 @@
 <div class="row">
   <%= render 'users/right_nav' %>
   <div class="columns medium-9 medium-pull-3">
+    <% if current_user.assault_state? %>
+      <div data-alert class="alert-box warning">你当前处于突击状态
+        <a href="#" class="close">&times;</a>
+      </div>
+    <% end %>
     <% if @to_be_confirms.present? && can?(:confirm, User)  %>
     <h4><span></span></h4>
     <% @to_be_confirms.each do |key,values| %>
