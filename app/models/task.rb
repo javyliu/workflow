@@ -193,7 +193,7 @@ class Task
       ass.loaded!
       ass.target.concat(journals.find_all {|_item| _item.user_id == item.id})
 
-      item.calculate_journal(rule,task.date)
+      item.calculate_journal(rule,Date.parse(task.date))
       leader_user.ref_cmd[0] += item.ref_cmd.length
     end
 

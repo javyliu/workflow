@@ -19,6 +19,11 @@
       </div>
       <div class="columns medium-2">
         <input type="submit" class="button tiny inline-button" text="搜索"/>
+        <% if can?(:export,User) %>
+          <span style="font-size:12px;">
+          <%= link_to "导出数据", users_path(format: :xls), class: "export_xls"  %>
+        </span>
+      <% end %>
       </div>
     </div>
   </form>

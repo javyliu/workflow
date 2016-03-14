@@ -18,12 +18,28 @@ class UsersController < ApplicationController
     drop_page_title("用户管理")
     drop_breadcrumb
     @date = Date.today
-    @users = @users.not_expired.where(con_hash).where(like_hash) if con_hash || like_hash
-    @users = @users.not_expired.page(params[:page]).includes(:dept,:roles)
+    @users = @users.where(con_hash).where(like_hash) if con_hash || like_hash
+    @users = @users.not_expired.includes(:dept,:roles)
     #@user = current_user.decorate
     respond_to do |format|
-      format.html {  }
-      format.js {render partial: "items",object: @users, content_type: Mime::HTML}
+      format.html { @users = @users.page(params[:page]) }
+      format.js do
+        @users = @users.page(params[:page])
+        render partial: "items",object: @users, content_type: Mime::HTML
+      end
+      format.xls do
+        @users = @users.except(:includes).includes(:dept)
+        cols = "uid,user_name,email,dept,title,mgr_code,assault".split(",")
+        xsl_file = @users.to_csv(select: "ID,名字,邮箱,部门,职位,直属管理员ID,是否突击状态") do |item,_|
+          _attrs = item.attributes
+          _attrs["dept"] = item.dept.try(:name)
+          _attrs["assault"] = item.assault_state?(@date)
+          _attrs.values_at(*cols)
+        end
+        #xsl_file
+        send_data xsl_file,disposition: 'attachment', filename: "users_data_#{Date.today.to_s(:number)}.xls"
+
+      end
     end
 
   end

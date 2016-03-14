@@ -25,7 +25,7 @@ class Resource
     #modify 用于页面是否显示修改链接
     resource [:modify,:create,:update,:list,:export],Journal
     resource :manage,Holiday
-    resource [:read,:update,:create,:destroy],User
+    resource [:read,:update,:create,:destroy,:export],User
     resource :display,User,res_name: 'menu'
     resource :manage,SpecDay
     resource [:read,:update],OaConfig

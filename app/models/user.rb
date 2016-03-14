@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
   #for login
   has_secure_password # validations: false
 
+  include JavyTool::Csv
   #ROLES = %w[admin manager department_manager kaoqin_viewer pwd_manager badman]
 
   class << self

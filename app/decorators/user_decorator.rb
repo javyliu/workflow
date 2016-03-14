@@ -169,7 +169,6 @@ class UserDecorator < ApplicationDecorator
   #大于10点算事假，也就是迟到时间大于30分钟
   def calculate_journal(attend_rule,date)
     yes_ckin = object.yesterday_checkin
-    date = Date.parse(date) unless date.respond_to?(:wday)
 
     @ckin_time =  yes_ckin.try(:checkin)
     @ckout_time = yes_ckin.try(:checkout)
