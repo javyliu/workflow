@@ -169,6 +169,7 @@ class UserDecorator < ApplicationDecorator
   #大于10点算事假，也就是迟到时间大于30分钟
   def calculate_journal(attend_rule,date)
     yes_ckin = object.yesterday_checkin
+    date = Date.parse(date) unless date.respond_to?(:wday)
 
     @ckin_time =  yes_ckin.try(:checkin)
     @ckout_time = yes_ckin.try(:checkout)
@@ -208,7 +209,7 @@ class UserDecorator < ApplicationDecorator
       episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
 =end
       diff_time = ((@ckout_time - @ckin_time)/3600).to_i
-      if object.assault_state?(date)
+      if object.assault_state?(date) && date.wday == 6
         if diff_time >= 9
           ref_cmd.push("获得<b>3</b>点")
         elsif diff_time >= 4
