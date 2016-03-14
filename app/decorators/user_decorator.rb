@@ -214,6 +214,8 @@ class UserDecorator < ApplicationDecorator
         elsif diff_time >= 4
           ref_cmd.push("获得<b>1</b>点")
         end
+      else
+        ref_cmd.push("非工作日加班")
       end
       return
     end
