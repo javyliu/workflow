@@ -207,7 +207,7 @@ class UserDecorator < ApplicationDecorator
       end
       episodes.each{|item|ref_cmd.push("<span>#{h.link_to(item.name,"http://kq.press5.cn/episodes/#{item.id}",data: {"reveal-id": "modal_window","reveal-ajax": true})}</span>")} if ref_cmd.present? && episodes.present?
 =end
-      diff_time = ((@ckout_time - @ckin_time)/60).to_i
+      diff_time = ((@ckout_time - @ckin_time)/3600).to_i
       if object.assault_state?(date)
         if diff_time >= 9
           ref_cmd.push("获得<b>3</b>点")
