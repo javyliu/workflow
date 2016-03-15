@@ -11,7 +11,7 @@
 
 <p>
   <strong>考勤规则:</strong>
-  <%= @department.attend_rule.description %>
+  <%= @department.attend_rule.try(:description) %>
 </p>
 
 <p>
