@@ -8,7 +8,7 @@
       </div>
       <div class="columns medium-4">
         <label>考勤规则:</label>
-        <%= select :department, :attend_rule_id, AttendRule.list.map{|item| item.slice(0..1)},prompt: "选择部门" %>
+        <%= select :department, :attend_rule_id, AttendRule.list.map{|item| item.slice(0..1)},prompt: "考勤规则" %>
       </div>
 
       <div class="columns medium-4">
