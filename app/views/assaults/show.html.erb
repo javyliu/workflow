@@ -30,7 +30,7 @@
       <%= Episode::State.rassoc(@assault.state).first %> </td>
     </tr>
   </table>
-  <% if @approve.present? %>
+  <% if @approved.present? %>
   <div>
     <strong>审核人员:</strong>
     <table class="w100">
@@ -41,22 +41,23 @@
         <th>审核时间</th>
       </tr>
       <tr>
-        <td><%= @approve.user_name %></td>
-        <td><%= @approve.des %></td>
-        <td><%= Episode::State.rassoc(@approve.state).first %></td>
-        <td><%= @approve.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
+        <td><%= @approved.user_name %></td>
+        <td><%= @approved.des %></td>
+        <td><%= Episode::State.rassoc(@approved.state).first %></td>
+        <td><%= @approved.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
       </tr>
     </table>
   </div>
   <% end %>
-  <% if @new_approve %>
-  <%= form_for @new_approve do |f| %>
+  <% if @approve %>
+  <%= form_for @approve do |f| %>
   <div class="field">
     <%= f.label :des,"审核简要说明" %>
     <%= f.hidden_field :approveable_id %>
     <%= f.hidden_field :approveable_type %>
     <%= hidden_field_tag :task,@task %>
     <%= f.hidden_field :state %>
+    <%= hidden_field_tag :updated_at, @assault.updated_at %>
     <%= f.text_area :des %>
   </div>
   <%= f.submit '通过', class: "button success" %>

@@ -57,6 +57,7 @@ class Journal < ActiveRecord::Base
   #16,特批
   #17,加班
   #18,误餐及交通补助(仅限经理级)
+  #19,迟到早退特批假
   CheckType = [
     ['c_aff_later',1, '迟到','次','group_chi',false,nil,1],
     ['c_aff_leave',2,'早退','次','group_chi',false,nil,1],
@@ -81,7 +82,7 @@ class Journal < ActiveRecord::Base
     ['c_aff_b_points',21,'B贡献分','小时','group_shi',false,nil,10],
     ['c_aff_outing',23,'因公外出','天','group_tian',false,14,10],
     ['c_aff_spec_appr_holiday',24,'休假特批','小时','group_shi',false,16,-10],
-    ['c_aff_spec_appr_later',25,'迟到早退特批','小时','group_shi',false,nil,-10],
+    ['c_aff_spec_appr_later',25,'迟到早退特批','小时','group_shi',false,19,-10],
     ['c_aff_count',26,'工作点数','点','group_shi',false,nil,1],
     ['c_aff_others',22,'其它','','group_qi',false,nil,-1]#,
     #['c_aff_others',26,'误餐及交通补助(仅限经理级)','小时','group_shi',false,18,10]

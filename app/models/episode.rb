@@ -34,9 +34,20 @@ class Episode < ActiveRecord::Base
 
 
   validate do
-    is_exist_con = Episode.where(["user_id = :user_id and ck_type = :ck_type and  (date(start_date) <= :start_date  and end_date >= :start_date or :start_date <= date(start_date) and :end_date >= date(start_date) )",user_id: self.user_id,ck_type: self.ck_type,start_date: self.start_date.to_date,end_date: self.end_date.to_date])
+    #用户在相同日期内是否存在同类假期
+    is_exist_con = Episode.where(["user_id = :user_id and holiday_id = :holiday_id and  (date(start_date) <= :start_date  and end_date >= :start_date or :start_date <= date(start_date) and :end_date >= date(start_date) )",user_id: self.user_id,holiday_id: self.holiday_id,start_date: self.start_date.to_date,end_date: self.end_date.to_date])
     is_exist_con = is_exist_con.where("id != ?",self.id) unless self.new_record?
     errors.add(:base, '已经存在同类申请了，请删除后再次申请！') if is_exist_con.exists?
+
+    #一个薪资周期（上月26日到本月25日）内只允许申请3次迟到早退特批
+    if holiday_id == 19
+      s_date,e_date = Journal.count_time_range(date: self.start_date.to_date)
+      is_exist_con = Episode.where("user_id = :user_id and holiday_id = 19 and start_date > :start_date and start_date < :end_date", user_id: user_id, start_date: s_date, end_date: e_date.next_day  )
+      is_exist_con = is_exist_con.where("id != ?",self.id) unless self.new_record?
+      errors.add(:base, '迟到早退特批假每月只允许申请三次，如有疑问，请与人事联系！') if is_exist_con.count(1) >= 3
+    end
+
+
   end
 
   #get the parent episode

@@ -39,19 +39,23 @@ class ApprovesController < ApplicationController
       @approve.state = params[:commit] == "通过" ? 1 : 2
     end
     @approveable = @approve.approveable
+    if params[:updated_at] != @approveable.updated_at.to_s
+      #Rails.logger.debug {"error:已被重新编辑"}
+      @approve.errors.add(:base,'该申请已被重新编辑，请再次确认！')
+    end
 
     @poly_params = PolyParam.new
     @poly_params.class_name = @approve.approveable_type
 
     respond_to do |format|
-      if @approve.save
+      if @approve.errors.size == 0 && @approve.save
         #当前任务完成,删除提醒任务
         @task.update(:state,Task::Completed)
         @task.remove(all: true)
 
         #更新假单或突击申请状态
         @approveable.state = self.send("approve_#{@poly_params.class_name.downcase}") #更新为审批中
-        @approveable.save!
+        @approveable.save!(validate: false)
 
         #返回假单显示页面
         format.html { redirect_to @poly_params.back_path, notice: '审核成功.' }
@@ -66,19 +70,16 @@ class ApprovesController < ApplicationController
           drop_breadcrumb
 
           # @approveable = Assault or Episode
-          new_approve = if @poly_params.class_name == "Assault".freeze
-                          @approveable.build_approve
-                        else
-                          @approves = @approveable.approves.to_a
-                          @approveable.approves.new
-                        end
-
-
-          if @approveable.state.in?([0,3]) && can?(:create,Approve)
-            @approve = new_approve
+          if @poly_params.class_name == "Assault".freeze
+            @assault = @approveable
+            #@approveable.build_approve
+          else
+            @episode = @approveable
+            @approves = @approveable.approves.to_a
+            #@approveable.approves.new
           end
 
-          flash.now[:alert] = @approve.errors.full_messages
+          flash.now[:alert] = @approve.errors.full_messages.join(" ")
           render "#{@poly_params.class_name.tableize}/show"
         end
         format.json { render json: @approve.errors, status: :unprocessable_entity }

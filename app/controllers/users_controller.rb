@@ -29,8 +29,8 @@ class UsersController < ApplicationController
       end
       format.xls do
         @users = @users.except(:includes).includes(:dept)
-        cols = "uid,user_name,email,dept,title,mgr_code,assault".split(",")
-        xsl_file = @users.to_csv(select: "ID,名字,邮箱,部门,职位,直属管理员ID,是否突击状态") do |item,_|
+        cols = "uid,user_name,email,dept,title,mgr_code,assault,assault_start_date,assault_end_date".split(",")
+        xsl_file = @users.to_csv(select: "ID,名字,邮箱,部门,职位,直属管理员ID,是否突击状态,突击开始时间,突击结否时间") do |item,_|
           _attrs = item.attributes
           _attrs["dept"] = item.dept.try(:name)
           _attrs["assault"] = item.assault_state?(@date)

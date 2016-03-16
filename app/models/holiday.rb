@@ -31,6 +31,8 @@ class Holiday < ActiveRecord::Base
   #15出差
   #16特批
   #17加班
+  #18,误餐及交通补助(仅限经理级)
+  #19迟到早退特批假
   def self.unit(holiday_id)
     Journal::CheckType.detect{|item|item[6] == holiday_id}.try(:[],3)
     #case holiday_id

@@ -33,11 +33,11 @@ class AssaultsController < ApplicationController
     end
     #跨级审批时会报错，除非加上审批权限
     #authorize!(:show,@assault)
-    @approve = @assault.approve
+    @approved = @assault.approve
     #Rails.logger.info @approves.inspect
     #如果当前用户有审批任务
     if current_user.pending_tasks.include?(@task.to_s)
-     @new_approve = @assault.build_approve
+     @approve = @assault.build_approve
     end
 
     respond_to do |format|
@@ -113,6 +113,7 @@ class AssaultsController < ApplicationController
   # PATCH/PUT /assaults/1
   # PATCH/PUT /assaults/1.json
   def update
+    #raise CanCan::AccessDenied.new("不能修改已审批的申请！",assaults_path ) if @assault.state > 0
     respond_to do |format|
       if @assault.update(assault_params)
         format.html { redirect_to @assault, notice: 'Assault was successfully updated.' }

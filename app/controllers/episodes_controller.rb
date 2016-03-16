@@ -107,7 +107,7 @@ class EpisodesController < ApplicationController
     #Rails.logger.info @approves.inspect
     #如果当前用户有审批任务
     if current_user.pending_tasks.include?(@task.to_s)
-      @new_approve = @episode.approves.new
+      @approve = @episode.approves.new
     end
 
     respond_to do |format|
@@ -174,7 +174,12 @@ class EpisodesController < ApplicationController
     respond_to do |format|
       if @episode.save
         #生成任务
-        leader_user = current_user.leader_user
+        #迟到早退特批只有总监及以上才可审批
+        if @episode.holiday_id == 19
+          leader_user = director_leader(current_user)
+        else
+          leader_user = current_user.leader_user
+        end
 
         _task = Task.create("F002",leader_user.id,leader_user_id: leader_user.id,date: @episode.created_at.to_date.to_s,mid: @episode.id)
         Rails.logger.info _task.task_name
@@ -198,6 +203,8 @@ class EpisodesController < ApplicationController
   # PATCH/PUT /episodes/1.json
   # 正常不应该有更改假单的权限，应该是删除后重新更新，因为如果用户更新了假期的话会出现问题
   def update
+
+    #raise CanCan::AccessDenied.new("不能修改已审批的申请！",episodes_path ) if @episode.state > 0
     @episode.assign_attributes(episode_params)
     @episode.children.each do |item|
       item.title = @episode.title
@@ -236,5 +243,14 @@ class EpisodesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def episode_params
       params.require(:episode).permit(:user_id,  :comment, :approved_by, :approved_time,:title,:total_time,:holiday_id, :start_date, :end_date,:_destroy,children_attributes: [:total_time,:holiday_id, :start_date, :end_date,:_destroy,:id])
+    end
+
+    #返回总监及以上
+    def director_leader(user)
+      u = user.leader_user
+      if u.title > '202'
+        u = u.leader_user
+      end
+      u
     end
 end

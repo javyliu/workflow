@@ -5,7 +5,7 @@
 </div>
 
 <% if @episodes.present? %>
-  <h4>假期申请 &nbsp; <%= link_to "突击申请", assaults_path %></h4>
+  <h4>假期申请 &nbsp; <%= link_to "突击申请", assaults_path if can?(:create, Assault) %></h4>
   <table>
     <thead>
       <tr>
