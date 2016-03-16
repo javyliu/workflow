@@ -4,11 +4,11 @@
   </div>
   <div class="field">
     <%= f.label :password,"密码" %>
-    <%= f.password_field :password %>
+    <%= f.password_field :password, required: true %>
   </div>
   <div class="field">
     <%= f.label :password_confirmation,"密码确认" %>
-    <%= f.password_field :password_confirmation %>
+    <%= f.password_field :password_confirmation, required: true %>
   </div>
   <div class="actions">
     <%= f.submit "修改",class: "button" %>
