@@ -131,7 +131,9 @@ class UsersController < ApplicationController
       tasks
     end
 
-    @rule = AttendRule.find(@user.leader_data[1]) rescue Rails.logger.debug{"error_no_leader_data:#{@user.id}"}
+    @rule = AttendRule.find_by(uid: @user.leader_data[1]) rescue (Rails.logger.debug{"error_no_leader_data:#{@user.id}"};raise \
+                                                                  raise CanCan::AccessDenied.new("非部门管理员",home_users_path)
+                                                                 )
 
     @user = @user.decorate
     @user.report_titles = ReportTitle.where(id: @rule.title_ids).order("ord,id")
