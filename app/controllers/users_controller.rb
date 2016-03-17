@@ -105,10 +105,12 @@ class UsersController < ApplicationController
       raise CanCan::AccessDenied.new("无考勤数据！",kaoqing_users_path("dept") ,params[:task])
     end
 
-    _today = Date.today
-    limit_day = OaConfig.setting(:limit_day_of_month).to_i
+    #_today = Date.today
+    #limit_day = OaConfig.setting(:limit_day_of_month).to_i
     @need_update = @user.pending_tasks.include?(@task.task_name) || params[:cmd] == "update"
-    _is_expired =  @date < _today.last_month.change(day:limit_day) || (_today.day > limit_day && @date.day < limit_day)
+    #_is_expired =  @date < _today.last_month.change(day:limit_day) || (_today.day > limit_day && @date.day < limit_day)
+    _is_expired = !@date.between?(*Journal.count_time_range(date: @date))
+
     if _is_expired
       @task.remove(all: true)
       flash.now[:alert] = '该日考勤已过期，如需修改请联系人事部门。'

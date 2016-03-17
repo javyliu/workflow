@@ -111,13 +111,13 @@ class Journal < ActiveRecord::Base
     CheckType.assoc(MailDecType.rassoc(key.downcase).first)
   end
 
-  def self.count_time_range(date: Date.today)
+  def self.count_time_range(date: Date.today, limit_date: OaConfig.setting(:limit_day_of_month).to_i)
     date = date.respond_to?(:day) ? date : Date.parse(date)
     day = date.day
-    if day >= 26
-      [date.change(day: 26),date.next_month.change(day: 25)]
+    if day >= limit_date
+      [date.change(day: limit_date),date.next_month.change(day: limit_date - 1)]
     else
-      [date.last_month.change(day: 26),date.change(day: 25)]
+      [date.last_month.change(day: limit_date),date.change(day: limit_date - 1 )]
     end
   end
 
