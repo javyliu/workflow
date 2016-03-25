@@ -90,7 +90,7 @@ class Journal < ActiveRecord::Base
 
   #TODO: 把cktype与holiday统一起来放到holiday表中，更新现在的ck_type
 
-  UserCheckTypeIds = [5,8,9,11,12,17,21,24,25]
+  UserCheckTypeIds = [5,8,9,11,12,17,21,24]
   #用于其它中的别名对应
   MailDecType= [
     ['c_aff_absent','a'],

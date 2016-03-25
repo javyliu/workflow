@@ -151,8 +151,12 @@ class UserDecorator < ApplicationDecorator
   end
 
   def c_month_later_or_absent
-    year_journal(25).to_f/10
+    @month_later_or_absent ||= year_journal(25).to_f/10
   end
+
+  #def c_aff_spec_appr_later
+  #  c_month_later_or_absent
+  #end
 
   # 好
   #def method_missing(meth, *args, &block)
