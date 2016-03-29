@@ -64,7 +64,7 @@ class JournalWithRemainDecorator <  Draper::Decorator
   end
   #ab分
   def remain_ab_points
-   user and (base_holiday_info.ab_point + year_journal(9,21,24,25)).to_f/10
+   user and (base_holiday_info.ab_point + year_journal(9,21,24)).to_f/10
   end
 
   #当月点数
