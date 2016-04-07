@@ -150,7 +150,7 @@ class User < ActiveRecord::Base
     where  a.mgr_code is NULL and b.attend_rule_id is not NULL GROUP BY b.`code`
     UNION
     select b.attend_rule_id,a.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where  a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code
+    where  a.mgr_code <> -1 and a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code
     ) as tmp GROUP BY tmp.mgr_code;
                                        heredoc
                                       ).inject([]){|uids,item|uids.push([item.uid,item.attend_rule_id,item.user_ids.split(",").tap{|t|t.delete(item.uid) if item.uid != '1002'}])}
