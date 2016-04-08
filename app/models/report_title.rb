@@ -9,4 +9,12 @@
 #
 
 class ReportTitle < ActiveRecord::Base
+  ALL = self.all.to_a
+
+  def self.list(ids)
+    ALL.select{|item| item.id.in?(ids)}
+  end
+
+
+
 end

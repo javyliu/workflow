@@ -169,8 +169,9 @@ class User < ActiveRecord::Base
     @leader_data ||= User.leader_data(self.id)
   end
 
+
   #返回一个数组
-  #[:description,:id,:name,:time_range,:min_unit]
+  #[:description,:id,:name,:time_range,:min_unit,title_ids]
   def rule
     _id = self.id.to_s
     @rule ||= if rule_id = User.cached_leaders.detect{|it| it[0] == _id || it[2].include?(_id)}.try(:[],1)
@@ -226,21 +227,36 @@ class User < ActiveRecord::Base
   end
 
   #当前用户所属部门分组
+  #主要用于控制假期下拉显示，异常考勤下拉显示
+  #2016-04-08 都更新为统一假期
   def dept_group
-    @dept_group ||= case self.dept_code
-                  when /^(0104|0105|0106)/ #无倒休部门
-                    Department::GroupNoSwitchTime
-                  when /^(0102|0103)/ #ab 分部门
-                    Department::GroupAB
-                  else
-                    Department::GroupSwitchTime #倒休部门
-                  end
+    #Department::GroupAB
+    #@dept_group ||= case self.dept_code
+    #              when /^(0104|0105|0106)/ #无倒休部门
+    #                Department::GroupNoSwitchTime
+    #              when /^(0102|0103)/ #ab 分部门
+    #                Department::GroupAB
+    #              else
+    #                Department::GroupSwitchTime #倒休部门
+    #              end
+    #假别加上外出
+    #18,误餐及交通补助(仅限经理级) 无对应checktype
+    @dept_group ||= [:group_ab,check_types.map{|item| item[6]}.compact.push(18),[5,11,17,26],[8,12,22]]
   end
 
   #当前用户可用 check_type
   #用于异常考勤搜索页面显示
   def check_types
-    @check_types ||= Journal::CheckType.find_all{|item| !item[1].in?(self.dept_group[3])}
+    #@check_types ||= Journal::CheckType.find_all{|item| !item[1].in?(self.dept_group[3])}
+
+    return @check_types if @check_types
+
+    return [] unless rule
+
+    #通过规则的title_ids来得到report_titles列表
+    reports = ReportTitle.list(rule[5]).map(&:name)
+
+    @check_types = Journal::CheckType.find_all{|item| item[0].in?(reports)}
   end
 
 

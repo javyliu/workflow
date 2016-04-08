@@ -85,7 +85,7 @@ class Journal < ActiveRecord::Base
     ['c_aff_spec_appr_later',25,'迟到早退特批','次','group_chi',false,19,1],
     ['c_aff_count',26,'工作点数','点','group_shi',false,nil,1],
     ['c_aff_others',22,'其它','','group_qi',false,nil,-1]#,
-    #['c_aff_others',26,'误餐及交通补助(仅限经理级)','小时','group_shi',false,18,10]
+    #['c_aff_others',27,'误餐及交通补助(仅限经理级)','小时','group_shi',false,18,10]
   ]
 
   #TODO: 把cktype与holiday统一起来放到holiday表中，更新现在的ck_type

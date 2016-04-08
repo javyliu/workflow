@@ -355,14 +355,15 @@ class UserDecorator < ApplicationDecorator
   #返回当前用户年度假期所需列
   def check_types
     return @check_types if @check_types
-    _cktype_ids = object.dept_group[2].dup
-    if object.dept_group.first == :group_switch_time && object.title.to_i < 400 #倒休部门经理及以上无倒休
-      _cktype_ids.delete(12)
-      _cktype_ids.push(8)
-    end
-    if helpers.current_user.has_any_role?(:manager,:admin,:department_manager,:game_manager) && object.dept_group.first != :group_switch_time
-      _cktype_ids.push(21)
-    end
+    _cktype_ids = object.dept_group[2]
+    #_cktype_ids = object.dept_group[2].dup
+    #if object.dept_group.first == :group_switch_time && object.title.to_i < 400 #倒休部门经理及以上无倒休
+    #  _cktype_ids.delete(12)
+    #  _cktype_ids.push(8)
+    #end
+    #if helpers.current_user.has_any_role?(:manager,:admin,:department_manager,:game_manager) && object.dept_group.first != :group_switch_time
+    #  _cktype_ids.push(21)
+    #end
     @check_types = Journal::CheckType.select{|item| item[1].in?(_cktype_ids)}
   end
 

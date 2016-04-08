@@ -9,6 +9,7 @@
 class Holiday < ActiveRecord::Base
   has_many :episodes
 
+  #添加或更新假期需要重启应用
   ALL = self.all.to_a
   #假期计算单位，
   #哺乳期晚到1小时，哺乳期早走1小时,漏打卡 为次
