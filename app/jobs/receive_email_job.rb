@@ -111,7 +111,10 @@ class ReceiveEmailJob < ActiveJob::Base
           journal.dval = 0
 
           #journal.check_type = cktype.second
-          if _med == "c_aff_spec_appr" #特批
+          #2016-04-17
+          if _med == "c_aff_spec_appr" #特批描述
+            journal = journal.spec_appr_holiday
+            raise "无对应休假特批" unless journal
             journal.description = _text
           else
             journal.description = "#{cktype.third}#{_text}#{cktype.fourth}"

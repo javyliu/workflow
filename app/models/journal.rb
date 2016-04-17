@@ -25,6 +25,12 @@ class Journal < ActiveRecord::Base
   #按月统计的数值，本月点数(26)，迟到早退特批（25）
   scope :month_journals, ->{ select("user_id,check_type,sum(dval) dval").where(check_type:[25,26]).group(:user_id,:check_type) }
 
+  #2016-04-17
+  def spec_appr_holiday
+    Journal.find_by(user_id: self.user_id, update_date: self.update_date,check_type: 24)
+  end
+
+
 
   #用于数据手动组装,避免n+1
   #has_one :checkinout #, -> {where(user_id: self.user_id,rec_date: self.update_date)}
@@ -68,7 +74,7 @@ class Journal < ActiveRecord::Base
     ['c_aff_persion_leave',7,'事假','天','group_tian',false,6,10],
     ['c_aff_switch_leave',8,'延时下班时长','小时','group_shi',false,17,10],
     ['c_aff_a_points',9,'A贡献分','小时','group_shi',false,nil,10],
-    ['c_aff_spec_appr',10,'特批','','group_te',false,nil,0],
+    ['c_aff_spec_appr',10,'特批描述','','group_te',false,nil,0],
     ['c_aff_holiday_salary',11,'带薪事假','天','group_tian',false,8,10],
     #['c_aff_switch_time',12,'酌情倒休时长','小时','group_shi',false,5,-10],
     ['c_aff_switch_time',12,'酌情倒休时长','小时','group_shi',false,nil,-10],

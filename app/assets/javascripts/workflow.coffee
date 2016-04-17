@@ -155,6 +155,11 @@ $(->
       $(this).data("restInPlaceEditor").abort()
       alert(data.error)
 
+  $(document).on 'failure.rest-in-place',"tr.need_update td[class^=c_aff]", (event,data)->
+    if data.error
+      $(this).data("restInPlaceEditor").abort()
+      alert(data.error)
+
   #for new approve
   $(document).on "click","#new_approve .button", (e)->
     if $(this).hasClass("success")

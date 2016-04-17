@@ -193,7 +193,11 @@ class JournalsController < ApplicationController
     end
     _cktype = Journal::CheckType.rassoc(@journal.check_type)
 
-    if _cktype && @journal.check_type != 10 #非特批
+    #2016-04-17 特批描述为特批假的说明
+    if @journal.check_type == 10
+      @journal = @journal.spec_appr_holiday
+      raise CanCan::AccessDenied.new("无对应休假特批",new_journal_path ,Journal) unless @journal
+    elsif _cktype
       _dval = @journal.dval_before_type_cast
       @journal.dval = _dval.to_f.abs * _cktype.last
     end
@@ -244,17 +248,22 @@ class JournalsController < ApplicationController
       authorize!(:update,@journal)
       @journal.dval = 0
 
+      #2016-04-17 特批描述仅用于对特批假的说明
       if @journal.check_type == 10
-        @journal.description = _value
+        @journal = @journal.spec_appr_holiday
+        msg = {error: "无对应休假特批"} unless @journal
+        @journal.description = _value if @journal
       else
         @journal.description = "#{cktype.third}#{_value}#{cktype.fourth}"
         @journal.dval = _value.to_f.abs * cktype.last
       end
 
-      if @journal.save
-        @msg = params[:journal]
-      else
-        msg = @journal.errors
+      if @journal
+        if @journal.save
+          @msg = params[:journal]
+        else
+          msg = @journal.errors
+        end
       end
     elsif params[:id] #管理员编辑
       set_journal
