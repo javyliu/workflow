@@ -62,7 +62,8 @@ gem 'cancancan', '~> 1.10'
 
 #my lib
 #gem 'javy_tool',path: '../gems/javy_tool'
-gem 'javy_tool',git: 'https://github.com/javyliu/javy_tool.git'
+#gem 'javy_tool',git: 'https://github.com/javyliu/javy_tool.git'
+gem 'javy_tool',github: 'javyliu/javy_tool', branch: 'master'
 
 #paginate
 gem 'kaminari'
@@ -72,7 +73,8 @@ gem 'rest_in_place'
 
 #for role_making
 #gem 'role_making',path: '../gems/role_making'
-gem 'role_making',git: 'https://github.com/javyliu/role_making.git'
+#gem 'role_making',git: 'https://github.com/javyliu/role_making.git'
+gem 'role_making',github: 'javyliu/role_making', branch: 'master'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
