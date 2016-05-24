@@ -3,11 +3,14 @@ class UserDecorator < ApplicationDecorator
 
   def blank_out(med)
     if object.journals.present?
-      cktype = Journal::CheckType.assoc(med.to_s)
+      #如果是特批描述，则返回休假特批中的description
+      med = med.to_s
+      _med =  med == "c_aff_spec_appr" ? "c_aff_spec_appr_holiday" : med
+      cktype = Journal::CheckType.assoc(_med)
       #return nil if object.journal.check_type != cktype.second
       _journal = object.journals.detect { |e| e.check_type == cktype[1] }
       return nil unless _journal
-      if cktype.last == 0
+      if med == "c_aff_spec_appr"
         _journal.description
       elsif cktype.last == 1
         _journal.dval
@@ -329,8 +332,12 @@ class UserDecorator < ApplicationDecorator
       tmp_str << h.content_tag(:tr,class: cls,id: user.id,name: cls,data: {object: "journal",url: h.user_journals_path(user.id,date)}) do
         self.report_titles.each do |col|
           _class = col.name.start_with?("c_aff") ? "c_aff" : ""
-          _class += " spec_appr" if col.name == "c_aff_spec_appr" #特批那用于描述
-          h.concat(h.content_tag(:td,user.send(col.name),id:col.name,class: _class ,data: {attribute: col.name}))
+          if col.name == "c_aff_spec_appr" #特批那用于描述
+            _class += " spec_appr"
+            h.concat(h.content_tag(:td,user.send(col.name),id:col.name,class: _class ,data: {attribute: :description}))
+          else
+            h.concat(h.content_tag(:td,user.send(col.name),id:col.name,class: _class ,data: {attribute: col.name}))
+          end
         end
       end
     end
