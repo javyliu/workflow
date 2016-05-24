@@ -334,10 +334,8 @@ class UserDecorator < ApplicationDecorator
           _class = col.name.start_with?("c_aff") ? "c_aff" : ""
           if col.name == "c_aff_spec_appr" #特批那用于描述
             _class += " spec_appr"
-            h.concat(h.content_tag(:td,user.send(col.name),id:col.name,class: _class ,data: {attribute: :description}))
-          else
-            h.concat(h.content_tag(:td,user.send(col.name),id:col.name,class: _class ,data: {attribute: col.name}))
           end
+          h.concat(h.content_tag(:td,user.send(col.name),id:col.name,class: _class ,data: {attribute: col.name}))
         end
       end
     end
