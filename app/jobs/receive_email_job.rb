@@ -15,6 +15,15 @@ class ReceiveEmailJob < ActiveJob::Base
         #binding.pry
         _task = Task.init_from_subject(m.subject)
         next unless _task #不作处理
+
+        #是否过期
+        _date = Date.parse(_task.date)
+        if !_date.between?(*Journal.count_time_range(is_for_validate: true))
+          _task.remove(all: true)
+          Usermailer.error_approved(_task.leader_user_id,"您回复的#{_task.task_name}的确认信息出错了，该日考勤已过了确认时间",_task.date).deliver_later
+          next
+        end
+
         begin
           #unless _task.leader_user_id.to_i.in?([1002,1608])
           case _task.attr_value(:state)

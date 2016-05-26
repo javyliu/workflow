@@ -73,6 +73,7 @@ OaConfig.create(
     {key: "end_year_time",des: "年度假期截止日",value: "2015-02-18"},
     {key: "affair_leave_days",des: "带薪事假天数",value: "0"},
     {key: "sick_leave_days",des: "带薪病假天数",value: "3"},
-    {key: "limit_day_of_month",des: "月考勤截止日期",value: "26"}
+    {key: "start_day_of_month",des: "月考勤开始日",value: "26"},
+    {key: "end_day_of_month",des: "月考勤截止日",value: "25"}
   ]
 )

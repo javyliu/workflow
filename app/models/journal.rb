@@ -118,13 +118,18 @@ class Journal < ActiveRecord::Base
     CheckType.assoc(MailDecType.rassoc(key.downcase).first)
   end
 
-  def self.count_time_range(date: Date.today, limit_date: OaConfig.setting(:limit_day_of_month).to_i)
+  #返回一个任意日期的考勤周期数组[start_date,end_date]
+  #is_for_validate: 是否用于验证截止日下一天是否可编辑上月考勤(当date为today时，使用 .between()方法)
+  #考勤截止日的下一天仍可更新本周期考勤
+  def self.count_time_range(date: Date.today, is_for_validate: false )
+    start_date = OaConfig.setting(:start_day_of_month).to_i
+    end_date = OaConfig.setting(:end_day_of_month).to_i
     date = date.respond_to?(:day) ? date : Date.parse(date)
     day = date.day
-    if day >= limit_date
-      [date.change(day: limit_date),date.next_month.change(day: limit_date - 1)]
+    if day > (end_date + 1)
+      [date.change(day: start_date),date.next_month.change(day: end_date)]
     else
-      [date.last_month.change(day: limit_date),date.change(day: limit_date - 1 )]
+      [date.last_month.change(day: start_date),date.change(day: is_for_validate ? (end_date+1) : end_date )]
     end
   end
 
