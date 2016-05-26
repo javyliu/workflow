@@ -188,7 +188,9 @@ class JournalsController < ApplicationController
     #_today = Date.today
     #小于上月25号的考勤不能再作修改,27号以后不能再修改本月考勤
     #limit_day = OaConfig.setting(:limit_day_of_month).to_i
-    if !can?(:create,@journal) && !_date.between?(*Journal.count_time_range(is_for_validate: true))
+    #如果用户可以编辑部门考勤但考勤已过期
+    #用 can?(:kaoqing,User) 来区分管理员还是部门管理员，可任选一个可区分的权限
+    if can?(:kaoqing,User) && !_date.between?(*Journal.count_time_range(is_for_validate: true))
       raise CanCan::AccessDenied.new("该日考勤已过了确认时间，如需增加请联系人事部门。",new_journal_path ,Journal)
     end
     _cktype = Journal::CheckType.rassoc(@journal.check_type)
