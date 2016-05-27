@@ -247,7 +247,7 @@ class UserDecorator < ApplicationDecorator
                              @ckin_time.change(hour:start_hour,min:start_min)
                            end
 
-      diff_time = ((@ckin_time - start_working_time)/60).to_i #早上打卡时间与工作时间差
+      diff_time = ((@ckin_time - start_working_time)/60).to_i #早上打卡时间与工作时间差,1分钟的误差，即59秒时不算迟到
 
       @a_point = @b_point = @switch_hours = 0
 
