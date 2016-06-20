@@ -157,10 +157,13 @@ class Task
   def self.eager_load_from_task(task,leader_user: nil,rule: nil)
     leader_user ||= User.find(task.leader_user_id).decorate
     uids ||= leader_user.uids || leader_user.leader_data.try(:last)
-    rule ||= AttendRule.find(leader_user.leader_data[1])
 
     leader_user.ref_cmd[0] = 0
     users = User.where(uid: uids).includes(:year_infos,:dept).decorate
+    #删除rule的设定，因为每个用户的部门有可能不一致,
+    #TODO
+    #应该把考勤确认页面按用户的考勤规则分组展示，但目前所有的考勤规则展示列都一致，所有没有必有，
+    #但如果要做成扩展性好的程序，应该做分组
 
     date_checkins = Checkinout.where(user_id: uids,rec_date: task.date).to_a
 
@@ -192,6 +195,8 @@ class Task
       ass = item.association(:journals)
       ass.loaded!
       ass.target.concat(journals.find_all {|_item| _item.user_id == item.id})
+
+      rule = AttendRule.find(item.dept.attend_rule_id)
 
       item.calculate_journal(rule,Date.parse(task.date))
       leader_user.ref_cmd[0] += item.ref_cmd.length

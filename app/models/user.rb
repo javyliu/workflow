@@ -146,12 +146,12 @@ class User < ActiveRecord::Base
       else
         leaders_ary = User.find_by_sql( <<-heredoc
                                        select tmp.attend_rule_id,tmp.mgr_code uid, GROUP_CONCAT(tmp.user_ids) user_ids from (
-    select b.attend_rule_id,b.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where  a.mgr_code is NULL and b.attend_rule_id is not NULL GROUP BY b.`code`
-    UNION
     select b.attend_rule_id,a.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where  a.mgr_code <> -1 and a.mgr_code is not NULL and b.attend_rule_id is not NULL GROUP BY a.mgr_code
-    ) as tmp GROUP BY tmp.mgr_code;
+    where  a.mgr_code <> -1 and a.mgr_code is not NULL  GROUP BY a.mgr_code
+    UNION
+    select b.attend_rule_id,b.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
+    where  a.mgr_code is NULL  GROUP BY b.`code`
+    ) as tmp where tmp.attend_rule_id is not NULL GROUP BY tmp.mgr_code;
                                        heredoc
                                       ).inject([]){|uids,item|uids.push([item.uid,item.attend_rule_id,item.user_ids.split(",").tap{|t|t.delete(item.uid) if item.uid != '1002'}])}
         _redis.set("leaders_data",leaders_ary)
