@@ -18,7 +18,7 @@ class Department < ActiveRecord::Base
 
   belongs_to :leader_user,foreign_key: :mgr_code,class_name: "User"
 
-  after_save :delete_caches,if: -> {mgr_code_changed?}
+  after_save :delete_caches,if: -> {mgr_code_changed? || attend_rule_id_changed?}
 
   #[
   #0,组名，
