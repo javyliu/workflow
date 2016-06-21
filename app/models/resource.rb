@@ -3,11 +3,11 @@ class Resource
 
   group :kaoqing do
     resource [:update,:create],Approve
-    resource :list,Checkinout,res_name: 'department_checkinout',con: {user_id: 'user.leader_data.try(:last)'}
+    resource :list,Checkinout,res_name: 'department_checkinout',con: {user_id: 'user.leader_data.try(:[],"user_ids")'}
 
-    resource [:list,:export,:create,:update],Journal,res_name: 'department_journal',con: {user_id: 'user.leader_data.try(:last)'}
+    resource [:list,:export,:create,:update],Journal,res_name: 'department_journal',con: {user_id: 'user.leader_data.try(:[],"user_ids")'}
 
-    resource [:list,:destroy,:export],Episode,res_name: 'department_episode',con: {user_id: 'user.leader_data.try(:last)'}
+    resource [:list,:destroy,:export],Episode,res_name: 'department_episode',con: {user_id: 'user.leader_data.try(:[],"user_ids")'}
 
     resource :confirm,User,res_name: 'department_kaoqing'
     resource :kaoqing,User,res_name: 'department_kaoqing'

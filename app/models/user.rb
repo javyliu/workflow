@@ -92,18 +92,26 @@ class User < ActiveRecord::Base
 
   #每日发送前一天部门的考勤邮件，如果昨天是工作日 ，则发送每个部门的考勤邮件，如果是非工作日 ，则只发送有考勤异常部门的邮件
   def self.leaders_by_date(date)
-    if SpecDay.workday?(date: date)
-       User.cached_leaders
-    else #非工作日有签到的都是异常考勤
+    leaders = User.cached_leaders.grouped_leader_data
+    unless SpecDay.workday?(date: date)
+      #非工作日有签到的都是异常考勤
       y_checkin_uids = Checkinout.where(rec_date: date.to_s).pluck(:user_id)
-      leaders = User.cached_leaders
       y_checkin_uids.compact.each do |uid|
-        leaders.each do |item|
-          item.push(uid) if item[2].include?(uid)
+        #leaders.each do |item|
+        #  item.push(uid) if item[2].include?(uid)
+        #end
+        leaders =  leaders.each_with_object({}) do |(k,v),r|
+          if r[k].nil?
+            r[k]={}
+            r[k]["attend_rule_id"]=v["attend_rule_id"]
+            r[k]["user_ids"] = []
+          end
+          r[k]["user_ids"].concat(v["user_ids"].first(3)) if v["user_ids"].include?(uid)
         end
       end
-      leaders.collect { |leader_user_id,rule_id,_,*checkin_uids| [leader_user_id,rule_id,checkin_uids] }
+      #leaders.collect { |leader_user_id,rule_id,_,*checkin_uids| [leader_user_id,rule_id,checkin_uids] }
     end
+    leaders
   end
 
   #def roles=(*_roles)
@@ -138,31 +146,32 @@ class User < ActiveRecord::Base
   def self.cached_leaders
     #return leaders with rule and user_ids like following
     #[["1002", "RuleFlexibalWorkingTime", ["1003", "2177", "1002", "1021", "1004", "2178", "1078", "1551", "1013", "1128", "1178"],...]
-    Sidekiq.redis do |_redis|
-      leaders_ary = _redis.get("leaders_data")
+    #Sidekiq.redis do |_redis|
+    #  leaders_ary = _redis.get("leaders_data")
 
-      if leaders_ary
-        leaders_ary = JSON.parse(leaders_ary)
-      else
-        leaders_ary = User.find_by_sql( <<-heredoc
-                                       select tmp.attend_rule_id,tmp.mgr_code uid, GROUP_CONCAT(tmp.user_ids) user_ids from (
-    select b.attend_rule_id,a.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where  a.mgr_code <> -1 and a.mgr_code is not NULL  GROUP BY a.mgr_code
-    UNION
-    select b.attend_rule_id,b.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
-    where  a.mgr_code is NULL  GROUP BY b.`code`
-    ) as tmp where tmp.attend_rule_id is not NULL GROUP BY tmp.mgr_code;
-                                       heredoc
-                                      ).inject([]){|uids,item|uids.push([item.uid,item.attend_rule_id,item.user_ids.split(",").tap{|t|t.delete(item.uid) if item.uid != '1002'}])}
-        _redis.set("leaders_data",leaders_ary)
-        leaders_ary
-      end
-    end
+    #  if leaders_ary
+    #    leaders_ary = JSON.parse(leaders_ary)
+    #  else
+    #    leaders_ary = User.find_by_sql( <<-heredoc
+    #                                   select tmp.attend_rule_id,tmp.mgr_code uid, GROUP_CONCAT(tmp.user_ids) user_ids from (
+    #select b.attend_rule_id,a.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
+    #where  a.mgr_code <> -1 and a.mgr_code is not NULL  GROUP BY a.mgr_code
+    #UNION
+    #select b.attend_rule_id,b.mgr_code,GROUP_CONCAT(a.uid) user_ids from users a INNER JOIN departments b on a.dept_code = b.`code`
+    #where  a.mgr_code is NULL  GROUP BY b.`code`
+    #) as tmp where tmp.attend_rule_id is not NULL GROUP BY tmp.mgr_code;
+    #                                   heredoc
+    #                                  ).inject([]){|uids,item|uids.push([item.uid,item.attend_rule_id,item.user_ids.split(",").tap{|t|t.delete(item.uid) if item.uid != '1002'}])}
+    #    _redis.set("leaders_data",leaders_ary)
+    #    leaders_ary
+    #  end
+    #end
+    LeaderData.instance
   end
 
   #get leader's rule data
   def self.leader_data(uid)
-    User.cached_leaders.assoc(uid.to_s)
+    User.cached_leaders.grouped_leader_data[uid.to_s]#.assoc(uid.to_s)
   end
 
   def leader_data
@@ -174,7 +183,7 @@ class User < ActiveRecord::Base
   #[:description,:id,:name,:time_range,:min_unit,title_ids]
   def rule
     _id = self.id.to_s
-    @rule ||= if rule_id = User.cached_leaders.detect{|it| it[0] == _id || it[2].include?(_id)}.try(:[],1)
+    @rule ||= if rule_id = User.cached_leaders.detect{|item| item.user_ids.include?(_id)}.try(:attend_rule_id)#.grouped_leader_data.detect{|k,v| k == _id || v["user_ids"].include?(_id)}.try(:[],"attend_rule_id")
                 AttendRule.list.rassoc(rule_id.to_i)
               else
                 nil
@@ -335,11 +344,12 @@ class User < ActiveRecord::Base
   private
 
   def self.delete_caches
-    Sidekiq.redis do |_redis|
-      _redis.del("leaders_data")
-    end
+    #Sidekiq.redis do |_redis|
+    #  _redis.del("leaders_data")
+    #end
     Rails.cache.delete(:departments)
     Rails.cache.delete(:default_departments)
+    LeaderData.destroy
   end
 
   def delete_caches

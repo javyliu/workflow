@@ -82,7 +82,7 @@ class Usermailer < ApplicationMailer
 
 
     @leader_user = User.find(leader_user_id)
-    rule = AttendRule.find(@leader_user.leader_data[1])
+    rule = AttendRule.find(@leader_user.leader_data["attend_rule_id"])
     @rule = rule
 
 

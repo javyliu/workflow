@@ -20,12 +20,13 @@ class DailyMailJob < ActiveJob::Base
     leaders = User.leaders_by_date(yesterday)
     #用于测试
     if opts[:leader_user_id]
-      leaders = [leaders.detect { |e| e[0] == opts[:leader_user_id] }]
+      leaders = leaders.slice(opts[:leader_user_id]) #[leaders.detect { |e| e[0] == opts[:leader_user_id] }]
     end
 
     #puts leaders.inspect
     #构建邮件并发出去
-    leaders.each do |leader_user_id,rule_id,checkin_uids|
+    leaders.each do |leader_user_id,value|
+      checkin_uids = value["user_ids"]
       #发送邮件
       #TODO:是否还要保留checkin_uids?
       if checkin_uids.length > 0

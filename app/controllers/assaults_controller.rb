@@ -63,7 +63,7 @@ class AssaultsController < ApplicationController
     drop_breadcrumb("我的申请",assaults_path)
     drop_breadcrumb
 
-    @users = User.where(uid: current_user.leader_data[2])
+    @users = User.where(uid: current_user.leader_data["user_ids"])
 
 
   end
@@ -74,7 +74,7 @@ class AssaultsController < ApplicationController
     drop_page_title("编辑申请")
     drop_breadcrumb
     @date = Date.today
-    @users = User.where(uid: current_user.leader_data[2])
+    @users = User.where(uid: current_user.leader_data["user_ids"])
   end
 
   # POST /assaults
@@ -101,7 +101,7 @@ class AssaultsController < ApplicationController
         drop_page_title("突击申请")
         drop_breadcrumb("我的申请",assaults_path)
         drop_breadcrumb
-        @users = User.where(uid: current_user.leader_data[2])
+        @users = User.where(uid: current_user.leader_data["user_ids"])
         @date = Date.today
         flash.now[:alert] = @assault.errors.full_messages.join("\n")
         format.html { render :new }

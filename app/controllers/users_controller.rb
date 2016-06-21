@@ -132,7 +132,7 @@ class UsersController < ApplicationController
       tasks
     end
 
-    @rule = AttendRule.find_by(id: @user.try(:leader_data).try(:[],1)) #rescue (Rails.logger.debug{"error_no_leader_data:#{@user.id}"};raise CanCan::AccessDenied.new("非部门管理员",home_users_path))
+    @rule = AttendRule.find_by(id: @user.try(:leader_data).try(:[],"attend_rule_id")) #rescue (Rails.logger.debug{"error_no_leader_data:#{@user.id}"};raise CanCan::AccessDenied.new("非部门管理员",home_users_path))
 
     unless @rule
       raise CanCan::AccessDenied.new("非部门管理员",home_users_path)

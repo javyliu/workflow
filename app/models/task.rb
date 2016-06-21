@@ -155,8 +155,9 @@ class Task
 
 
   def self.eager_load_from_task(task,leader_user: nil,rule: nil)
+
     leader_user ||= User.find(task.leader_user_id).decorate
-    uids ||= leader_user.uids || leader_user.leader_data.try(:last)
+    uids ||= leader_user.uids || leader_user.leader_data.try(:[],"user_ids")
 
     leader_user.ref_cmd[0] = 0
     users = User.where(uid: uids).includes(:year_infos,:dept).decorate

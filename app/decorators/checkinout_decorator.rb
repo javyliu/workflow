@@ -47,7 +47,7 @@ class CheckinoutDecorator < ApplicationDecorator
                  nil
                end
              end
-      if text && leader_id = User.cached_leaders.detect{|it|it[2].include?(object.user_id.to_s)}.try(:first)
+      if text && leader_id = User.cached_leaders.detect{|it|it["user_ids"].include?(object.user_id.to_s)}.try(:uid)
         task_name = "F001:#{leader_id}:#{object.rec_date}"
         tmp_str << h.link_to(h.kaoqing_users_path(task_name,cmd: 'update')) do
           h.concat(h.content_tag(:span,text,class: 'alert label'))

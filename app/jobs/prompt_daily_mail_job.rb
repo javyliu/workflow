@@ -32,11 +32,11 @@ class PromptDailyMailJob < ActiveJob::Base
       case _task.type
       when "F001"
         leaders = User.leaders_by_date(_task.date)
-        _leader = leaders.detect { |e| e.first == _task.leader_user_id }
+        _leader = leaders.slice(_task.leader_user_id)#.detect { |e| e.first == _task.leader_user_id }
         #构建催缴邮件并发出去
         #发送邮件
-        if _leader && _leader[2].length > 0
-          Usermailer.daily_kaoqing(_task.leader_user_id,uids: _leader[2].uniq,date: _task.date.to_s,count: _task.count ).deliver_later
+        if _leader && _leader["user_ids"].length > 0
+          Usermailer.daily_kaoqing(_task.leader_user_id,uids: _leader["user_ids"].uniq,date: _task.date.to_s,count: _task.count ).deliver_later
           puts "sending prompt daily mail #{_task.leader_user_id} "
         end
       when "F002"
