@@ -153,6 +153,8 @@ class Task
     end
   end
 
+  #规则对像，实际就是一个 AttendRule, 只用方法间传递对偈
+  Rule = Struct.new(:description,:id,:name,:time_range,:min_unit,:title_ids)
 
   def self.eager_load_from_task(task,leader_user: nil,rule: nil)
 
@@ -197,9 +199,9 @@ class Task
       ass.loaded!
       ass.target.concat(journals.find_all {|_item| _item.user_id == item.id})
 
-      rule = AttendRule.find(item.dept.attend_rule_id)
+      _rule = rule.try(:id) == item.dept.attend_rule_id ? rule : Rule.new(*AttendRule.list.rassoc(item.dept.attend_rule_id))
 
-      item.calculate_journal(rule,Date.parse(task.date))
+      item.calculate_journal(_rule,Date.parse(task.date))
       leader_user.ref_cmd[0] += item.ref_cmd.length
     end
 
