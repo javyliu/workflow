@@ -79,7 +79,7 @@ class Episode < ActiveRecord::Base
   end
 
   def init_attr
-    self.ck_type ||= Journal::CheckType.detect{|item|item[6] == self.holiday_id}.try(:second)
+    self.ck_type = Journal::CheckType.detect{|item|item[6] == self.holiday_id}.try(:second)
   end
 
   def calcucate_day_total(episode)
