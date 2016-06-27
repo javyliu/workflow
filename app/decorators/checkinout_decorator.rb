@@ -40,8 +40,8 @@ class CheckinoutDecorator < ApplicationDecorator
              else
                ckin_time = object.checkin
                start_working_time,end_working_time = regular_working_time
-               #非正常工作时间上下班都为异常
-               if ckin_time > start_working_time || object.checkout < end_working_time
+               #非正常工作时间上下班都为异常,忽略秒
+               if ((ckin_time - start_working_time)/60).to_i > 0 || object.checkout < end_working_time
                  '上下班异常'
                else
                  nil
