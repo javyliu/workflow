@@ -44,7 +44,7 @@ class Episode < ActiveRecord::Base
     #2016-04-14 又变回来
     if holiday_id == 19
       s_date,e_date = Journal.count_time_range(date: self.start_date.to_date)
-      is_exist_con = Episode.where("user_id = :user_id and holiday_id = 19 and start_date > :start_date and start_date < :end_date", user_id: user_id, start_date: s_date, end_date: e_date.next_day  )
+      is_exist_con = Episode.where("user_id = :user_id and holiday_id = 19 and start_date between :start_date and :end_date", user_id: user_id, start_date: s_date, end_date: e_date.next_day  )
       is_exist_con = is_exist_con.where("id != ?",self.id) unless self.new_record?
       errors.add(:base, '迟到早退特批假每月只允许申请三次，如有疑问，请与人事联系！') if is_exist_con.count(1) >= 3
     end

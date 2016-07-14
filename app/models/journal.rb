@@ -126,10 +126,13 @@ class Journal < ActiveRecord::Base
     end_date = OaConfig.setting(:end_day_of_month).to_i
     date = date.respond_to?(:day) ? date : Date.parse(date)
     day = date.day
-    if day > (end_date + 1)
+
+    end_date = is_for_validate ? (end_date+1) : end_date
+
+    if day > end_date
       [date.change(day: start_date),date.next_month.change(day: end_date)]
     else
-      [date.last_month.change(day: start_date),date.change(day: is_for_validate ? (end_date+1) : end_date )]
+      [date.last_month.change(day: start_date),date.change(day: end_date )]
     end
   end
 
