@@ -127,7 +127,12 @@ class Journal < ActiveRecord::Base
     date = date.respond_to?(:day) ? date : Date.parse(date)
     day = date.day
 
-    end_date = is_for_validate ? (end_date+1) : end_date
+    if is_for_validate
+      end_date = end_date+1
+      #如果考勤确认时间是结束时间的第二天，且开始时间比结束时间大于1天，则要调整一下开始时间，以避免出现不考勤过期情况
+      start_date = end_date  if day > end_date && day <= start_date
+    end
+
 
     if day > end_date
       [date.change(day: start_date),date.next_month.change(day: end_date)]
