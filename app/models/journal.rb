@@ -129,8 +129,8 @@ class Journal < ActiveRecord::Base
 
     if is_for_validate
       end_date = end_date+1
-      #如果考勤确认时间是结束时间的第二天，且开始时间比结束时间大于1天，则要调整一下开始时间，以避免出现不考勤过期情况
-      start_date = end_date  if day > end_date && day <= start_date
+      #开始时间比结束时间大1天，则要调整一下开始时间，以避免出现不能确认考勤的情况
+      start_date = end_date  if (start_date - end_date) >= 1
     end
 
 
