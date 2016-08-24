@@ -1,6 +1,6 @@
 <% items.each do |item| %>
 <tr>
-  <td><%= item.rec_date %></td>
+  <td><%= item.rec_date %> <%= l(item.rec_date,format: '%A') %> </td>
   <td><%= item.user_name %></td>
   <td><%= item.dept_name %></td>
   <td><%= item.checkin %></td>

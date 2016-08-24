@@ -1,7 +1,7 @@
 <% items.each do |item| %>
 <% ck_type = Journal::CheckType.rassoc(item.check_type) %>
 <tr>
-  <td><%= item.update_date.strftime("%m/%d") %></td>
+  <td title=<%= l(item.update_date,format: '%A') %>><%= item.update_date.strftime("%m/%d") %></td>
   <td><%= item.user.try(:user_name) %></td>
   <td><%= short_dept_name(item.user.try(:dept).try(:name)) %></td>
   <td><%= ck_type[2] %></td>
