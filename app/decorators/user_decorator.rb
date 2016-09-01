@@ -289,7 +289,7 @@ class UserDecorator < ApplicationDecorator
           @a_point = 0
           ref_cmd.push("事假1天")
         end
-      elsif end_diff_time > 0 && ((@ckout_time - start_working_time)/60/60) >=12 && object.assault_state?(date)#加班
+      elsif end_diff_time > 0 && (((@ckout_time - start_working_time)/60 + 1)/60) >=12 && object.assault_state?(date)#加班
 =begin 2016-03-02 去除加班
         end_diff_time = ((@ckout_time - @ckout_time.change(hour: 19))/60).to_i
         _tmp = (end_diff_time/attend_rule.min_unit.to_f).round.to_f/unit #加班时长
