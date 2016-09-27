@@ -157,7 +157,7 @@ class JournalsController < ApplicationController
     if can?(:change,Department) && (depts = current_user.role_depts(include_mine: false).presence)
       @managed_user_list.concat(User.not_expired.where(User.is_all_dept?(depts) ? nil : {dept_code: depts}).pluck(:user_name,:uid))
     end
-    @managed_user_list = @managed_user_list.uniq.sort_by{|it| it[0]}
+    @managed_user_list = @managed_user_list.uniq.sort_by{|it| it[0].encode("gbk")}
 
 
   end
@@ -174,7 +174,7 @@ class JournalsController < ApplicationController
     if can?(:change,Department) && (depts = current_user.role_depts(include_mine: false).presence)
       @managed_user_list.concat(User.not_expired.where(User.is_all_dept?(depts) ? nil : {dept_code: depts}).pluck(:user_name,:uid))
     end
-    @managed_user_list = @managed_user_list.uniq.sort_by{|it| it[0]}
+    @managed_user_list = @managed_user_list.uniq.sort_by{|it| it[0].encode("gbk")}
     drop_breadcrumb("我的考勤",home_users_path)
     drop_page_title("修改异常考勤")
     drop_breadcrumb
