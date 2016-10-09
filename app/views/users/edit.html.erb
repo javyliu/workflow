@@ -10,14 +10,15 @@
     <%= f.password_field :password %>
   </div>
   <div class="columns medium-4">
-    <%= f.label :title,"职位" %>
-    <%= f.select :title,Episode::Title,prompt: true %>
-  </div>
-</div>
-<div class="row">
-  <div class="columns medium-4">
     <%= f.label :mgr_code,"直属管理者ID" %>
     <%= f.text_field :mgr_code %>
+  </div>
+</div>
+<% if can?(:manage,Role) %>
+<div class="row">
+  <div class="columns medium-4">
+    <%= f.label :title,"职位" %>
+    <%= f.select :title,Episode::Title,prompt: true %>
   </div>
   <div class="columns medium-4">
     <%= f.label :assault_start_date,"突击开始时间" %>
@@ -29,7 +30,6 @@
   </div>
 </div>
 
-<% if can?(:manage,Role) %>
 
 <div class="row">
   <div class="columns medium-12">
