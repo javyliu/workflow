@@ -29,6 +29,8 @@
   </div>
 </div>
 
+<% if can?(:manage,Role) %>
+
 <div class="row">
   <div class="columns medium-12">
     <%= f.label :roles,"角色" %>
@@ -56,7 +58,7 @@
     <%= hidden_field_tag "user[department][]",nil %>
   </div>
 </div>
-
+<% end %>
   <div class="actions">
     <%= f.submit "提交",class: "button",data: {disable_with: '提交中...'} %>
   </div>

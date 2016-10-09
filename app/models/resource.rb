@@ -26,6 +26,7 @@ class Resource
     resource [:modify,:create,:update,:list,:export],Journal
     resource :manage,Holiday
     resource [:read,:update,:create,:destroy,:export],User
+    resource [:read,:update],User, res_name: 'department_user',con: {uid: 'user.leader_data.try(:[],"user_ids")'}
     resource :display,User,res_name: 'menu'
     resource :manage,SpecDay
     resource [:read,:update],OaConfig

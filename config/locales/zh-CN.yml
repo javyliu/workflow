@@ -289,6 +289,7 @@ zh-CN:
       department_kaoqing: '部门考勤'
       department_checkinout: '部门签到'
       department_episode: '部门申请'
+      department_user: '部门人员'
       department_journal: '部门异常考勤'
       mine_checkinout: '签到记录'
       user_checkinout: '打卡数据'
