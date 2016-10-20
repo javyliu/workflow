@@ -125,7 +125,6 @@ class Journal < ActiveRecord::Base
     start_date = OaConfig.setting(:start_day_of_month).to_i
     end_date = OaConfig.setting(:end_day_of_month).to_i
     date = date.respond_to?(:day) ? date : Date.parse(date)
-    day = date.day
 
     if is_for_validate
       end_date = end_date+1
@@ -133,12 +132,31 @@ class Journal < ActiveRecord::Base
       start_date = end_date  if (start_date - end_date) >= 1
     end
 
+    #重新理一下周期计算，优先判断是否当前页周期，否则为上月周期
 
-    if day > end_date
-      [date.change(day: start_date),date.next_month.change(day: end_date)]
+   today =  Date.today
+
+    _current_range = today.day > end_date ? [today.change(day: start_date),today.next_month.change(day: end_date)] : [today.prev_month.change(day: start_date),today.change(day: end_date)]
+    #_next_range = [date.next_month.change(day: end_date+1),date.next_month(2).change(day: 25)]
+    #_last_range = [date.prev_month(2).change(day: 26),date.prev_month.change(day: start_date-1)]
+    #puts _current_range.map(&:to_s)
+    #puts _next_range.map(&:to_s)
+    #puts _last_range.map(&:to_s)
+    #puts _current_range.map(&:to_s).inspect
+    if date.between?(*_current_range)
+      _current_range
+    elsif date < _current_range[0]
+      [_current_range[0].prev_month.change(day: 26),_current_range[0] - 1.day]
     else
-      [date.last_month.change(day: start_date),date.change(day: end_date )]
+      [_current_range[1].change(day: end_date+1),_current_range[1].next_month.change(day: 25)]
     end
+
+    #date.between?(*_range) ? _range : [date.prev_month.change(day: 26),date.change(day: start_date-1 )]
+    #if day > end_date
+      #[date.change(day: end_date+1),date.next_month.change(day: 25)]
+    #else
+      #[date.prev_month.change(day: 26),date.change(day: start_date-1 )]
+    #end
   end
 
   def ck_type
