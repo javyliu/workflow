@@ -432,8 +432,7 @@ class UserDecorator < ApplicationDecorator
     @group_year_journals ||= if object.year_journals.loaded?
                                object.year_journals
                              else
-                               object.year_journals.to_a + object.journals.month_journals.where("update_date between ? and ?",*Journal.count_time_range(date: Date.today)).to_a
-
+                               object.year_journals.to_a + object.journals.month_journals.where("update_date between ? and ?",*Journal.count_time_range(is_for_validate: true)).to_a
                              end.group_by(&:check_type)
     items = @group_year_journals[check_type_id]
     return 0 unless items
