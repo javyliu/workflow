@@ -180,7 +180,7 @@ module PwdDb
       ["ServerManager广东睿江服务器","121.201.1.95:7001/ServerManager/"],
       ["官服UTS","211.151.99.70:7070/uts/"],
       ["移动版本UTS","211.151.99.70:7070/uts_cmcc/"],
-      ["数据平台","211.151.99.88:8000/PipData/"]
+      ["数据平台","data.pipgame.com/zh/"]
     ]
 
     def self.user_update(uname,cols={})
