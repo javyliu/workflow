@@ -29,7 +29,7 @@
       <td><%= episode.state %></td>
       <td><%= link_to('详情', episode_path(episode,format: :js),data:{"reveal-id": "modal_window","reveal-ajax": true})%> &nbsp;
         <%= link_to('编辑', edit_episode_path(episode)) if can?(:update,episode.object) %>
-        <%= link_to('删除', episode_path(episode),data: {remote: true,method: :delete,type: :json}) if can?(:destroy,episode.object) %>
+        <%= link_to('删除', episode_path(episode),data: {remote: true,method: :delete,type: :json, confirm: '确定要删除该申请么？'}) if can?(:destroy,episode.object) %>
       </td>
     </tr>
   <% end %>
