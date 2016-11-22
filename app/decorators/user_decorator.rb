@@ -108,7 +108,7 @@ class UserDecorator < ApplicationDecorator
   #累计倒休包括特批的时间（负值）
   #特批修正只是描述 2015-03-25 09:35 javy_liu
   def c_switch_leave
-    (base_holiday_info.switch_leave + year_journal(8) + year_journal(12)).to_f/10
+    (base_holiday_info.switch_leave + year_journal(8) + year_journal(12) + year_journal(24)).to_f/10
   end
 
   def c_checkin
