@@ -11,7 +11,7 @@
   </div>
   <div class="columns medium-4">
     <%= f.label :mgr_code,"直属管理者ID" %>
-    <%= f.select :mgr_code, manager_users_ary, prompt: '直属管理人' %>
+    <%= f.select :mgr_code, manager_users_ary, include_blank: '直属管理人' %>
   </div>
 </div>
 <% if can?(:manage,Role) %>

@@ -48,6 +48,7 @@ zh-CN:
     manual_unify_delete: '手动统一删除'
     unify_delete: '统一删除'
     unify_reset: '统一重置'
+    approve: '确认'
   other_actions:
     create: '同步'
 

@@ -106,7 +106,10 @@ class EpisodesController < ApplicationController
     @approves = @episode.approves.to_a
     #Rails.logger.info @approves.inspect
     #如果当前用户有审批任务
-    if current_user.pending_tasks.include?(@task.to_s)
+    #if current_user.pending_tasks.include?(@task.to_s)
+    #  @approve = @episode.approves.new
+    #end
+    unless @approves.map(&:user_id).include?(current_user.id.to_i)
       @approve = @episode.approves.new
     end
 

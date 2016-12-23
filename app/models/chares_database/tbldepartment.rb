@@ -24,7 +24,8 @@ module CharesDatabase
     def self.sys_departments
       CharesDatabase::Tbldepartment.find_each do |item|
         next if item.deptCode.end_with?("99")
-        _dept = Department.find_or_initialize_by(code:item.deptCode, attend_rule_id: 2)
+        _dept = Department.find_or_initialize_by(code:item.deptCode)
+        _dept.attend_rule_id ||= 2
         _dept.name = item.deptName
         _dept.mgr_code = item.mgrCode if _dept.new_record?
         #_dept.assign_attributes(name:item.deptName,mgr_code:item.mgrCode)

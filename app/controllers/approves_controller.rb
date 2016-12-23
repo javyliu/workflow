@@ -29,16 +29,20 @@ class ApprovesController < ApplicationController
     @approve = Approve.new(approve_params)
     @approve.user_id = current_user.id
     @approve.user_name = current_user.user_name
+
     @task = Task.init_from_subject(params[:task])
-    unless current_user.pending_tasks.include?(@task.to_s)
-      raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,@task.to_s)
-    end
 
     #防止页面脚本提交过快，state 无值的情况
     if @approve.state.to_i == 0
       @approve.state = params[:commit] == "通过" ? 1 : 2
     end
     @approveable = @approve.approveable
+
+    #unless current_user.pending_tasks.include?(@task.to_s)
+    if @approveable.kind_of?(Episode) && cannot?(:approve,@approveable) || @approveable.kind_of?(Assault) && !current_user.pending_tasks.include?(@task.to_s)
+      raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,@task.to_s)
+    end
+
     if params[:updated_at] != @approveable.updated_at.to_s
       #Rails.logger.debug {"error:已被重新编辑"}
       @approve.errors.add(:base,'该申请已被重新编辑，请再次确认！')
