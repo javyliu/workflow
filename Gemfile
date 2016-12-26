@@ -52,7 +52,7 @@ gem 'nokogiri'
 gem 'draper'
 #server
 gem 'puma'
-gem 'passenger'
+#gem 'passenger'
 
 #for memcache
 gem 'dalli'
