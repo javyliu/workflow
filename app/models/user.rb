@@ -70,7 +70,16 @@ class User < ActiveRecord::Base
   def vice_leader
     u = self.leader_user
     if u.title > '101'
-      u = u.leader_user
+      u = u.vice_leader
+    end
+    u
+  end
+
+  #返回总监及以上
+  def director_leader
+    u = self.leader_user
+    if u.title > '202'
+      u = u.director_leader
     end
     u
   end

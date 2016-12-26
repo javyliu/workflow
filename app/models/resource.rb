@@ -7,8 +7,16 @@ class Resource
 
     resource [:list,:export,:create,:update],Journal,res_name: 'department_journal',con: {user_id: 'user.leader_data.try(:[],"user_ids")'}
 
-    resource [:list,:destroy,:export,:approve],Episode,res_name: 'department_episode',con: {user_id: 'user.leader_data.try(:[],"user_ids")'}
-    resource [:approve],Assault,res_name: 'department_assault' do |assault|
+    resource [:list,:destroy,:export,:approve],Episode,res_name: 'department_episode' do |user,episode|
+      if episode.holiday_id == 19
+        episode.user.director_leader == user
+      else
+        user.leader_data.try(:[],:user_ids).include? episode.user_id
+      end
+
+    end
+
+    resource [:approve],Assault,res_name: 'department_assault' do |user,assault|
       assault.user.vice_leader == user
     end
 

@@ -247,10 +247,6 @@ class EpisodesController < ApplicationController
 
     #返回总监及以上
     def director_leader(user)
-      u = user.leader_user
-      if u.title > '202'
-        u = u.leader_user
-      end
-      u
+      user.director_leader
     end
 end
