@@ -39,7 +39,7 @@ class ApprovesController < ApplicationController
     @approveable = @approve.approveable
 
     #unless current_user.pending_tasks.include?(@task.to_s)
-    if current_user.pending_tasks.include?(@task.to_s) ||  cannot?(:approve,@approveable)
+    if cannot?(:approve,@approveable)
       raise CanCan::AccessDenied.new("已确认或未授权", home_users_path,@task.to_s)
     end
 

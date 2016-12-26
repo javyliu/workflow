@@ -7,17 +7,18 @@ class Resource
 
     resource [:list,:export,:create,:update],Journal,res_name: 'department_journal',con: {user_id: 'user.leader_data.try(:[],"user_ids")'}
 
-    resource [:list,:destroy,:export,:approve],Episode,res_name: 'department_episode' do |user,episode|
+    resource [:list,:destroy,:export],Episode,res_name: 'department_episode',con: {user_id: 'user.leader_data.try(:[],"user_ids")'}
+    resource :approve,Episode,res_name: 'department_episode' do |user,episode|
       if episode.holiday_id == 19
-        episode.user.director_leader == user
+        episode.user.director_leader == user && [0,3].include?(episode.state)
       else
-        user.leader_data.try(:[],:user_ids).include? episode.user_id
+        [0,3].include?(episode.state) && user.leader_data.try(:[],:user_ids).try(:include?,episode.user_id)
       end
 
     end
 
     resource [:approve],Assault,res_name: 'department_assault' do |user,assault|
-      assault.user.vice_leader == user
+      [0,3].include?(assault.state) && assault.user.vice_leader == user
     end
 
     resource :confirm,User,res_name: 'department_kaoqing'
