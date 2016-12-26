@@ -12,7 +12,7 @@ class Resource
       if episode.holiday_id == 19
         episode.user.director_leader == user && [0,3].include?(episode.state)
       else
-        [0,3].include?(episode.state) && user.leader_data.try(:[],:user_ids).try(:include?,episode.user_id)
+        [0,3].include?(episode.state) && user.leader_data.try(:[],"user_ids").try(:include?,episode.user_id.to_s)
       end
 
     end
