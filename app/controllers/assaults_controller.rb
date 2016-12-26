@@ -148,11 +148,7 @@ class AssaultsController < ApplicationController
 
   #返回副总领导
   def vice_leader(user)
-    u = user.leader_user
-    if u.title > '101'
-      u = u.leader_user
-    end
-    u
+    user.vice_leader
   end
 
 end

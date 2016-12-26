@@ -66,6 +66,15 @@ class User < ActiveRecord::Base
     attr_accessor :query_date
   end
 
+  #返回副总领导
+  def vice_leader
+    u = self.leader_user
+    if u.title > '101'
+      u = u.leader_user
+    end
+    u
+  end
+
   #当前用户的管理者,去除主管
   #2015-03-24 22:05 javy_liu 貌似不会到主管级，更改为直接find
   def leader_user
