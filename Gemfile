@@ -51,6 +51,7 @@ gem 'nokogiri'
 #for draper
 gem 'draper'
 #server
+gem 'puma'
 gem 'passenger'
 
 #for memcache
