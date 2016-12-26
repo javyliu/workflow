@@ -50,7 +50,7 @@
     </table>
   </div>
   <% end %>
-  <% if @approve && can?(:approve,@episode) %>
+  <% if @approve %>
   <%= form_for @approve,request.xhr? ? {remote: true} : {remote: false} do |f| %>
   <div class="field">
     <%= f.label :des,"审核简要说明" %>

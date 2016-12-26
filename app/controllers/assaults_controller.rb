@@ -36,7 +36,8 @@ class AssaultsController < ApplicationController
     @approved = @assault.approve
     #Rails.logger.info @approves.inspect
     #如果当前用户有审批任务
-    if current_user.pending_tasks.include?(@task.to_s)
+    #if current_user.pending_tasks.include?(@task.to_s)
+    if current_user.pending_tasks.include?(@task.to_s) || can?(:approve,@assault) && @approved
      @approve = @assault.build_approve
     end
 
