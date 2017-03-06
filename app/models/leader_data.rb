@@ -21,10 +21,10 @@ class LeaderData
   # ....}
   def grouped_leader_data
     @grouped_leader_data ||= @json_data.each_with_object({}) do |item,r|
-       r[item.uid] ||={}
-       r[item.uid]["attend_rule_id"] = item.attend_rule_id if r[item.uid]["attend_rule_id"].nil?
-       r[item.uid]["attend_rule_id"] = item.attend_rule_id if item.o_dept==0
-       (r[item.uid]["user_ids"] ||= []).concat( item.user_ids)
+      r[item.uid] ||={}
+      r[item.uid]["attend_rule_id"] = item.attend_rule_id if r[item.uid]["attend_rule_id"].nil?
+      r[item.uid]["attend_rule_id"] = item.attend_rule_id if item.o_dept==0
+      (r[item.uid]["user_ids"] ||= []).concat( item.user_ids)
     end
 
   end
@@ -37,7 +37,7 @@ class LeaderData
 
     Rails.cache.fetch(:leaders_data) do
 
-         User.find_by_sql( <<-heredoc
+      User.find_by_sql( <<-heredoc
     select tmp.attend_rule_id,tmp.mgr_code uid, GROUP_CONCAT(tmp.user_ids) user_ids,o_dept from (
     select b.attend_rule_id,b.mgr_code,GROUP_CONCAT(a.uid) user_ids,0 o_dept from users a INNER JOIN departments b on a.dept_code = b.`code` #部门下属用户
     where  a.mgr_code is NULL  GROUP BY b.`code`
@@ -45,18 +45,26 @@ class LeaderData
     select b.attend_rule_id,a.mgr_code,GROUP_CONCAT(a.uid) user_ids,1 o_dept from users a INNER JOIN departments b on a.dept_code = b.`code` #手工指定用户
     where  a.mgr_code <> -1 and a.mgr_code is not NULL  GROUP BY a.mgr_code,b.attend_rule_id
     ) as tmp where tmp.attend_rule_id is not NULL GROUP BY tmp.mgr_code ,tmp.attend_rule_id;
-                                     heredoc
-                         ).each{|item| item.user_ids = item.user_ids.split(',')}#.each_with_object({}){|item,r| r[item.uid] ||={};r[item.uid]["attend_rule_id"] = item.attend_rule_id if r[item.uid]["attend_rule_id"].nil?;r[item.uid]["attend_rule_id"] = item.attend_rule_id if item.o_dept==0 ; (r[item.uid]["user_ids"] ||= []).concat( item.user_ids.split(','))}#.inject([]){|uids,item|uids.push([item.uid,item.attend_rule_id,item.o_dept,item.user_ids.split(",").tap{|t|t.delete(item.uid) if item.uid != '1002'}])}
-      end
+                       heredoc
+                      ).each{|item| item.user_ids = item.user_ids.split(',')}#.each_with_object({}){|item,r| r[item.uid] ||={};r[item.uid]["attend_rule_id"] = item.attend_rule_id if r[item.uid]["attend_rule_id"].nil?;r[item.uid]["attend_rule_id"] = item.attend_rule_id if item.o_dept==0 ; (r[item.uid]["user_ids"] ||= []).concat( item.user_ids.split(','))}#.inject([]){|uids,item|uids.push([item.uid,item.attend_rule_id,item.o_dept,item.user_ids.split(",").tap{|t|t.delete(item.uid) if item.uid != '1002'}])}
+    end
   end
 
   #是否线程安全的？
   def self.destroy
     Rails.cache.delete(:leaders_data)
-    @singleton__instance__ = nil
+    #@singleton__instance__ = nil
     #Sidekiq.redis do |_redis|
     #  _redis.del("leaders_data")
     #end
+
+    @singleton__mutex__.synchronize {
+      @singleton__instance__ = nil
+      #return @singleton__instance__ if @singleton__instance__
+      #@singleton__instance__ = new()
+    }
+    #@singleton__instance__
+
   end
 
 
