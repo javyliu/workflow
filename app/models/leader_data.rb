@@ -50,9 +50,10 @@ class LeaderData
       end
   end
 
+  #是否线程安全的？
   def self.destroy
-    @singleton__instance__ = nil
     Rails.cache.delete(:leaders_data)
+    @singleton__instance__ = nil
     #Sidekiq.redis do |_redis|
     #  _redis.del("leaders_data")
     #end
