@@ -439,6 +439,7 @@ class UserDecorator < ApplicationDecorator
     year = Date.today.year.freeze
     if check_type_id.in?([11,17])
       #大于1表示在缓冲区，需从年初开始计算剩余事假及病假
+      Rails.logger.info(items.inspect)
       items.detect { |e| e.year == year }.try(:dval).to_i
     else
       (items and items.inject(0){|sum,item| sum += item.dval}).to_i

@@ -32,7 +32,7 @@ module CharesDatabase
 
 
 
-        #有email的用户才会设置密码，否则不设
+        #有email的用户才会设置密码，否则使用默认密码
         if u.email
           _uname = u.email[/.*(?=@)/,0]
           unless StaticPwdUsers.include?(_uname)
@@ -49,6 +49,8 @@ module CharesDatabase
             #初始化其year_info
             #u.create_last_year_info
           end
+        else
+          u.password = '123123'
         end
 
 
