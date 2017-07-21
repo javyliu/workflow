@@ -10,7 +10,7 @@ module CharesDatabase
       pwds = Hash[*YAML.load_file(path).split(/:|\s+/)]
       _date = Date.today
       #十天之内离职用户亦会同步，为了防止同步出错后第二天同步不能修复离职员工
-      self.where("expireDate is null or expireDate >= date_sub(current_date(),interval '30 00' DAY_HOUR)").find_each do |item|
+      self.where("expireDate is null or expireDate >= date_sub(current_date(),interval '10 00' DAY_HOUR)").find_each do |item|
         #User.create!(uid: item.userId,user_name:item.name,email:item.email,department:item.department,expire_date:item.expireDate,dept_code:item.deptCode,mgr_code:item.mgrCode,title: item.title,onboard_date: item.onboardDate,regular_date: item.regularDate,password: '123123')
         u = User.find_or_initialize_by(uid: item.userId)
         u.expire_date=item.expireDate
