@@ -87,7 +87,8 @@ class EpisodesController < ApplicationController
     if /^\d+$/ =~ params[:task]
       @episode = Episode.find_by(id:params[:task]).try(:parent)
       raise CanCan::AccessDenied.new("该申请不存在！",home_users_path ) unless @episode
-      @task = Task.new("F002",@episode.user.leader_user.id,date:@episode.created_at.to_date.to_s,mid:@episode.id)
+      #@task = Task.new("F002",@episode.user.leader_user.id,date:@episode.created_at.to_date.to_s,mid:@episode.id)
+      @task = Task.new("F002",current_user.id,date:@episode.created_at.to_date.to_s,mid:@episode.id)
     else
       @task =  Task.init_from_subject(params[:task])
       @episode = Episode.find_by(id:@task.mid)
