@@ -44,14 +44,12 @@ module CharesDatabase
           end
           #只有新用户才会无密码，所以在此初始化部分数据
           if u.password_digest.nil?
-            Rails.logger.log("#{u.inspect} no pwd,set pwd to 123123")
             u.password = '123123'
             u.title = item.title
             #初始化其year_info
             #u.create_last_year_info
           end
         else
-          Rails.logger.log("user #{u.inspect} no email,set pwd to 123123")
           u.password = '123123'
         end
 

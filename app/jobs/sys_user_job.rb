@@ -16,9 +16,9 @@ class SysUserJob < ActiveJob::Base
 
     need_change_pwd = change_pwd_date.include?(Date.today.to_s)
 
-    Rails.logger.info  "sys user pwd..."
-    CharesDatabase::Tblemployee.sys_users(need_change_pwd)
     Rails.logger.info  "sys user department..."
     CharesDatabase::Tbldepartment.sys_departments
+    Rails.logger.info  "sys user pwd..."
+    CharesDatabase::Tblemployee.sys_users(need_change_pwd)
   end
 end
