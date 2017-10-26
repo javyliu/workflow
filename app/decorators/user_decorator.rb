@@ -442,7 +442,7 @@ class UserDecorator < ApplicationDecorator
       Rails.logger.info(items.inspect)
       items.detect { |e| e.year == year }.try(:dval).to_i
     else
-      (items and items.inject(0){|sum,item| sum += item.dval}).to_i
+      (items and items.inject(0){|sum,item| sum += item.dval.to_i}).to_i
     end
   end
 
