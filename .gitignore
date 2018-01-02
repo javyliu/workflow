@@ -18,3 +18,4 @@ config/database.yml
 putlic/assets/
 putlic/assets
 public/assets
+doc/
