@@ -59,7 +59,7 @@ module CharesDatabase
         u.save!
         #更新基础假期表,每天都要计算一次
 
-        calcute_year_info_data(u,_date)
+        calcute_year_info_data(item,_date)
         #如果用户的转正日期今日相等，则更新用户的基础带薪病假
         #if u.regular_date == _date
         #  u.last_year_info.update_attribute(:sick_leave, OaConfig.setting(:sick_leave_days).to_i * 10)
@@ -69,24 +69,28 @@ module CharesDatabase
       User.where("expire_date < current_date() ").delete_all
     end
 
-    def self.calcute_year_info_data(user,date=Date.today)
+    def self.calcute_year_info_data(tbl_user,date=Date.today)
 
-      year_info = YearInfo.find_or_create_by(user_id: user.id,year: date.year)
+      year_info = YearInfo.find_or_create_by(user_id: tbl_user.id,year: date.year)
       return if year_info.irregular?
       #如果用户的转正日期小于等于于今日，则更新用户的基础带薪病假
-      if user.regular_date && user.regular_date <= date || user.onboard_date.year <= 2014
+      if tbl_user.regularDate && tbl_user.regularDate <= date || tbl_user.onboardDate.year <= 2014
         year_info.sick_leave = OaConfig.setting(:sick_leave_days).to_i * 10
       end
 
-      _total_years = (date - user.onboard_date).fdiv(365) rescue(Rails.logger.debug{"#{user.id} 司龄计算错误"};0)
+      if item.workDate
+        _,_,_,_,_month,_year = item.workDate.to_time.to_a
+        _total_years = date.year - _year
+        _total_years -= 1 if date.month < _month
+      else
+        _total_years = 0
+      end
+
       year_info.year_holiday = if _total_years < 1
                                  0
-                               elsif _total_years >= 1 && user.onboard_date.year == (date.year - 1)
-                                 #最小单位为0.5天 * 10 为5 ((date2-data1)*2*5.0/365).round*10/2
-                                 (((user.onboard_date.end_of_year - user.onboard_date)*10.0)/365).round*5
-                               elsif _total_years <= 10
+                               elsif _total_years < 10
                                  50
-                               elsif _total_years <= 20
+                               elsif _total_years < 20
                                  100
                                else
                                  150
