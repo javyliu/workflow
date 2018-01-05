@@ -78,8 +78,8 @@ module CharesDatabase
         year_info.sick_leave = OaConfig.setting(:sick_leave_days).to_i * 10
       end
 
-      if item.workDate
-        _,_,_,_,_month,_year = item.workDate.to_time.to_a
+      if tbl_user.workDate
+        _,_,_,_,_month,_year = tbl_user.workDate.to_time.to_a
         _total_years = date.year - _year
         _total_years -= 1 if date.month < _month
       else
