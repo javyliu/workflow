@@ -72,7 +72,20 @@ module CharesDatabase
     def self.calcute_year_info_data(tbl_user,date=Date.today)
 
       year_info = YearInfo.find_or_create_by(user_id: tbl_user.id,year: date.year)
-      return if year_info.irregular?
+      return if year_info.irregular? || tbl_user.onboardDate.nil?
+
+      _on_board_years = date.year - tbl_user.onboardDate.year
+
+      if _on_board_years  < 1
+        return
+      elsif _on_board_years == 1
+         _tmp_month = date.month - tbl_user.onboardDate.month
+         return if _tmp_month < 0
+         return if _tmp_month == 0 && date.day <= tbl_user.onboardDate.day
+
+      end
+
+      #on_board_years = (date - user.onboard_date).fdiv(365) rescue(Rails.logger.debug{"#{user.id} 司龄计算错误"};0)
       #如果用户的转正日期小于等于于今日，则更新用户的基础带薪病假
       if tbl_user.regularDate && tbl_user.regularDate <= date || tbl_user.onboardDate.year <= 2014
         year_info.sick_leave = OaConfig.setting(:sick_leave_days).to_i * 10
@@ -85,6 +98,7 @@ module CharesDatabase
       else
         _total_years = 0
       end
+      #Rails.logger.info "------------#{date}------------#{_total_years}"
 
       year_info.year_holiday = if _total_years < 1
                                  0
@@ -95,6 +109,14 @@ module CharesDatabase
                                else
                                  150
                                end
+      if _on_board_years == 1
+        _all_days = date.end_of_year.yday
+        year_info.year_holiday = ((_all_days - date.yday).fdiv(_all_days) * year_info.year_holiday/5).round * 5
+      end
+
+      #binding.pry
+
+      #Rails.logger.info "=================#{year_info.year_holiday}"
       year_info.save!
 
     end
