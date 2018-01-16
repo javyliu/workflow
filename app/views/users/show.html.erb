@@ -33,7 +33,7 @@
 
     <td><p>
       <strong>部门:</strong>
-      <%= @user.dept.name %>
+      <%= @user.dept.try(:name) %>
     </p></td>
 
   </tr>
@@ -73,7 +73,11 @@
   </tr>
 
   <tr>
-    <td colspan=2><p>
+    <td><p>
+      <strong>工作日:</strong>
+      <%= @user.work_date %>
+    </p></td>
+    <td><p>
       <strong>角色:</strong>
       <%= @user.roles_name.join(",") %>
     </p></td>

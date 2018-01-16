@@ -29,6 +29,7 @@ module CharesDatabase
         #u.title= item.title
         u.onboard_date= item.onboardDate
         u.regular_date= item.regularDate
+        u.work_date= item.workDate
 
 
 

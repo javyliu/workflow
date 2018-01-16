@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303085313) do
+ActiveRecord::Schema.define(version: 20180116011225) do
 
   create_table "approves", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20160303085313) do
     t.string  "mgrCode",     limit: 20
     t.date    "onboardDate"
     t.date    "regularDate"
+    t.date    "workDate"
   end
 
   create_table "users", primary_key: "uid", force: :cascade do |t|
@@ -198,6 +199,7 @@ ActiveRecord::Schema.define(version: 20160303085313) do
     t.datetime "updated_at",                                             null: false
     t.date     "assault_start_date"
     t.date     "assault_end_date"
+    t.date     "work_date"
   end
 
   add_index "users", ["dept_code"], name: "index_users_on_dept_code", using: :btree
