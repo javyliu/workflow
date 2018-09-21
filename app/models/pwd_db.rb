@@ -176,9 +176,9 @@ module PwdDb
     ApiPass = "SxgJE#LJsP"
     ServerList = [
       ["ServerManager昌平服务器","221.179.216.54:7001/ServerManager/"],
-      ["ServerManager世纪互联服务器","211.151.99.70:7001/ServerManager/"],
+      ["ServerManager金山云服务器","120.92.137.220:8001/ServerManager/"],
       #["ServerManager广东睿江服务器","121.201.1.95:7001/ServerManager/"],
-      ["官服UTS","211.151.99.70:7070/uts/"],
+      ["官服UTS","gm.pipgame.com:8080/uts/"],
       #["移动版本UTS","211.151.99.70:7070/uts_cmcc/"],
       ["数据平台","data.pipgame.com/zh/"]
     ]
@@ -285,6 +285,8 @@ module PwdDb
       location = response['location']
       warn "redirected to #{location}"
       fetch(location, limit - 1)
+    when Net::HTTPNotFound
+      "#{response.message} 不存在"
     when Net::HTTPInternalServerError
       response.message
     else
