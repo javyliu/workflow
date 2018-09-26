@@ -51,37 +51,37 @@ module PwdDb
   end
 
   #日报系统
-  class DailyReportUser
-    #self.table_name = 'user'
+  #class DailyReportUser
+  #  #self.table_name = 'user'
 
-    def self.user_update(uname,cols={})
-      _pwd = cols.delete(:pwd)
-      _delete = cols.delete(:delete)
-      return '参数错误' unless _pwd || _delete
+  #  def self.user_update(uname,cols={})
+  #    _pwd = cols.delete(:pwd)
+  #    _delete = cols.delete(:delete)
+  #    return '参数错误' unless _pwd || _delete
 
-      cols[:password] = self.hash_password(_pwd) if _pwd
-      cols[:valid] = 0 if _delete
-      _set_sql = "update user set #{PwdDb.gen_set_sql(cols)} where loginname='#{uname}'"
-      Rails.logger.info("pwd_log: #{_set_sql}")
-      begin
-        con = PwdDb::ExternalTable.connect(:dailyreport)
-        if con.execute("select count(1) from user where loginname = '#{uname}'").to_a.flatten.first > 0
-          con.execute(_set_sql)
-          "日报系统[#{uname}]操作成功!"
-        else
-          "日报系统[#{uname}]操作失败! 无此账号"
-        end
-      rescue
-        Rails.logger.info $!
-        "日报系统[#{uname}]操作失败!系统错误"
-      end
+  #    cols[:password] = self.hash_password(_pwd) if _pwd
+  #    cols[:valid] = 0 if _delete
+  #    _set_sql = "update user set #{PwdDb.gen_set_sql(cols)} where loginname='#{uname}'"
+  #    Rails.logger.info("pwd_log: #{_set_sql}")
+  #    begin
+  #      con = PwdDb::ExternalTable.connect(:dailyreport)
+  #      if con.execute("select count(1) from user where loginname = '#{uname}'").to_a.flatten.first > 0
+  #        con.execute(_set_sql)
+  #        "日报系统[#{uname}]操作成功!"
+  #      else
+  #        "日报系统[#{uname}]操作失败! 无此账号"
+  #      end
+  #    rescue
+  #      Rails.logger.info $!
+  #      "日报系统[#{uname}]操作失败!系统错误"
+  #    end
 
-    end
+  #  end
 
-    def self.hash_password(clear_pwd)
-      "*#{Base64.strict_encode64(Digest::MD5.digest(clear_pwd))}"
-    end
-  end
+  #  def self.hash_password(clear_pwd)
+  #    "*#{Base64.strict_encode64(Digest::MD5.digest(clear_pwd))}"
+  #  end
+  #end
 
   #GM 工具
   class PipGmUser
