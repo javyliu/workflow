@@ -178,7 +178,7 @@ module PwdDb
       ["ServerManager昌平服务器","221.179.216.54:7001/ServerManager/"],
       ["ServerManager金山云服务器","120.92.137.220:8001/ServerManager/"],
       #["ServerManager广东睿江服务器","121.201.1.95:7001/ServerManager/"],
-      ["官服UTS","gm.pipgame.com:8080/uts/"],
+      ["官服UTS","gm.pipgame.com:7070/uts/"],
       #["移动版本UTS","211.151.99.70:7070/uts_cmcc/"],
       ["数据平台","data.pipgame.com/zh/"]
     ]
