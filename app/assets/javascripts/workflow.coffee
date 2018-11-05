@@ -13,7 +13,7 @@ window.wrap_msgs = ($con)->
   if uname == ""
     $con.html(new_con.join('<br>'))
   else
-    $con.html("<h6>账号#{uname}密码修改结果如下：</h6>#{new_con.join('<br>')}<p style='padding-left:5em;'> <small>如有问题请联系MIS部</small></p>")
+    $con.html("<h6>账号#{uname}操作结果如下：</h6>#{new_con.join('<br>')}<p style='padding-left:5em;'> <small>如有问题请联系MIS部</small></p>")
 
 $(->
 
