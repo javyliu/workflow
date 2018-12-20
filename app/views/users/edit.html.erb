@@ -3,7 +3,7 @@
 <div class="row">
   <div class="columns medium-4">
     <%= f.label :dept_code,"部门" %>
-    <%= f.select :dept_code, cache_dept,prompt: "选择部门" %>
+    <%= f.select :dept_code, cache_dept,include_blank: "选择部门" %>
   </div>
   <div class="columns medium-4">
     <%= f.label :password,"密码" %>
