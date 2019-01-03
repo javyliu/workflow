@@ -110,7 +110,8 @@ module CharesDatabase
                                else
                                  150
                                end
-      if _on_board_years == 1
+      #if _on_board_years == 1
+      if year_info.year_holiday_changed?
         _all_days = date.end_of_year.yday
         year_info.year_holiday = ((_all_days - date.yday).fdiv(_all_days) * year_info.year_holiday/5).round * 5
       end

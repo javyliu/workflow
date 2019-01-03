@@ -187,7 +187,7 @@ class EpisodesController < ApplicationController
         #发送邮件
         Usermailer.episode_approve(_task.task_name).deliver_later
 
-        format.html { redirect_to episodes_path, notice: '提交成功，请等待审批!' }
+        format.html { redirect_to home_users_path, notice: '提交成功，请等待审批!' }
         format.json { render :show, status: :created, location: @episode }
       else
         drop_page_title("假期申请")
