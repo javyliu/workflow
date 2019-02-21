@@ -11,14 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180116011225) do
+ActiveRecord::Schema.define(version: 20190221073818) do
 
   create_table "approves", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.string   "user_name",        limit: 20
     t.integer  "state",            limit: 1,   default: 0
     t.string   "des",              limit: 255
-    t.integer  "episode_id",       limit: 4
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
     t.integer  "approveable_id",   limit: 4
@@ -26,7 +25,6 @@ ActiveRecord::Schema.define(version: 20180116011225) do
   end
 
   add_index "approves", ["approveable_id", "approveable_type"], name: "approveable_index", using: :btree
-  add_index "approves", ["episode_id"], name: "index_approves_on_episode_id", using: :btree
   add_index "approves", ["user_id"], name: "index_approves_on_user_id", using: :btree
 
   create_table "assaults", force: :cascade do |t|
@@ -50,8 +48,8 @@ ActiveRecord::Schema.define(version: 20180116011225) do
     t.string   "title_ids",   limit: 255
     t.string   "time_range",  limit: 40,  default: "0"
     t.integer  "min_unit",    limit: 2,   default: 30
-    t.datetime "created_at",              default: '2015-03-09 14:55:03', null: false
-    t.datetime "updated_at",              default: '2015-03-09 14:55:03', null: false
+    t.datetime "created_at",              default: '2015-01-14 15:38:29', null: false
+    t.datetime "updated_at",              default: '2015-01-14 15:38:29', null: false
   end
 
   create_table "checkinouts", force: :cascade do |t|
@@ -72,12 +70,28 @@ ActiveRecord::Schema.define(version: 20180116011225) do
     t.integer  "attend_rule_id", limit: 2
     t.string   "mgr_code",       limit: 20
     t.string   "admin",          limit: 20
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                 default: '2015-01-09 10:27:40', null: false
+    t.datetime "updated_at",                 default: '2015-01-09 10:27:40', null: false
   end
 
   add_index "departments", ["attend_rule_id"], name: "index_departments_on_attend_rule_id", using: :btree
   add_index "departments", ["mgr_code"], name: "index_departments_on_mgr_code", using: :btree
+
+  create_table "em_ser_cates", force: :cascade do |t|
+    t.string   "name",       limit: 30
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  create_table "em_services", force: :cascade do |t|
+    t.string   "title",          limit: 255
+    t.text     "content",        limit: 65535
+    t.integer  "em_ser_cate_id", limit: 4
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "em_services", ["em_ser_cate_id"], name: "index_em_services_on_em_ser_cate_id", using: :btree
 
   create_table "episodes", force: :cascade do |t|
     t.string   "user_id",    limit: 20
@@ -182,10 +196,10 @@ ActiveRecord::Schema.define(version: 20180116011225) do
   end
 
   create_table "users", primary_key: "uid", force: :cascade do |t|
-    t.string   "user_name",                 limit: 20,                   null: false
+    t.string   "user_name",                 limit: 20,                                   null: false
     t.string   "email",                     limit: 40
     t.string   "department",                limit: 3000
-    t.string   "title",                     limit: 255,  default: "501", null: false
+    t.string   "title",                     limit: 255,  default: "501",                 null: false
     t.date     "expire_date"
     t.string   "dept_code",                 limit: 20
     t.string   "mgr_code",                  limit: 20
@@ -195,8 +209,8 @@ ActiveRecord::Schema.define(version: 20180116011225) do
     t.date     "onboard_date"
     t.date     "regular_date"
     t.datetime "remember_token_expires_at"
-    t.datetime "created_at",                                             null: false
-    t.datetime "updated_at",                                             null: false
+    t.datetime "created_at",                             default: '2015-02-11 15:27:09', null: false
+    t.datetime "updated_at",                             default: '2015-02-11 15:27:09', null: false
     t.date     "assault_start_date"
     t.date     "assault_end_date"
     t.date     "work_date"
@@ -214,8 +228,8 @@ ActiveRecord::Schema.define(version: 20180116011225) do
     t.integer  "affair_leave", limit: 4,  default: 0
     t.integer  "switch_leave", limit: 4,  default: 0
     t.integer  "ab_point",     limit: 8,  default: 0
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at",              default: '2015-01-09 22:02:50', null: false
+    t.datetime "updated_at",              default: '2015-01-09 22:02:50', null: false
     t.integer  "irregular",    limit: 4,  default: 0
   end
 

@@ -1,0 +1,9 @@
+<%= form_for(@em_ser_cate) do |f| %>
+  <div class="field">
+    <%= f.label :name, "类别名称" %><br>
+    <%= f.text_field :name, placeholder: '类别名' %>
+  </div>
+  <div class="actions text-right">
+    <%= f.submit "提交",class: "button small" %>
+  </div>
+<% end %>

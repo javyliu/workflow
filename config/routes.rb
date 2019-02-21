@@ -1,6 +1,12 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
 
+  resources :em_services do
+    get :list, on: :collection
+  end
+
+  resources :em_ser_cates
+
   get "assaults/:task" => "assaults#show",as: :assault,task: /\d+|(.+?:)+\d+/
   resources :assaults, except: [:show]
 

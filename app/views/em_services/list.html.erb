@@ -1,0 +1,51 @@
+<div id="search" class="panel">
+  <form data-remote="true"  action="#" data-replace-with="#content">
+    <div class="row">
+      <div class="columns medium-2">
+        <label>类别:</label>
+        <%= collection_select :em_service, :em_ser_cate_id, EmSerCate.all,:id, :name, prompt: "选择类别" %>
+      </div>
+      <div class="columns medium-2">
+        <label>标题:</label>
+        <%= text_field :em_service, :title, placeholder: "标题" %>
+      </div>
+      <div class="columns medium-2">
+        <input type="submit" class="button tiny inline-button" text="搜索"/>
+      </div>
+    </div>
+  </form>
+  <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
+</div><div class="row">
+  <div class="columns">
+  <table>
+    <thead>
+      <tr>
+        <th>编号</th>
+        <th>服务标题</th>
+        <th width=150></th>
+      </tr>
+    </thead>
+
+    <tbody id="content">
+      <% @em_services.each do |service| %>
+      <tr>
+        <td><%= service.id %></td>
+        <td><%= service.title %></td>
+        <td>
+          <%= link_to '查看', em_service_path(service), target: '_blank' %>
+          <%= link_to '编辑', edit_em_service_path(service) %>
+          <%= link_to '删除', service, method: :delete, data: { confirm: 'Are you sure?',remote: true,type: :json } %>
+        </td>
+      </tr>
+      <% end %>
+      <tr>
+        <td colspan="3"><%= paginate(@em_services) %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<br>
+
+<%= link_to '添加', new_em_service_path, class: 'button' %>
+

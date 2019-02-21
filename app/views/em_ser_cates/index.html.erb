@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="columns">
+  <table>
+    <thead>
+      <tr>
+        <th>编号</th>
+        <th>类别名</th>
+        <th width=150></th>
+      </tr>
+    </thead>
+
+    <tbody id="content">
+      <% @em_ser_cates.each do |cate| %>
+      <tr>
+        <td><%= cate.id %></td>
+        <td><%= cate.name %></td>
+        <td>
+          <%= link_to '编辑', edit_em_ser_cate_path(cate) %>
+          <%= link_to '删除', cate, method: :delete, data: { confirm: 'Are you sure?',remote: true,type: :json } %>
+          <%= link_to '查看子项', list_em_services_path(cate_id: cate.id) %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+</div>
+<br>
+
+<%= link_to '添加类别', new_em_ser_cate_path, class: 'button' %>

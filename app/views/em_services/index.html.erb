@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Em Services</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Content</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @em_services.each do |em_service| %>
+      <tr>
+        <td><%= em_service.title %></td>
+        <td><%= em_service.content %></td>
+        <td><%= link_to 'Show', em_service %></td>
+        <td><%= link_to 'Edit', edit_em_service_path(em_service) %></td>
+        <td><%= link_to 'Destroy', em_service, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Em service', new_em_service_path %>

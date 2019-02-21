@@ -38,6 +38,7 @@
           <li class="<%= cur_page?(['assaults','episodes'],'index','new','create','show','edit') ? 'active' : '' %>"><%= link_to "我的申请", episodes_path %></li>
           <li class="<%= cur_page?('checkinouts', 'index') ? 'active' : '' %>"><%= link_to "我的签到记录", checkinouts_path %></li>
           <li class="<%= cur_page?('journals', 'index') ? 'active' : '' %>"><%= link_to "我的异常考勤", journals_path %></li>
+          <li class="<%= cur_page?('em_services', 'index') ? 'active' : '' %>"><%= link_to "员工服务", em_services_path %></li>
           <% if current_user %>
           <% if can?(:list,Journal) %>
           <li class="has-dropdown"> <a href="#">部门管理</a>
@@ -75,6 +76,12 @@
             <% end %>
             <% if can? :manual_unify_delete,User %>
               <li class="<%= cur_page?('users','manual_unify_delete') ? 'active' : '' %>"><%= link_to "统一删除用户", manual_unify_delete_users_path %></li>
+            <% end %>
+            <% if can? :manage,EmSerCate %>
+              <li class="<%= cur_page?('em_ser_cates','index', 'edit', 'show') ? 'active' : '' %>"><%= link_to "员工服务类别管理", em_ser_cates_path %></li>
+            <% end %>
+            <% if can? :manage,EmService %>
+              <li class="<%= cur_page?('em_services','new','list', 'edit') ? 'active' : '' %>"><%= link_to "员工服务管理", list_em_services_path %></li>
             <% end %>
           </ul>
           </li>
