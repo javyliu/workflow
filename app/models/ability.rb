@@ -12,6 +12,7 @@ class Ability
     #can [:index,:home],User,uid: user.id
     can [:update,:change_pwd,:home],User,uid: user.id
     cannot :edit,User
+    can :read, EmService
     cannot [:create,:edit, :destroy],[EmSerCate, EmService]
     can :index,Journal,user_id: user.id
     can :create,Episode,user_id: user.id

@@ -3,8 +3,8 @@ Rails.application.routes.draw do
 
   resources :em_services, except: :index do
     collection do
-      get "cates/(:cate_id)", to: :index, as: '',cate_id: /\d+/
-      post "cates", to: :create
+      get "cates/(:cate_id)", action: :index, as: '',cate_id: /\d+/
+      post "cates", action: :create
       get :list
     end
   end
