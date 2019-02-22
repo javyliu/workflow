@@ -1,5 +1,4 @@
 <%= form_for(@em_service) do |f| %>
-
   <div class="field">
     <%= f.label :title, "标题" %>
     <%= f.text_field :title %>
@@ -17,3 +16,19 @@
     <%= f.submit "提交",class: "button small" %>
   </div>
 <% end %>
+<fieldset>
+  <legend><span>操作说明：</span></legend>
+  <dl>
+    <dd>粘贴内容:<br>
+      <blockquote>
+        当粘入从world或网页中拷贝的内容时，请点击编辑器的"清理HTML代码"按钮后再提交！
+      </blockquote>
+    </dd>
+    <dd>添加下载链接:<br>
+      <blockquote>
+        点击"插入文件"按钮,选择可下载文件并附加说明
+
+      </blockquote>
+    </dd>
+  </dl>
+</fieldset>

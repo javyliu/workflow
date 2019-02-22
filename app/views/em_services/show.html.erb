@@ -1,14 +1,31 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="columns medium-9 small-12">
+    <h3 class='text-center'>
+      <%= @em_service.title %>
+    </h3>
+    <hr />
+    <div class='panel callout'>
+      <%= @em_service.content.html_safe %>
+    </div>
+  </div>
+  <div class="columns medium-3 show-for-medium-up">
+    <div class="bg_grey border_grey ptl1em">
+      <h5><%= @em_service.em_ser_cate.name %></h5>
+      <hr />
+      <ul class="side-nav">
+        <% @em_service.em_ser_cate.em_services.each do |item| %>
+        <li><%= link_to_unless_current item.title, item %></li>
+        <% end %>
+      </ul>
 
-<p>
-  <strong>Title:</strong>
-  <%= @em_service.title %>
-</p>
+      <hr />
+      <h5>服务类别</h5>
+      <ul class="side-nav">
+        <% EmSerCate.cache_all.each do |item| %>
+        <li><%= link_to item.name, em_services_path(item) %></li>
+        <% end %>
+      </ul>
+    </div>
 
-<p>
-  <strong>Content:</strong>
-  <%= @em_service.content %>
-</p>
-
-<%= link_to 'Edit', edit_em_service_path(@em_service) %> |
-<%= link_to 'Back', em_services_path %>
+  </div>
+</div>

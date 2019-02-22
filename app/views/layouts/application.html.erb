@@ -38,7 +38,7 @@
           <li class="<%= cur_page?(['assaults','episodes'],'index','new','create','show','edit') ? 'active' : '' %>"><%= link_to "我的申请", episodes_path %></li>
           <li class="<%= cur_page?('checkinouts', 'index') ? 'active' : '' %>"><%= link_to "我的签到记录", checkinouts_path %></li>
           <li class="<%= cur_page?('journals', 'index') ? 'active' : '' %>"><%= link_to "我的异常考勤", journals_path %></li>
-          <li class="<%= cur_page?('em_services', 'index') ? 'active' : '' %>"><%= link_to "员工服务", em_services_path %></li>
+          <li class="<%= cur_page?('em_services', 'index', 'show') ? 'active' : '' %>"><%= link_to "员工服务", em_services_path %></li>
           <% if current_user %>
           <% if can?(:list,Journal) %>
           <li class="has-dropdown"> <a href="#">部门管理</a>

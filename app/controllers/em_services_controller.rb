@@ -12,6 +12,14 @@ class EmServicesController < ApplicationController
     @em_services = @em_services.page(params[:page])
   end
 
+  # GET /em_services/1
+  # GET /em_services/1.json
+  def show
+    drop_breadcrumb("员工服务",em_services_path)
+    drop_page_title(@em_service.title)
+    drop_breadcrumb
+  end
+
   #管理员专用
   def list
     drop_page_title("员工服务管理")
@@ -23,10 +31,6 @@ class EmServicesController < ApplicationController
       format.html {  }
       format.js { render partial: "items",object: @em_services, content_type: Mime::HTML}
     end
-  end
-  # GET /em_services/1
-  # GET /em_services/1.json
-  def show
   end
 
   # GET /em_services/new
