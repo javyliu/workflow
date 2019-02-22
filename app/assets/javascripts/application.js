@@ -18,9 +18,9 @@
 //= require rest_in_place
 //= require jquery.datetimepicker
 //= require kindeditor
-//= require load_kindeditor
 //= require journals
 //= require workflow
+//= require load_kindeditor
 // require_tree .
 Turbolinks.enableProgressBar();
 $(document).on("ready page:load",function(){

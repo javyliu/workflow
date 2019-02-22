@@ -22,25 +22,13 @@
       <tr>
         <th>编号</th>
         <th>服务标题</th>
+        <th>服务类别</th>
         <th width=150></th>
       </tr>
     </thead>
 
     <tbody id="content">
-      <% @em_services.each do |service| %>
-      <tr>
-        <td><%= service.id %></td>
-        <td><%= service.title %></td>
-        <td>
-          <%= link_to '查看', em_service_path(service), target: '_blank' %>
-          <%= link_to '编辑', edit_em_service_path(service) %>
-          <%= link_to '删除', service, method: :delete, data: { confirm: 'Are you sure?',remote: true,type: :json } %>
-        </td>
-      </tr>
-      <% end %>
-      <tr>
-        <td colspan="3"><%= paginate(@em_services) %></td>
-      </tr>
+      <%= render partial: 'items', object: @em_services %>
     </tbody>
   </table>
 </div>

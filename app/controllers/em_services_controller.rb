@@ -7,14 +7,20 @@ class EmServicesController < ApplicationController
   def index
     drop_page_title("员工服务")
     drop_breadcrumb
-    @em_services = EmService.page(params[:page])
+    @em_services = EmService.page(params[:page]).includes(:em_ser_cate)
   end
 
   #管理员专用
   def list
     drop_page_title("员工服务管理")
     drop_breadcrumb
-    @em_services = EmService.page(params[:page])
+    params.permit!
+    con_hash,ary_con = construct_condition(:em_service,like_ary:[:title])
+    @em_services = EmService.where(con_hash).where(ary_con).page(params[:page]).includes(:em_ser_cate)
+    respond_to do |format|
+      format.html {  }
+      format.js { render partial: "items",object: @em_services, content_type: Mime::HTML}
+    end
   end
   # GET /em_services/1
   # GET /em_services/1.json
@@ -23,14 +29,14 @@ class EmServicesController < ApplicationController
 
   # GET /em_services/new
   def new
-    drop_breadcrumb("员工服务管理",em_services_path)
+    drop_breadcrumb("员工服务管理",list_em_services_path)
     drop_page_title("新增")
     drop_breadcrumb
   end
 
   # GET /em_services/1/edit
   def edit
-    drop_breadcrumb("员工服务管理",em_services_path)
+    drop_breadcrumb("员工服务管理",list_em_services_path)
     drop_page_title("编辑")
     drop_breadcrumb
   end
@@ -91,6 +97,6 @@ class EmServicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def em_service_params
-      params.require(:em_service).permit(:title, :content)
+      params.require(:em_service).permit(:title, :content,:em_ser_cate_id)
     end
 end

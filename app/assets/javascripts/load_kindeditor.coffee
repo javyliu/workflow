@@ -1,6 +1,6 @@
 $(document).on 'turbolinks:before-cache', ->
   KindEditor.remove('.rails_kindeditor')
 
-$(document).on 'turbolinks:load', ->
+$(document).on 'page:load', ->
   $('.rails_kindeditor').each ->
-    KindEditor.create "##{$(this).attr('id')}", "allowFileManager": true, "uploadJson": $(this).data('upload'), "fileManagerJson": $(this).data('filemanager'), "width": '100%', "height": $(this).height()
+    KindEditor.create "##{$(this).attr('id')}", "allowFileManager": true, "uploadJson": $(this).data('upload'), "fileManagerJson": $(this).data('filemanager'), "width": '100%', "height": $(this).attr('height')

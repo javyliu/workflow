@@ -1,9 +1,15 @@
+<% items.each do |service| %>
 <tr>
   <td><%= service.id %></td>
-  <td><%= service.name %></td>
+  <td><%= service.title %></td>
+  <td><%= service.em_ser_cate.name %></td>
   <td>
     <%= link_to '查看', em_service_path(service), target: '_blank' %>
-    <%= link_to '编辑', edit_em_ser_cate_path(service) %>
+    <%= link_to '编辑', edit_em_service_path(service) %>
     <%= link_to '删除', service, method: :delete, data: { confirm: 'Are you sure?',remote: true,type: :json } %>
   </td>
+</tr>
+<% end %>
+<tr>
+  <td colspan="4"><%= paginate(items) %></td>
 </tr>

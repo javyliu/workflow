@@ -1,12 +1,16 @@
 <%= form_for(@em_service) do |f| %>
 
   <div class="field">
-    <%= f.label :title, "标题" %><br>
+    <%= f.label :title, "标题" %>
     <%= f.text_field :title %>
   </div>
   <div class="field">
-    <%= f.label :content, "内容" %><br>
-    <%= f.kindeditor :content, height: 500 %>
+    <%= f.label :em_ser_cate_id, "类别" %>
+    <%= f.collection_select :em_ser_cate_id, EmSerCate.all, :id , :name%>
+  </div>
+  <div class="field">
+    <%= f.label :content, "内容" %>
+    <%= f.kindeditor :content, height: 500,window_onload: true %>
   </div>
   <div class="actions text-right mt1em">
 
