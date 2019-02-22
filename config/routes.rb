@@ -1,8 +1,11 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
 
-  resources :em_services do
-    get :list, on: :collection
+  resources :em_services, except: :index do
+    collection do
+      get "/(:cate_id)", to: :index, as: '',cate_id: /\d+/
+      get :list
+    end
   end
 
   resources :em_ser_cates

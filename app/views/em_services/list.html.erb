@@ -1,11 +1,11 @@
 <div id="search" class="panel">
   <form data-remote="true"  action="#" data-replace-with="#content">
     <div class="row">
-      <div class="columns medium-2">
+      <div class="columns medium-5">
         <label>类别:</label>
-        <%= collection_select :em_service, :em_ser_cate_id, EmSerCate.all,:id, :name, prompt: "选择类别" %>
+        <%= collection_select :em_service, :em_ser_cate_id, EmSerCate.cache_all,:id, :name,selected: params[:em_service].try(:[],:em_ser_cate_id) , include_blank: "选择类别" %>
       </div>
-      <div class="columns medium-2">
+      <div class="columns medium-5">
         <label>标题:</label>
         <%= text_field :em_service, :title, placeholder: "标题" %>
       </div>
@@ -15,8 +15,7 @@
     </div>
   </form>
   <div class="toggle" ref="#toggle_table" style="" title="点击收起"></div>
-</div><div class="row">
-  <div class="columns">
+</div>
   <table>
     <thead>
       <tr>
@@ -31,8 +30,6 @@
       <%= render partial: 'items', object: @em_services %>
     </tbody>
   </table>
-</div>
-</div>
 <br>
 
 <%= link_to '添加', new_em_service_path, class: 'button' %>

@@ -7,7 +7,7 @@ class EmSerCatesController < ApplicationController
   def index
     drop_page_title("员工服务类别管理")
     drop_breadcrumb
-    @em_ser_cates = EmSerCate.all
+    @em_ser_cates = EmSerCate.cache_all
   end
 
   # GET /em_ser_cates/1

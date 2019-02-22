@@ -1,29 +1,22 @@
-<p id="notice"><%= notice %></p>
 
-<h1>Listing Em Services</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Content</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @em_services.each do |em_service| %>
-      <tr>
-        <td><%= em_service.title %></td>
-        <td><%= em_service.content %></td>
-        <td><%= link_to 'Show', em_service %></td>
-        <td><%= link_to 'Edit', edit_em_service_path(em_service) %></td>
-        <td><%= link_to 'Destroy', em_service, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+<div class="panel">
+  <dl class="sub-nav">
+    <dd class="<%= @cate_id == 0 ? 'active' : '' %>"><%= link_to "所有", em_services_path %></dd>
+    <% EmSerCate.cache_all.each do |cate| %>
+    <dd class="<%= @cate_id == cate.id ? 'active' : '' %>"><%= link_to cate.name, em_services_path(cate.id) %></dd>
     <% end %>
-  </tbody>
-</table>
+  </dl>
+</div>
 
-<br>
+<div class="panel callout">
+  <ul class="medium-block-grid-3">
+    <% @em_services.each do |service| %>
+    <li>
+      <%= link_to service.title, em_service_path(service) %>
+    </li>
+    <% end %>
 
-<%= link_to 'New Em service', new_em_service_path %>
+
+  </ul>
+</div>
+

@@ -7,7 +7,9 @@ class EmServicesController < ApplicationController
   def index
     drop_page_title("员工服务")
     drop_breadcrumb
-    @em_services = EmService.page(params[:page]).includes(:em_ser_cate)
+    @cate_id = params[:cate_id].to_i
+    @em_services = @em_services.where(em_ser_cate_id: @cate_id) if @cate_id > 0
+    @em_services = @em_services.page(params[:page])
   end
 
   #管理员专用

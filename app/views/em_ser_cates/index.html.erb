@@ -1,5 +1,3 @@
-<div class="row">
-  <div class="columns">
   <table>
     <thead>
       <tr>
@@ -17,14 +15,12 @@
         <td>
           <%= link_to '编辑', edit_em_ser_cate_path(cate) %>
           <%= link_to '删除', cate, method: :delete, data: { confirm: 'Are you sure?',remote: true,type: :json } %>
-          <%= link_to '查看子项', list_em_services_path(cate_id: cate.id) %>
+          <%= link_to '查看子项', list_em_services_path("em_service[em_ser_cate_id]": cate.id) %>
         </td>
       </tr>
       <% end %>
     </tbody>
   </table>
-</div>
-</div>
 <br>
 
 <%= link_to '添加类别', new_em_ser_cate_path, class: 'button' %>
