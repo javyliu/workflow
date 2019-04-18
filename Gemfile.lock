@@ -14,7 +14,7 @@ GIT
       cancancan (~> 1.10, >= 1.10.1)
 
 GEM
-  remote: https://gems.ruby-china.com/
+  remote: http://gems.ruby-china.com/
   specs:
     actionmailer (4.2.0)
       actionpack (= 4.2.0)
