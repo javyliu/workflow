@@ -30,14 +30,29 @@
   </div>
 </div>
 
+<div class="row">
+  <div class="columns medium-4">
+    <%= f.label :work_date,"开始工作时间" %>
+    <%= f.text_field :work_date,class: "datepicker",readonly: true  %>
+  </div>
+  <div class="columns medium-4">
+    <%= f.label :onboard_date,"入职时间" %>
+    <%= f.text_field :onboard_date,class: "datepicker",readonly: true  %>
+  </div>
+  <div class="columns medium-4">
+    <%= f.label :expire_date,"离职时间" %>
+    <%= f.text_field :expire_date,class: "datepicker",readonly: true  %>
+  </div>
+</div>
+
 
 <div class="row">
   <div class="columns medium-12">
     <%= f.label :roles,"角色" %>
     <ul class='medium-block-grid-10 resources'>
       <% Role.all.each do |role| %>
-        <li style="display: <%='none' if role.name == 'admin'  %>"><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
-    <% end %>
+      <li style="display: <%='none' if role.name == 'admin'  %>"><label> <%= check_box_tag "user[role_ids][]",role.id,f.object.has_role?(role.name) %><%= role.display_name %> </label></li>
+      <% end %>
     </ul>
     <%= hidden_field_tag "user[role_ids][]",nil %>
   </div>
@@ -72,6 +87,7 @@
   <li>如不更新密码新留空</li>
   <li>直属管理ID用于指定特定人员的所属管理者</li>
   <li>角色请管理员在角色管理中添加 </li>
+  <li>离职时间小于当前时间,第二天凌晨同步程序将会删除该账号 </li>
   </ul>
 </fieldset>
 <% foot do %>
