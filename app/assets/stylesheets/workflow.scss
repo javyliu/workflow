@@ -58,7 +58,7 @@ html.turbolinks-progress-bar::before {
       border:solid 1px #ccc;
       height:auto;
       font-size:12px;
-      width:120px!important;
+      width:2em!important;
     }
   }
 
@@ -75,6 +75,7 @@ html.turbolinks-progress-bar::before {
     border:solid 1px #ccc;
   }
 }
+#oa_config .in_editor td.rip-active input{width:120px!important;}
 .kaoqin{
   th{vertical-align:bottom;}
 }
