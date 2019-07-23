@@ -11,7 +11,7 @@
     <% @to_be_confirms.each do |key,values| %>
     <div class="panel">
       <% cfm_type = Task::CfmType.rassoc(key) %>
-      <h5>待确认:<%= cfm_type.try(:first) %></h5>
+      <h5>待确认:<%= cfm_type.try(:first) %> <span style='color: #999;font-size:12px;'>(已过期未确认考勤点击后将会删除--蓝屏Bug解决方案 :-）)</span></h5>
       <% values.each do |task| %>
       <%= link_to task , send(cfm_type.third,{task: task}),class: "button" %>
       <% end %>
