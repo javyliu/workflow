@@ -75,7 +75,7 @@ class Journal < ActiveRecord::Base
     ['c_aff_switch_leave',8,'延时下班时长','小时','group_shi',false,17,10],
     ['c_aff_a_points',9,'A贡献分','小时','group_shi',false,nil,10],
     ['c_aff_spec_appr',10,'特批描述','','group_te',false,nil,0],
-    ['c_aff_holiday_salary',11,'带薪事假','天','group_tian',false,8,10],
+    #['c_aff_holiday_salary',11,'带薪事假','天','group_tian',false,8,10],
     #['c_aff_switch_time',12,'酌情倒休时长','小时','group_shi',false,5,-10],
     ['c_aff_switch_time',12,'酌情倒休时长','小时','group_shi',false,nil,-10],
     ['c_aff_holiday_maternity',13,'产假 产检假','天','group_tian',false,4,10],

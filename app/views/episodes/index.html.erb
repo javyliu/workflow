@@ -1,7 +1,7 @@
 <div class="panel">
   <%= link_to "提交申请",new_episode_path,class: "button" %>
-  <%= link_to "提交突击申请",new_assault_path,class: "button warning" if can?(:create,Assault) %>
-  <%= link_to "取消突击申请",new_assault_path(style: 1),class: "button warning" if can?(:create,Assault) %>
+  <%#= link_to "提交突击申请",new_assault_path,class: "button warning" if can?(:create,Assault) %>
+  <%#= link_to "取消突击申请",new_assault_path(style: 1),class: "button warning" if can?(:create,Assault) %>
 </div>
 
 <% if @episodes.present? %>
