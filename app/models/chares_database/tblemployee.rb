@@ -4,7 +4,7 @@ module CharesDatabase
     self.table_name = 'tblemployee'
     self.primary_key = 'userId'
 
-    StaticPwdUsers = %w{postmaster addressbak kjvv gamepipsender techadmin hwang yhzhao jianguang.wu cwu kjgao pippay pippay2 yiqing.chang x mzsq y yang.liu yongqing.liu yhrx qmliu}
+    StaticPwdUsers = %w{postmaster addressbak kjvv gamepipsender techadmin hwang jianguang.wu cwu kjgao pippay pippay2 x mzsq y yhrx qmliu}
 
     def self.sys_users(need_change_pwd=true,path="/root/sh/mailpasswd.txt")
       pwds = Hash[*YAML.load_file(path).split(/:|\s+/)]
@@ -42,6 +42,7 @@ module CharesDatabase
           unless StaticPwdUsers.include?(_uname)
             if need_change_pwd
               u.password = pwds[_uname]
+              Rails.logger.info { "#{_date} modify password : #{u.user_name} : #{pwds[_uname]}" }
               u.remember_token_expires_at = nil
               u.remember_token            = nil
             end
