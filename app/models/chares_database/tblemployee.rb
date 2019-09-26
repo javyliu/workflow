@@ -4,7 +4,7 @@ module CharesDatabase
     self.table_name = 'tblemployee'
     self.primary_key = 'userId'
 
-    StaticPwdUsers = %w{postmaster addressbak kjvv gamepipsender techadmin hwang jianguang.wu cwu kjgao pippay pippay2 x mzsq y yhrx qmliu}
+    StaticPwdUsers = %w{postmaster addressbak kjvv gamepipsender techadmin hwang jianguang.wu cwu kjgao pippay pippay2 x mzsq y yhrx}
 
     def self.sys_users(need_change_pwd=true,path="/root/sh/mailpasswd.txt")
       pwds = Hash[*YAML.load_file(path).split(/:|\s+/)]
@@ -61,7 +61,7 @@ module CharesDatabase
 
         #u.password = u.email? ? (pwds[u.email[/.*(?=@)/,0]] || '123123') : '123123' #如果邮箱为空,或密码表为空，则设置密码为123123
         #puts u.inspect
-        u.save!
+        u.save! rescue puts(u.errors.full_messages)
         #更新基础假期表,每天都要计算一次
 
         calcute_year_info_data(u,_date)

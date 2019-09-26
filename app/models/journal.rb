@@ -133,6 +133,10 @@ class Journal < ActiveRecord::Base
     end
 
     #重新理一下周期计算，优先判断是否当前页周期，否则为上月周期
+    #
+    Rails.logger.debug "-----------------------------------"
+    Rails.logger.debug end_date.inspect
+    Rails.logger.debug start_date.inspect
 
    today =  Date.today
 
