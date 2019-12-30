@@ -16,6 +16,6 @@
 
 <p>
   <strong>管理者:</strong>
-  <%= @department.leader_user.user_name %>
+  <%= @department.leader_user.try(:user_name) %>
 </p>
 
