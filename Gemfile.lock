@@ -139,6 +139,7 @@ GEM
     multi_json (1.10.1)
     mysql2 (0.3.17)
     nenv (0.1.1)
+    nio4r (2.5.7)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
     pry (0.10.1)
@@ -153,7 +154,8 @@ GEM
       yard (~> 0.8)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
-    puma (3.6.0)
+    puma (5.3.1)
+      nio4r (~> 2.0)
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
